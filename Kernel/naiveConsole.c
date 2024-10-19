@@ -5,6 +5,7 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 static char buffer[64] = { '0' };
 static uint8_t * const video = (uint8_t*)0xB8000;
 static uint8_t * currentVideo = (uint8_t*)0xB8000;
+static uint8_t * timeVideo; //puntero que apunta a la direccion donde se va a imprimir constantemente el reloj 
 static const uint32_t width = 80;
 static const uint32_t height = 25 ;
 
@@ -92,4 +93,30 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 	}
 
 	return digits;
+}
+
+// Funcion que imprime el tiempo 
+
+void timePrint(int hours, int minutes, int seconds){
+	timeVideo = (uint8_t*)0xB8088;
+	uintToBase(hours,buffer,16);
+	for(int i = 0; buffer[i] != 0; i++){
+		*timeVideo = buffer[i];
+		timeVideo += 2;
+	}
+	*timeVideo = ':';
+	timeVideo += 2; 
+	uintToBase(minutes,buffer,16);
+	for(int i = 0; buffer[i] != 0; i++){
+		*timeVideo = buffer[i];
+		timeVideo += 2;
+	}
+	*timeVideo = ':';
+	timeVideo += 2; 
+	uintToBase(seconds,buffer,16);
+	for(int i = 0; buffer[i] != 0; i++){
+		*timeVideo = buffer[i];
+		timeVideo += 2;
+	}
+
 }

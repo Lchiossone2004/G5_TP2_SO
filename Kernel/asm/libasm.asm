@@ -1,5 +1,8 @@
 GLOBAL cpuVendor
-
+GLOBAL getHours
+GLOBAL getMins
+GLOBAL getSec
+GLOBAL getKey
 section .text
 	
 cpuVendor:
@@ -23,5 +26,57 @@ cpuVendor:
 	pop rbx
 
 	mov rsp, rbp
+	pop rbp
+	ret
+
+getHours:
+	push rbp
+	mov rbp, rsp
+
+	mov al, 0x04
+	out 70h, al 
+	in al, 71h
+
+	mov rsp, rbp
+	pop rbp
+	ret
+
+getMins:
+	push rbp
+	mov rbp, rsp
+
+	mov al, 0x02
+	out 70h, al 
+	in al, 71h
+
+	mov rsp, rbp
+	pop rbp
+	ret
+
+getSec:
+	push rbp
+	mov rbp, rsp
+
+	mov al, 0x00
+	out 70h, al 
+	in al, 71h
+
+	mov rsp, rbp
+	pop rbp
+	ret
+
+getKey:
+	push rbp
+	mov rbp,rsp
+
+ 	in al, 60h
+	test al, 80h
+	jz .nada
+	in al, 60h 
+	jmp .fin
+.nada
+	mov al, 0
+.fin
+	mov rsp, rbp 
 	pop rbp
 	ret
