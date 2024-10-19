@@ -24,8 +24,5 @@ void int_20() { //interrupcion del timer, cada tick llama a imprimir la hora, mi
 }
 
 void int_21(){ //interrupcion del teclado, constantemente se fija si se presiono una tecla o no
-	int i = getKey();
-	if(i != 0){
-	ncPrintChar(toLetter(i));
-	}
+	printKey();
 }

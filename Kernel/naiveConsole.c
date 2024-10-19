@@ -120,3 +120,12 @@ void timePrint(int hours, int minutes, int seconds){
 	}
 
 }
+
+void ncDelete(){
+	currentVideo -=2;
+	*currentVideo = ' ';
+}
+void ncMov(int i){
+	currentVideo += (i);
+}
+

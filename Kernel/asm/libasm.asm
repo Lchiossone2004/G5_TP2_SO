@@ -71,8 +71,7 @@ getKey:
 
  	in al, 60h
 	test al, 80h
-	jz .nada
-	in al, 60h 
+	jnz .nada
 	jmp .fin
 .nada
 	mov al, 0
