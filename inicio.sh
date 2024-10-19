@@ -1,7 +1,7 @@
 #!/bin/bash
-docker start tpe
-docker exec -it tpe make clean -C /root/Toolchain
-docker exec -it tpe make clean -C /root/
-docker exec -it tpe make -C /root/Toolchain
-docker exec -it tpe make -C /root/
-docker stop tpe
+docker start TPE
+docker exec -it TPE make clean -C /root/Toolchain
+docker exec -it TPE make clean -C /root/
+docker exec -it TPE make -C /root/Toolchain
+docker exec -it TPE make -C /root/
+docker stop TPE

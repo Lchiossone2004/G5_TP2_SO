@@ -5,10 +5,15 @@
 
 void printKey(){ //Busca e impirme la letra que se quiere o si borra si se toco la tecla de borrado 
 int i = getKey();
-	if(i != 0 ){
-          ncPrintHex(i);
+	if(i != 0 && i != 0x4B && i != 0x4D){
 	ncPrintChar(toLetter(i));
 	}
+    if(i == 0x4B){
+        ncMov(-2);
+    }
+    if(i == 0x4D){
+        ncMov(2);
+    }
 
 }
 char toLetter(int i){
