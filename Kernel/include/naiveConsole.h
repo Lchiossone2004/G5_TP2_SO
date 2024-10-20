@@ -13,5 +13,8 @@ void ncPrintBase(uint64_t value, uint32_t base);
 void ncClear();
 void timePrint(int hours, int minutes, int seconds);
 void ncDelete();
-void ncMov(int i);
+void ncMovDir();
+void ncMovIzq();
+void printCursor();
+void SpecialPrint();
 #endif

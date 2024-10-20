@@ -5,6 +5,8 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 static char buffer[64] = { '0' };
 static uint8_t * const video = (uint8_t*)0xB8000;
 static uint8_t * currentVideo = (uint8_t*)0xB8000;
+static uint8_t * maxVideo  = (uint8_t*)0xB8000;
+static uint8_t * currentChar  = (uint8_t*)0xB8000;
 static uint8_t * timeVideo; //puntero que apunta a la direccion donde se va a imprimir constantemente el reloj 
 static const uint32_t width = 80;
 static const uint32_t height = 25 ;
@@ -17,10 +19,18 @@ void ncPrint(const char * string)
 		ncPrintChar(string[i]);
 }
 
+void SpecialPrint(){
+	ncPrintDec(*(currentVideo -1));
+}
 void ncPrintChar(char character)
-{
+{	
+	cambioCursor();
 	*currentVideo = character;
 	currentVideo += 2;
+	cursor();
+	if(currentVideo > maxVideo){
+		maxVideo = currentVideo;
+	}
 }
 
 void ncNewline()
@@ -122,10 +132,36 @@ void timePrint(int hours, int minutes, int seconds){
 }
 
 void ncDelete(){
+	cambioCursor();
 	currentVideo -=2;
 	*currentVideo = ' ';
+	uint8_t * auxVideo;
+	auxVideo = currentVideo;
+	while(auxVideo < maxVideo){
+		*auxVideo = *(auxVideo + 2);
+		auxVideo += 2;
+	}
+	maxVideo -=2;
+	cursor();
 }
-void ncMov(int i){
-	currentVideo += (i);
+void ncMovDir(){
+	cambioCursor();
+	currentVideo += 2;
+	cursor();
 }
 
+void ncMovIzq(){
+	cambioCursor();
+	currentVideo -= 2;
+	cursor();
+}
+
+void cursor(){
+	//*currentChar = *currentVideo;
+	*(currentVideo + 1)= 0x2f;
+	//*currentVideo = '_';
+}
+void cambioCursor(){
+	//*currentVideo = *currentChar;
+	*(currentVideo + 1) = 7; 
+}
