@@ -5,7 +5,7 @@
 
 void printKey(){ //Busca e impirme la letra que se quiere o si borra si se toco la tecla de borrado 
 int i = getKey();
-	if(i!= 0 && i != 14 && i != 75 && i != 77){
+	if(i!= 0 && i != 14 && i != 75 && i != 77 && i != 28){
 	ncPrintChar(toLetter(i));
 	}
     if(i == 14){
@@ -16,6 +16,9 @@ int i = getKey();
     }
     if(i== 77){
         ncMovDir();
+    }
+    if(i==28){
+        ncNewline();
     }
 }
 char toLetter(int i){
