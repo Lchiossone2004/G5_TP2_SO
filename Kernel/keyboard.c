@@ -4,6 +4,9 @@
 #include <keyboard.h>
 #include <videoDriver.h>
 
+static uint16_t buffer[1024];
+static uint64_t dim = 0; //dimension del buffer
+static uint64_t curr = 0; //posicion actual del buffer
 void printKey(){ //Busca e impirme la letra que se quiere o si borra si se toco la tecla de borrado 
 int i = getKey();
 	if(i!= 0 && i != 14 && i != 75 && i != 77 && i != 28){
@@ -75,4 +78,14 @@ char toLetter(int i){
 
         default: return '?';       // Tecla no reconocida
     }
+
+}
+uint64_t buffer_has_next() {
+    return dim > 0 && current < dim;
+}
+uint64_t current() {
+    if(!buffer_has_next) {
+        return 0;
+    }
+    return buffer[curr++];
 }
