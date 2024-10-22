@@ -153,7 +153,7 @@ void movVideo(int direction){
 	char * toPrint = "hh:mm:ss";
 	char aux = hour >> 4;
 	toPrint[0] = aux + '0';
-	toPrint[1] = (hour&0xF) + '0';
+	toPrint[1] = (hour&0xF) + '0'; //guardo los 4 bits menos significativos y el resto lo pongo en 0
 	aux = min >> 4;
 	toPrint[3] = aux + '0';
 	toPrint[4] = (min&0xF) + '0';
