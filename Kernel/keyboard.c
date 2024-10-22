@@ -2,23 +2,30 @@
 #include <string.h>
 #include <naiveConsole.h>
 #include <keyboard.h>
+#include <videoDriver.h>
 
 void printKey(){ //Busca e impirme la letra que se quiere o si borra si se toco la tecla de borrado 
 int i = getKey();
 	if(i!= 0 && i != 14 && i != 75 && i != 77 && i != 28){
 	ncPrintChar(toLetter(i));
+    charVideo(toLetter(i),1);
+
 	}
     if(i == 14){
         ncDelete();
+        deleteVideo();
     }
     if(i == 75){
         ncMovIzq();
+        movVideo(-1);
     }
     if(i== 77){
         ncMovDir();
+        movVideo(1);
     }
     if(i==28){
         ncNewline();
+        nlVideo();
     }
 }
 char toLetter(int i){

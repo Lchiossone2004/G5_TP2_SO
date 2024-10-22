@@ -4,6 +4,7 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idtLoader.h>
+#include <videoDriver.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -102,6 +103,7 @@ int main()
 	ncNewline();
 
 	ncPrint("[Finished]");
-	while(1); 				// While infinito para que se sigan corriendo las interrupciones 
+	imprimirVideo("Estoy en modo video ");
+	while(1);
 	return 0;
 }

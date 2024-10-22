@@ -3,6 +3,7 @@
 #include <naiveConsole.h>
 #include <keyboard.h>
 #include <lib.h>
+#include <videoDriver.h>
 
 static void int_20();
 static void int_21();
