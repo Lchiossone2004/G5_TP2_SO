@@ -1,13 +1,12 @@
-#include <videoDriver.h>
-#include <keyboard.h>
-
+#include "./include/shell.h"
 void shell() {
     
 
 }
-char* getCommand(){
+char* getCommand(char* buffer){
     char pressed;
     char* command;
+    /*
     while (1) {
         pressed = getKey(); // Lee una tecla
         if(pressed ==28){
@@ -27,5 +26,7 @@ char* getCommand(){
         }
 
     }
+
+    */
 }
 

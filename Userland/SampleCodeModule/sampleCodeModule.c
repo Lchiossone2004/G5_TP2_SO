@@ -1,4 +1,5 @@
 /* sampleCodeModule.c */
+#include "./include/shell.h"
 
 char * v = (char*)0xB8000 + 79 * 2;
 
@@ -8,6 +9,5 @@ static int var2 = 0;
 
 int main() {
 	shell();
-	while(1);
-	return 0;
+	return 0xDEADBEEF;
 }
