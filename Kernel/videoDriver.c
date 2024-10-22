@@ -2,10 +2,10 @@
 #include <videoDriver.h>
 #include <font.h>
 
-#define MOV_X 8
-#define MOV_Y 16
-#define BORDER_X 1016
-#define BORDER_Y 768
+#define MOV_X 8  //Lo que ocupa en x de un char 
+#define MOV_Y 16 //Lo que ocupa en y de un char
+#define BORDER_X 1016 //maximo ancho (en pixeles) de la pantalla
+#define BORDER_Y 768 //maximo largo (en pixeles) de la pantalla
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -51,6 +51,11 @@ VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 static int x = 0;
 static int y = 0;
 static int aux = 0;
+static int maxX = 0;
+static int maxY = 0;
+static int num_columns = BORDER_X / MOV_X; 
+static int num_rows = BORDER_Y / MOV_Y; 
+static char letters[BORDER_Y / MOV_Y][BORDER_X / MOV_X] = {0};
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
@@ -72,6 +77,12 @@ void charVideo(int num, int flag){
 	int set;
 	char *bitmap;
 	bitmap = font[num];
+	if(flag){
+		letters[y/MOV_Y][x/MOV_X] = num;
+	}
+	else{
+		letters[y/MOV_Y][x/MOV_X] = 0;
+	}
 	for(int i = 0; i <8; i++){
 		for(int j = 0; j<8; j++){
 			set = bitmap[i] & 1 << j;
@@ -82,18 +93,22 @@ void charVideo(int num, int flag){
 				putPixel(0x0,(x)+j,(y)+i);
 			}
 		}
-		(y) += 1;
+		y += 1;
 	}
-		(x) += MOV_X;
+		x += MOV_X;
+		if(x>maxX){
+			maxX = x;
+		}
 		if(x >= VBE_mode_info->width && flag){ //Estaria bueno sacar este flag, que es para que borre correctamente 
 			aux += MOV_Y;
 			x = 0;
+			maxX = 0;
 		}
 		y = aux;
 	}
 }
 
-void nlVideo(){
+void nlVideo(){ //Hace un salto de linea
 	if(y < BORDER_Y -16){
 	aux += MOV_Y;
 	y += MOV_Y;
@@ -101,7 +116,7 @@ void nlVideo(){
 	}
 }
 
-void deleteVideo(){
+void deleteVideo(){ //Borra caracteres
 	if(!(y == 0 && x <= 0)){
 	if(x >= MOV_X){
 	x -= MOV_X;
@@ -116,6 +131,8 @@ void deleteVideo(){
 	x -= MOV_X;
 	}
 	}
+	charVideo(letters[0][0],1);
+
 
 }
 void movVideo(int direction){
