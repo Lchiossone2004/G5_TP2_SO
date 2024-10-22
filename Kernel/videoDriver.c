@@ -102,7 +102,7 @@ void deleteVideo(){
 	x -= MOVX;
 	}
 	else{
-	x = VBE_mode_info->width -14;
+	x = VBE_mode_info->width -8;
 	y -= MOVY;
 	aux -= MOVY;
 	charVideo(0,0);
@@ -112,7 +112,7 @@ void deleteVideo(){
 void movVideo(int direction){
 	x += (direction*MOVX);
 	if(x < 10){
-	x = VBE_mode_info->width -14;
+	x = VBE_mode_info->width -8;
 	y -= MOVY;
 	aux -= MOVY;
 	}
