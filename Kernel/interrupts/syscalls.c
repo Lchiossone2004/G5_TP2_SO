@@ -14,7 +14,7 @@ size_t sys_read(unsigned int fd, char *buffer, size_t count) {
         i++;
     }
     return i;
-//OJO FALTA IMPLEMENTAR EL KEYBOARD MANAGER (driver)
+
 }
 size_t sys_write(unsigned int fd, const char *buffer, size_t count) {
 //HACER

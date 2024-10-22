@@ -3,7 +3,7 @@ include Makefile.inc
 KERNEL=kernel.bin
 SOURCES=$(wildcard *.c)
 SOURCES_ASM=$(wildcard asm/*.asm)
-SOURCES_INTERRUPTS = $(wildcard interrupts/* .c)
+SOURCES_INTERRUPTS = $(wildcard interrupts/*.c)
 OBJECTS=$(SOURCES:.c=.o)
 OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
 OBJECTS_INTERRUPTS=$(SOURCES_INTERRUPTS:.c=.o)

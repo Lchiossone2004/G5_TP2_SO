@@ -120,7 +120,7 @@ void keyboardHandler(){
         return;
     }
     uint16_t code = toLetter(key);
-    functionKeyHandler(code);
+    
     buffer[buffer_dim] = code;
     if(buffer_dim < BUFFER_SIZE){
         buffer_dim++;

@@ -17,4 +17,6 @@ void ncMovDir();
 void ncMovIzq();
 void printCursor();
 void SpecialPrint();
+void cursor();
+void cambioCursor();
 #endif
