@@ -5,6 +5,7 @@
 #include <naiveConsole.h>
 #include <idtLoader.h>
 #include <videoDriver.h>
+#include <shell.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -104,6 +105,7 @@ int main()
 
 	ncPrint("[Finished]");
 	imprimirVideo("Estoy en modo video ");
-	while(1);
+	shell();
+	//while(1);
 	return 0;
 }
