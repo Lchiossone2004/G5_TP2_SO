@@ -2,8 +2,10 @@
 #include <videoDriver.h>
 #include <font.h>
 
-#define MOVX 8
-#define MOVY 16
+#define MOV_X 8
+#define MOV_Y 16
+#define BORDER_X 1016
+#define BORDER_Y 768
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -66,6 +68,7 @@ void imprimirVideo(char * palabra){
 }
 
 void charVideo(int num, int flag){
+	if(x<=BORDER_X && y < BORDER_Y){
 	int set;
 	char *bitmap;
 	bitmap = font[num];
@@ -81,45 +84,52 @@ void charVideo(int num, int flag){
 		}
 		(y) += 1;
 	}
-		(x) += MOVX;
+		(x) += MOV_X;
 		if(x >= VBE_mode_info->width && flag){ //Estaria bueno sacar este flag, que es para que borre correctamente 
-			aux += MOVY;
+			aux += MOV_Y;
 			x = 0;
 		}
 		y = aux;
+	}
 }
 
 void nlVideo(){
-	aux += MOVY;
-	y += MOVY;
+	if(y < BORDER_Y -16){
+	aux += MOV_Y;
+	y += MOV_Y;
 	x = 0;
+	}
 }
 
 void deleteVideo(){
-	if(x >= MOVX){
-	x -= MOVX;
+	if(!(y == 0 && x <= 0)){
+	if(x >= MOV_X){
+	x -= MOV_X;
 	charVideo(0,1);
-	x -= MOVX;
+	x -= MOV_X;
 	}
 	else{
 	x = VBE_mode_info->width -8;
-	y -= MOVY;
-	aux -= MOVY;
+	y -= MOV_Y;
+	aux -= MOV_Y;
 	charVideo(0,0);
-	x -= MOVX;
+	x -= MOV_X;
 	}
+	}
+
 }
 void movVideo(int direction){
-	x += (direction*MOVX);
+	x += (direction*MOV_X);
 	if(x < 10){
 	x = VBE_mode_info->width -8;
-	y -= MOVY;
-	aux -= MOVY;
+	y -= MOV_Y;
+	aux -= MOV_Y;
 	}
 	if(x > VBE_mode_info->width - 10){
-		aux += MOVY;
+		aux += MOV_Y;
 		x = 0;
 		y = aux;
 	}
 
 }
+
