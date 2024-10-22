@@ -2,8 +2,8 @@
 #include <videoDriver.h>
 #include <font.h>
 
-#define MOVX 10
-#define MOVY 14
+#define MOVX 8
+#define MOVY 16
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -47,8 +47,8 @@ typedef struct vbe_mode_info_structure * VBEInfoPtr;
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
 static int x = 0;
-static int y = 10;
-static int aux = 10;
+static int y = 0;
+static int aux = 0;
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
@@ -60,7 +60,7 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
 
 void imprimirVideo(char * palabra){
 		for(int i = 0; palabra[i] != 0; i++){
-			y = 10;	
+			y = aux;	
 			charVideo(palabra[i],1);
 		}
 }
@@ -82,7 +82,7 @@ void charVideo(int num, int flag){
 		(y) += 1;
 	}
 		(x) += MOVX;
-		if(x > VBE_mode_info->width - 10 && flag){ //Estaria bueno sacar este flag, que es para que borre correctamente 
+		if(x >= VBE_mode_info->width && flag){ //Estaria bueno sacar este flag, que es para que borre correctamente 
 			aux += MOVY;
 			x = 0;
 		}
