@@ -3,10 +3,15 @@
 #include <naiveConsole.h>
 #include <keyboard.h>
 #include <videoDriver.h>
+#include <lib.h>
+static uint64_t buffer_dim = 0;
 
-static uint16_t buffer[1024];
+
+static uint16_t buffer[BUFFER_SIZE];
 static uint64_t dim = 0; //dimension del buffer
 static uint64_t curr = 0; //posicion actual del buffer
+
+
 void printKey(){ //Busca e impirme la letra que se quiere o si borra si se toco la tecla de borrado 
 int i = getKey();
 	if(i!= 0 && i != 14 && i != 75 && i != 77 && i != 28){
@@ -31,6 +36,15 @@ int i = getKey();
         nlVideo();
     }
 }
+
+
+static uint8_t isReleased(uint8_t key){
+    return (key & 0x80);
+}
+static uint8_t isPressed(uint8_t key){
+    return !isReleased(key);
+}
+
 char toLetter(int i){
 
     
@@ -80,12 +94,37 @@ char toLetter(int i){
     }
 
 }
+
 uint64_t buffer_has_next() {
-    return dim > 0 && current < dim;
+    return dim > 0 && curr < dim;
 }
+
 uint64_t current() {
     if(!buffer_has_next) {
         return 0;
     }
     return buffer[curr++];
+}
+
+static uint8_t releasedKeyToPressedMask(uint8_t key){
+    return key&0x7F;
+}
+
+void keyboardHandler(){
+    uint8_t key = getKey();
+    uint8_t key_is_pressed = isPressed(key) ? 1:0;
+    if( !key_is_pressed){
+        key = releasedKeyToPressedMask(key); //la tabla es para PRESSED !
+    }
+    if(!key_is_pressed){
+        return;
+    }
+    uint16_t code = toLetter(key);
+    functionKeyHandler(code);
+    buffer[buffer_dim] = code;
+    if(buffer_dim < BUFFER_SIZE){
+        buffer_dim++;
+    }else{
+        buffer_dim = 1;
+    }
 }
