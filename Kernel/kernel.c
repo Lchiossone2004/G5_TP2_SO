@@ -85,27 +85,9 @@ void * initializeKernelBinary()
 
 int main()
 {	
-	load_idt(); 			// Cargo las interrupciones 
-	ncPrint("[Kernel Main]");
-	ncNewline();
-	ncPrint("  Sample code module at 0x");
-	ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	ncNewline();
-	ncPrint("  Calling the sample code module returned: ");
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
-	ncNewline();
-	ncNewline();
-
-	ncPrint("  Sample data module at 0x");
-	ncPrintHex((uint64_t)sampleDataModuleAddress);
-	ncNewline();
-	ncPrint("  Sample data module contents: ");
-	ncPrint((char*)sampleDataModuleAddress);
-	ncNewline();
-
-	ncPrint("[Finished]");
-	imprimirVideo("Estoy en modo video ");
-	shell();
-	//while(1);
+	load_idt(); 									//Cargo las interrupciones
+	
+	((EntryPoint)sampleCodeModuleAddress); 			// Llamo al userland
+	
 	return 0;
 }
