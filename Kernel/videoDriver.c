@@ -149,4 +149,16 @@ void movVideo(int direction){
 	}
 
 }
-
+/*void printTimeVideo(char hour, char min, char sec) {
+	char * toPrint = "hh:mm:ss";
+	char aux = hour >> 4;
+	toPrint[0] = aux + '0';
+	toPrint[1] = (hour&0xF) + '0';
+	aux = min >> 4;
+	toPrint[3] = aux + '0';
+	toPrint[4] = (min&0xF) + '0';
+	aux = sec >> 4;
+	toPrint[6] = aux + '0';
+	toPrint[7] = (sec&0xF) + '0';
+	imprimirVideo(toPrint);
+	}*/
