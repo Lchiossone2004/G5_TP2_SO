@@ -52,7 +52,32 @@ updateKeyboardStatus(i);
         nlVideo();
     }
 }
+void keysInBuffer(char buffer[128], int idx) { //entran 128 caracteres en una fila
+    int key = getKey();
+    updateKeyboardStatus(key);
+    if(key == 28 || idx == 127) { //si es el enter o si llegue al final del renglon, se vacía el buffer
+        buffer[0] = '\0';
+    }
+    if(key == 77) { //flecha a derecha
+        idx++;
+    }
+    if(key == 75) { //flecha a izquierda
+        idx--;
+    }
+    if(key == 14) { //delete
+        deleteFromBuffer(buffer, idx);
+    }
+    buffer[idx++];
+}
 
+void deleteFromBuffer(char *buffer, int idx) {
+    int i = idx;
+    while(i < sizeof(buffer) -1) {
+        buffer[i] = buffer[i+1];
+        i++;
+    }
+    buffer[i] = '\0';
+}
 
 // static uint8_t isReleased(uint8_t key){
 //     return (key & 0x80);
