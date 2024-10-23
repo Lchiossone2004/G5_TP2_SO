@@ -1,4 +1,4 @@
-#include <stdint.h>  //Che no se que tecaron aca pero se rompio el delete
+#include <stdint.h>  //FALTA ARREGLAR EL "SOLTAR" EL SHIFT.
 #include <string.h>
 #include <naiveConsole.h>
 #include <keyboard.h>
@@ -18,8 +18,8 @@ void updateKeyboardStatus(int scancode) {
         case 0x36:  //shift der
             shift_pressed = 1;
             break;
-        case 0xAA:  // shift izq
-        case 0xB6:  // shift der
+        case 0xAA:  // shift izq released
+        case 0xB6:  // shift der released
             shift_pressed = 0;
             break;
         case 0x3A:  //mayuscula presionado
@@ -60,6 +60,8 @@ updateKeyboardStatus(i);
 // static uint8_t isPressed(uint8_t key){
 //     return !isReleased(key);
 // }
+
+//shift en cada número
 char shiftNum(char num) {
      switch (num) {
             case '1': return '!';
@@ -74,10 +76,11 @@ char shiftNum(char num) {
             case '0': return ')';
         }
 }
+
 char toLetter(int i){
     char aux;
     switch (i) {
-        // Números y símbolos
+        // Números 
         case 0x02: aux =  '1'; break;
         case 0x03: aux =  '2'; break;
         case 0x04: aux =  '3'; break;
@@ -123,10 +126,10 @@ char toLetter(int i){
         default: return '?';       // Tecla no reconocida
     }
     if (aux >= 'a' && aux <= 'z' && (caps_pressed || shift_pressed )) {
-        aux  -= 32;  // Convierte a mayúscula (restando 32 en ASCII)
+        aux  -= 32; //si es letra y esta en caps lock on o el shift apretado, paso a mayuscula
     } else 
     if(aux >= '0' && aux <= '9' && shift_pressed) {
-        aux = shiftNum(aux);
+        aux = shiftNum(aux); //si es numero y esta el shift apretado voy a su tecla corresp
     }
     return aux; 
 }
