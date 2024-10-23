@@ -29,6 +29,7 @@ void updateKeyboardStatus(int scancode) {
 }
 void printKey(){ //Busca e impirme la letra que se quiere o si borra si se toco la tecla de borrado 
 int i = getKey();
+updateKeyboardStatus(i);
 	if(i!= 0 && i != 14 && i != 75 && i != 77 && i != 28){
 	ncPrintChar(toLetter(i));
     charVideo(toLetter(i),1);
@@ -75,7 +76,6 @@ char shiftNum(char num) {
 }
 char toLetter(int i){
     char aux;
-    updateKeyboardStatus(i);
     switch (i) {
         // Números y símbolos
         case 0x02: aux =  '1'; break;
