@@ -52,14 +52,7 @@ updateKeyboardStatus(i);
         nlVideo();
     }
 }
-//lo mismo que print key solo que en lugar de imprimirlo lo guarda en buffer
-void keyInBuffer(char buffer) {
-    int i = getKey();
-    updateKeyboardStatus(i);
-    if(i!= 0 && i != 14 && i != 75 && i != 77 && i != 28) { // si no es delete, las flechitas o enter
-        buffer = toLetter(i);
-    }
-}
+
 
 // static uint8_t isReleased(uint8_t key){
 //     return (key & 0x80);
@@ -84,7 +77,7 @@ char shiftNum(char num) {
 char toLetter(int i){
     char aux;
     switch (i) {
-        // Números y símbolos
+        // Números
         case 0x02: aux =  '1'; break;
         case 0x03: aux =  '2'; break;
         case 0x04: aux =  '3'; break;
@@ -130,11 +123,11 @@ char toLetter(int i){
         //en estos ultimos 3 no quiero que ponga ?
         default: return '?';       // Tecla no reconocida
     }
-    if (aux >= 'a' && aux <= 'z' && (caps_pressed || shift_pressed )) {
-        aux  -= 32;  // Convierte a mayúscula (restando 32 en ASCII)
+    if (aux >= 'a' && aux <= 'z' && (caps_pressed || shift_pressed )) {  //si es una letra y esta apretado shift o prendido el capslock
+        aux  -= 32;  //la paso a mayúscula
     } else 
-    if(aux >= '0' && aux <= '9' && shift_pressed) {
-        aux = shiftNum(aux);
+    if(aux >= '0' && aux <= '9' && shift_pressed) { //si es un número y esta el shift apretado
+        aux = shiftNum(aux); //actua segun el numero que corresponda
     }
     return aux; 
 }
