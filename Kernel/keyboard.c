@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include <stdint.h>  //Che no se que tecaron aca pero se rompio el delete
 #include <string.h>
 #include <naiveConsole.h>
 #include <keyboard.h>

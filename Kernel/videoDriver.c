@@ -65,8 +65,8 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     framebuffer[offset+2]   =  (hexColor >> 16) & 0xFF;
 }
 
-void imprimirVideo(char * palabra){
-		for(int i = 0; palabra[i] != 0; i++){
+void imprimirVideo(char * palabra, int size){
+		for(int i = 0; i< size; i++){
 			y = aux;	
 			charVideo(palabra[i],1);
 		}

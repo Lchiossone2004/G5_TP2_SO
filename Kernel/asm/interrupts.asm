@@ -12,11 +12,14 @@ GLOBAL _irq02Handler
 GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
+GLOBAL _irq08Handler
 
 GLOBAL _exception0Handler
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
+EXTERN syscallsManager
+EXTERN imprimirVideo
 
 SECTION .text
 
@@ -138,10 +141,18 @@ _irq04Handler:
 _irq05Handler:
 	irqHandlerMaster 5
 
+_irq08Handler:
+	pushState
+	call syscallsManager
+	popState
+	
+	iretq			;no se por que con ret no funciona pero con iretq si
+
 
 ;Zero Division Exception
 _exception0Handler:
 	exceptionHandler 0
+
 
 haltcpu:
 	cli
@@ -149,6 +160,8 @@ haltcpu:
 	ret
 
 
-
+section .data
+mensaje db "hola"
+size equ $-mensaje
 SECTION .bss
 	aux resq 1
