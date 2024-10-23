@@ -12,7 +12,7 @@ static uint16_t buffer[BUFFER_SIZE];
 static uint64_t dim = 0; //dimension del buffer
 static uint64_t curr = 0; //posicion actual del buffer
 
-void updateKeyboardStatus(uint8_t scancode) {
+void updateKeyboardStatus(int scancode) {
     switch (scancode) {
         case 0x2A:  //shift izq 
         case 0x36:  //shift der
@@ -117,9 +117,9 @@ char toLetter(int i){
         case 0x15: aux =  'y'; break;
         case 0x2C: aux =  'z'; break;
         case 0x39: aux =  ' '; break;
-        case 0x2A: break;
-        case 0x36: break;
-        case 0x3A: break;
+        case 0x2A: break; //shift izquierdo
+        case 0x36: break; //shift derecho
+        case 0x3A: break; //capslock
         default: return '?';       // Tecla no reconocida
     }
     if (aux >= 'a' && aux <= 'z' && (caps_pressed || shift_pressed )) {
