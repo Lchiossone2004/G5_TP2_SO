@@ -52,7 +52,14 @@ updateKeyboardStatus(i);
         nlVideo();
     }
 }
-
+//lo mismo que print key solo que en lugar de imprimirlo lo guarda en buffer
+void keyInBuffer(char buffer) {
+    int i = getKey();
+    updateKeyboardStatus(i);
+    if(i!= 0 && i != 14 && i != 75 && i != 77 && i != 28) { // si no es delete, las flechitas o enter
+        buffer = toLetter(i);
+    }
+}
 
 // static uint8_t isReleased(uint8_t key){
 //     return (key & 0x80);
@@ -120,6 +127,7 @@ char toLetter(int i){
         case 0x2A: break; //shift izquierdo
         case 0x36: break; //shift derecho
         case 0x3A: break; //capslock
+        //en estos ultimos 3 no quiero que ponga ?
         default: return '?';       // Tecla no reconocida
     }
     if (aux >= 'a' && aux <= 'z' && (caps_pressed || shift_pressed )) {
