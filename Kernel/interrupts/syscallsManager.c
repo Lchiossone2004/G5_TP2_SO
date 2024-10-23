@@ -8,16 +8,16 @@
 
 size_t sys_read(unsigned int fd, char *buffer, size_t count) {
     
-    int i = 0;
-    while(buffer_has_next() && i < count) {
-        buffer[i] = current();
-        i++;
-    }
-    return i;
+    // int i = 0;
+    // while(buffer_has_next() && i < count) {
+    //     buffer[i] = current();
+    //     i++;
+    // }
+    // return i;
 
 }
 size_t sys_write(unsigned int fd, const char *buffer, size_t count) {
-    ncPrint(buffer);
+    imprimirVideo("hola",5);
 return 0;
 }
 

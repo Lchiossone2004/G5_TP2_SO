@@ -30,8 +30,8 @@ void load_idt() {
 
 
 	//Solo interrupcion timer tick habilitadas
-  picMasterMask(0xFC); // para el teclado 
-	picMasterMask(0xFE); //supongo que para el timer 
+	picMasterMask(0xFE); //supongo que para el timer
+  picMasterMask(0xFC); // para el teclado  
 	picSlaveMask(0xFF);
         
 	_sti();

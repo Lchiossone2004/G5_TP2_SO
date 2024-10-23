@@ -7,7 +7,6 @@ extern uint64_t syscall(uint64_t rdi, ...);
 void print(char * word){
     int i = 0;
     while(word[i] != 0){
-         syscall(4,1,word[i],sizeof(word));
         i++;
     }
     syscall(4,1,word[i],sizeof(word));

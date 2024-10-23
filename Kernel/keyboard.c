@@ -38,12 +38,12 @@ int i = getKey();
 }
 
 
-static uint8_t isReleased(uint8_t key){
-    return (key & 0x80);
-}
-static uint8_t isPressed(uint8_t key){
-    return !isReleased(key);
-}
+// static uint8_t isReleased(uint8_t key){
+//     return (key & 0x80);
+// }
+// static uint8_t isPressed(uint8_t key){
+//     return !isReleased(key);
+// }
 
 char toLetter(int i){
 
@@ -95,36 +95,36 @@ char toLetter(int i){
 
 }
 
-uint64_t buffer_has_next() {
-    return dim > 0 && curr < dim;
-}
+// uint64_t buffer_has_next() {
+//     return dim > 0 && curr < dim;
+// }
 
-uint64_t current() {
-    if(!buffer_has_next) {
-        return 0;
-    }
-    return buffer[curr++];
-}
+// uint64_t current() {
+//     if(!buffer_has_next) {
+//         return 0;
+//     }
+//     return buffer[curr++];
+// }
 
-static uint8_t releasedKeyToPressedMask(uint8_t key){
-    return key&0x7F;
-}
+// static uint8_t releasedKeyToPressedMask(uint8_t key){
+//     return key&0x7F;
+// }
 
-void keyboardHandler(){
-    uint8_t key = getKey();
-    uint8_t key_is_pressed = isPressed(key) ? 1:0;
-    if( !key_is_pressed){
-        key = releasedKeyToPressedMask(key); //la tabla es para PRESSED !
-    }
-    if(!key_is_pressed){
-        return;
-    }
-    uint16_t code = toLetter(key);
+// void keyboardHandler(){
+//     uint8_t key = getKey();
+//     uint8_t key_is_pressed = isPressed(key) ? 1:0;
+//     if( !key_is_pressed){
+//         key = releasedKeyToPressedMask(key); //la tabla es para PRESSED !
+//     }
+//     if(!key_is_pressed){
+//         return;
+//     }
+//     uint16_t code = toLetter(key);
     
-    buffer[buffer_dim] = code;
-    if(buffer_dim < BUFFER_SIZE){
-        buffer_dim++;
-    }else{
-        buffer_dim = 1;
-    }
-}
+//     buffer[buffer_dim] = code;
+//     if(buffer_dim < BUFFER_SIZE){
+//         buffer_dim++;
+//     }else{
+//         buffer_dim = 1;
+//     }
+// }
