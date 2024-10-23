@@ -9,5 +9,5 @@ void print(char * word){
     while(word[i] != 0){
         i++;
     }
-    syscall(4,1,word[i],sizeof(word));
+    syscall(4,1,word,i);
 }

@@ -4,6 +4,8 @@
         "stdint.h": "c",
         "string.h": "c",
         "keyboard.h": "c",
-        "interrupts.h": "c"
+        "interrupts.h": "c",
+        "libc.h": "c",
+        "syscallsmanager.h": "c"
     }
 }

@@ -1,12 +1,17 @@
 #include "../include/shell.h"
 #include "../include/libc.h"
 void shell() {
-    print("hola");
+    
+    print("merequetengue, pum pum mi vidrio explota pum");
+    
+    
 
 }
 char* getCommand(char* buffer){
     char pressed;
     char* command;
+
+
     /*
     while (1) {
         pressed = getKey(); // Lee una tecla

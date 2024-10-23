@@ -86,8 +86,8 @@ void * initializeKernelBinary()
 int main()
 {	
 	load_idt(); 			 						//Cargo las interrupciones
-	while(1);
-	//((EntryPoint)sampleCodeModuleAddress)();		// Llamo al userland
+	//while(1);
+	((EntryPoint)sampleCodeModuleAddress)();		// Llamo al userland
 	
 	return 0;
 }
