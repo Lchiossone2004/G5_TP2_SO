@@ -131,7 +131,7 @@ void deleteVideo(){ //Borra caracteres
 	x -= MOV_X;
 	}
 	}
-	charVideo(letters[0][0],1);
+	
 
 
 }
