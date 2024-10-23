@@ -1,7 +1,7 @@
 #include "../include/shell.h"
 #include "../include/libc.h"
 void shell() {
-    printf("hola");
+    print("hola");
 
 }
 char* getCommand(char* buffer){

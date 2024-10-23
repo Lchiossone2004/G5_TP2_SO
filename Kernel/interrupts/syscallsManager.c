@@ -17,16 +17,16 @@ size_t sys_read(unsigned int fd, char *buffer, size_t count) {
 
 }
 size_t sys_write(unsigned int fd, const char *buffer, size_t count) {
-    imprimirVideo(buffer, count);
+    ncPrint(buffer);
 return 0;
 }
 
-uint64_t syscallsManager(Reg * registers) {
-    //switch(registers->rax) {
-    //    case 3: sys_read(registers->rbx, registers->rcx, registers->rdx);
-    //    case 4: sys_write(registers->rbx, registers->rcx, registers->rdx);
-    //}
-    ncPrint("Hola");
+uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
+    switch(rdi) {
+        case 3: sys_read(rsi, rdx, rcx);
+        case 4: sys_write(rsi, rdx, rcx);
+    }
+    
 
     return 0;
 

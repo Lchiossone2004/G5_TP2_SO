@@ -1,1 +1,1 @@
-void printf(char * word);
+void print(char * word);
