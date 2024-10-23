@@ -5,13 +5,28 @@
 #include <videoDriver.h>
 #include <lib.h>
 static uint64_t buffer_dim = 0;
-
+static uint64_t shift_pressed = 0;
+static uint64_t caps_pressed = 0;
 
 static uint16_t buffer[BUFFER_SIZE];
 static uint64_t dim = 0; //dimension del buffer
 static uint64_t curr = 0; //posicion actual del buffer
 
-
+void updateKeyboardStatus(uint8_t scancode) {
+    switch (scancode) {
+        case 0x2A:  //shift izq 
+        case 0x36:  //shift der
+            shift_pressed = 1;
+            break;
+        case 0xAA:  // shift izq
+        case 0xB6:  // shift der
+            shift_pressed = 0;
+            break;
+        case 0x3A:  //mayuscula presionado
+           caps_pressed = !caps_pressed;
+            break;
+    }
+}
 void printKey(){ //Busca e impirme la letra que se quiere o si borra si se toco la tecla de borrado 
 int i = getKey();
 	if(i!= 0 && i != 14 && i != 75 && i != 77 && i != 28){
@@ -44,55 +59,76 @@ int i = getKey();
 // static uint8_t isPressed(uint8_t key){
 //     return !isReleased(key);
 // }
-
+char shiftNum(char num) {
+     switch (num) {
+            case '1': return '!';
+            case '2': return '@';
+            case '3': return '#';
+            case '4': return '$';
+            case '5': return '%';
+            case '6': return '^';
+            case '7': return '&';
+            case '8': return '*';
+            case '9': return '(';
+            case '0': return ')';
+        }
+}
 char toLetter(int i){
-
-    
+    char aux;
+    updateKeyboardStatus(i);
     switch (i) {
         // Números y símbolos
-        case 0x02: return '1';
-        case 0x03: return '2';
-        case 0x04: return '3';
-        case 0x05: return '4';
-        case 0x06: return '5';
-        case 0x07: return '6';
-        case 0x08: return '7';
-        case 0x09: return '8';
-        case 0x0A: return '9';
-        case 0x0B: return '0';
+        case 0x02: aux =  '1'; break;
+        case 0x03: aux =  '2'; break;
+        case 0x04: aux =  '3'; break;
+        case 0x05: aux =  '4'; break;
+        case 0x06: aux =  '5'; break;
+        case 0x07: aux =  '6'; break;
+        case 0x08: aux =  '7'; break;
+        case 0x09: aux =  '8'; break;
+        case 0x0A: aux =  '9'; break;
+        case 0x0B: aux =  '0'; break;
         
         // Letras (minúsculas)
-        case 0x1E: return 'a';
-        case 0x30: return 'b';
-        case 0x2E: return 'c';
-        case 0x20: return 'd';
-        case 0x12: return 'e';
-        case 0x21: return 'f';
-        case 0x22: return 'g';
-        case 0x23: return 'h';
-        case 0x17: return 'i';
-        case 0x24: return 'j';
-        case 0x25: return 'k';
-        case 0x26: return 'l';
-        case 0x32: return 'm';
-        case 0x31: return 'n';
-        case 0x18: return 'o';
-        case 0x19: return 'p';
-        case 0x10: return 'q';
-        case 0x13: return 'r';
-        case 0x1F: return 's';
-        case 0x14: return 't';
-        case 0x16: return 'u';
-        case 0x2F: return 'v';
-        case 0x11: return 'w';
-        case 0x2D: return 'x';
-        case 0x15: return 'y';
-        case 0x2C: return 'z';
-        case 0x39: return ' ';
-
+        case 0x1E: aux =  'a'; break;
+        case 0x30: aux =  'b'; break;
+        case 0x2E: aux =  'c'; break;
+        case 0x20: aux =  'd'; break;
+        case 0x12: aux =  'e'; break;
+        case 0x21: aux =  'f'; break;
+        case 0x22: aux =  'g'; break;
+        case 0x23: aux =  'h'; break;
+        case 0x17: aux =  'i'; break;
+        case 0x24: aux =  'j'; break;
+        case 0x25: aux =  'k'; break;
+        case 0x26: aux =  'l'; break;
+        case 0x32: aux =  'm'; break;
+        case 0x31: aux =  'n'; break;
+        case 0x18: aux =  'o'; break;
+        case 0x19: aux =  'p'; break;
+        case 0x10: aux =  'q'; break;
+        case 0x13: aux =  'r'; break;
+        case 0x1F: aux =  's'; break;
+        case 0x14: aux =  't'; break;
+        case 0x16: aux =  'u'; break;
+        case 0x2F: aux =  'v'; break;
+        case 0x11: aux =  'w'; break;
+        case 0x2D: aux =  'x'; break;
+        case 0x15: aux =  'y'; break;
+        case 0x2C: aux =  'z'; break;
+        case 0x39: aux =  ' '; break;
+        case 0x2A: break;
+        case 0x36: break;
+        case 0x3A: break;
         default: return '?';       // Tecla no reconocida
     }
-
+    if (aux >= 'a' && aux <= 'z' && (caps_pressed || shift_pressed )) {
+        aux  -= 32;  // Convierte a mayúscula (restando 32 en ASCII)
+    } else 
+    if(aux >= '0' && aux <= '9' && shift_pressed) {
+        aux = shiftNum(aux);
+    }
+    return aux; 
 }
 
 // uint64_t buffer_has_next() {
