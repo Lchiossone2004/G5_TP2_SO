@@ -2,7 +2,8 @@
 #include "../include/libc.h"
 
 void shell() {    
-    print("merequetengue, pum pum mi vidrio explota pum");
+    print(read('a'));
+    while(1);
 }
 char* getCommand(char* buffer){
     char pressed;

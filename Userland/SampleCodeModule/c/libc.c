@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 extern uint64_t syscall(uint64_t rdi, ...);
+static char buffer[10];
 
 void print(char * word){
     int i = 0;
@@ -13,6 +14,7 @@ void print(char * word){
 }
 
 char* read(char letter){
-    syscall(3,1,letter,1);
-    return 'a';
+    buffer[0] = syscall(3,1,letter,1);
+    buffer[1] = 0;
+    return buffer;
 }

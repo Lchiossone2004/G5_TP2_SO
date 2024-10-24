@@ -8,9 +8,10 @@
 static char* savedLetter;
 
 size_t sys_read(unsigned int fd, const char * buffer, size_t count) {
-    *savedLetter=toLetter(buffer);
-    *(savedLetter+1)=0;
-    return 0;
+    // *savedLetter=toLetter(buffer);
+    // *(savedLetter+1)=0;
+    // return 0;
+    return "a";
 }
 
 
