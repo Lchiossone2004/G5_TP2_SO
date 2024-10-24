@@ -5,27 +5,26 @@
 #include <videoDriver.h>
 #include <naiveConsole.h>
 
-static char* savedLetter;
+void sys_read(unsigned int fd, char * buffer, size_t count) {
+    buffer[0] = 'a';
+    buffer[1] = 'b';
+    buffer[2] = 0;
+    return;
 
-size_t sys_read(unsigned int fd, const char * buffer, size_t count) {
-    // *savedLetter=toLetter(buffer);
-    // *(savedLetter+1)=0;
-    // return 0;
-    return "a";
 }
 
 
-size_t sys_write(unsigned int fd, const char *buffer, size_t count) {
+void sys_write(unsigned int fd, const char *buffer, size_t count) {
     imprimirVideo(buffer,count);
-return 0;
+return;
 }
 
-uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
+void syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
     switch(rdi) {
         case 3: sys_read(rsi, rdx, rcx);
         case 4: sys_write(rsi, (const char *)rdx, rcx);
 
     }
-    return 0;
+    return;
 
 }

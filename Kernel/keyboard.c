@@ -156,34 +156,3 @@ char toLetter(int i){
     }
     return aux; 
 }
-
-// uint64_t buffer_has_next() {
-//     return dim > 0 && curr < dim;
-// }
-// uint64_t current() {
-//     if(!buffer_has_next) {
-//         return 0;
-//     }
-//     return buffer[curr++];
-// }
-// static uint8_t releasedKeyToPressedMask(uint8_t key){
-//     return key&0x7F;
-// }
-// void keyboardHandler(){
-//     uint8_t key = getKey();
-//     uint8_t key_is_pressed = isPressed(key) ? 1:0;
-//     if( !key_is_pressed){
-//         key = releasedKeyToPressedMask(key); //la tabla es para PRESSED !
-//     }
-//     if(!key_is_pressed){
-//         return;
-//     }
-//     uint16_t code = toLetter(key);
- 
-//     buffer[buffer_dim] = code;
-//     if(buffer_dim < BUFFER_SIZE){
-//         buffer_dim++;
-//     }else{
-//         buffer_dim = 1;
-//     }
-// }

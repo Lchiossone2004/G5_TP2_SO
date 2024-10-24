@@ -1,14 +1,17 @@
 #include "../include/shell.h"
 #include "../include/libc.h"
 
+static char buffer[100];
+
 void shell() {    
-    print(read('a'));
+    read(buffer);
+    print(buffer);
     while(1);
 }
 char* getCommand(char* buffer){
     char pressed;
     char* command;
-    print(read());
+   // print(read());
     /*
     while (1) {
         pressed = getKey(); // Lee una tecla

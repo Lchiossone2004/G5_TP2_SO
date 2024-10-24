@@ -142,9 +142,9 @@ _irq05Handler:
 	irqHandlerMaster 5
 
 _irq08Handler:
-	
+	pushState
 	call syscallsManager
-	;mov rax, 'a'
+	popState
 	iretq			;no se por que con ret no funciona pero con iretq si
 
 
