@@ -14,5 +14,5 @@ void print(char * word){
 
 char* read(char letter){
     syscall(3,1,letter,1);
-    return savedLetter;
+    return 'a';
 }
