@@ -5,4 +5,5 @@ typedef struct {
 } Reg;
 void sys_read(unsigned int fd, char * buffer, size_t count);
 void sys_write(unsigned int fd, const char *buffer, size_t count);
+void sys_registers_print();
 void sysCallManager(Reg * registers);

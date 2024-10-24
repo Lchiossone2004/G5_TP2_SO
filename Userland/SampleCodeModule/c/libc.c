@@ -21,3 +21,6 @@ void read(char * buffer){
     syscall(3,STDOUT, buffer);
     return;
 }
+void printRegisters(){
+    syscall(1);
+}

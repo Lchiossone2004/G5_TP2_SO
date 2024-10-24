@@ -5,6 +5,7 @@ static char buffer[100];
 
 void shell() {    
     read(buffer);
+    printRegisters();
     print(buffer);
     while(1);
 }

@@ -27,7 +27,7 @@ void updateKeyboardStatus(int scancode) {
             break;
     }
 }
-void printKey(){ //Busca e impirme la letra que se quiere o si borra si se toco la tecla de borrado 
+void printKey(){ //Busca e impirme la letra que se quiere o si borra si se toco la tecla de borrado
 int i = getKey();
 updateKeyboardStatus(i);
 	if(i!= 0 && i != 14 && i != 75 && i != 77 && i != 28){
@@ -78,13 +78,13 @@ void deleteFromBuffer(char *buffer, int idx) {
     }
     buffer[i] = '\0';
 }
-
-static uint8_t isReleased(uint8_t key){
-    return (key & 0x80);
-}
-static uint8_t isPressed(uint8_t key){
-    return !isReleased(key);
-}
+// 
+// static uint8_t isReleased(uint8_t key){
+    // return (key & 0x80);
+// }
+// static uint8_t isPressed(uint8_t key){
+    // return !isReleased(key);
+// }
 char shiftNum(char num) {
      switch (num) {
             case '1': return '!';
@@ -142,10 +142,10 @@ char toLetter(int i){
         case 0x15: aux =  'y'; break;
         case 0x2C: aux =  'z'; break;
         case 0x39: aux =  ' '; break;
-        case 0x2A: break; //shift izquierdo
-        case 0x36: break; //shift derecho
-        case 0x3A: break; //capslock
-        //en estos ultimos 3 no quiero que ponga ?
+        case 0x2A: aux =  ' '; break; //shift izquierdo
+        case 0x36: aux =  ' '; break; //shift derecho
+        case 0x3A: aux =  ' '; break; //capslock
+        //en estos ultimos 3 no quiero que ponga ? ----> ahora hace un espacio
         default: return '?';       // Tecla no reconocida
     }
     if (aux >= 'a' && aux <= 'z' && (caps_pressed || shift_pressed )) {  //si es una letra y esta apretado shift o prendido el capslock
