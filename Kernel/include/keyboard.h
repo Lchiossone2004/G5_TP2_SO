@@ -12,3 +12,4 @@ uint64_t buffer_has_next();
 uint64_t current();
 static uint8_t releasedKeyToPressedMask(uint8_t key);
 void keyboardHandler();
+char getFromBuffer();

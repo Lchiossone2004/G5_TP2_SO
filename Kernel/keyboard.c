@@ -12,6 +12,15 @@ static uint16_t buffer[BUFFER_SIZE];
 static uint64_t dim = 0; //dimension del buffer
 static uint64_t curr = 0; //posicion actual del buffer
 
+char getFromBuffer(){
+    char aux = buffer[0];
+    for(int i = 0; i<curr;i++){
+        buffer[i] = buffer[i+1];
+        curr--;
+    }
+    return aux;
+}
+
 void updateKeyboardStatus(int scancode) {
     switch (scancode) {
         case 0x2A:  //shift izq 
@@ -31,8 +40,9 @@ void printKey(){ //Busca e impirme la letra que se quiere o si borra si se toco 
 int i = getKey();
 updateKeyboardStatus(i);
 	if(i!= 0 && i != 14 && i != 75 && i != 77 && i != 28){
+    buffer[curr++] = toLetter(i);
 	ncPrintChar(toLetter(i));
-    charVideo(toLetter(i),1);
+    //charVideo(toLetter(i),1);
 
 	}
     if(i == 14){

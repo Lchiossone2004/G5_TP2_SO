@@ -1,12 +1,13 @@
 #include "../include/shell.h"
 #include "../include/libc.h"
 
-static char buffer[100];
+static char buffer[100] = {0};
 
-void shell() {    
-    read(buffer);
+void shell() {   
+    while(1){ 
+    getChar(buffer);
     print(buffer);
-    while(1);
+    }
 }
 char* getCommand(char* buffer){
     char pressed;

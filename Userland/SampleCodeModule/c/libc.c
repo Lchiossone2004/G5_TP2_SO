@@ -7,7 +7,10 @@
 #define STDERR 2
 
 extern uint64_t syscall(uint64_t rdi, ...);
-static char buffer[100];
+
+void getChar(char * buffer){
+    syscall(1,STDOUT,buffer);
+}
 
 void print(char * word){
     int i = 0;
