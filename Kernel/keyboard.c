@@ -79,12 +79,12 @@ void deleteFromBuffer(char *buffer, int idx) {
     buffer[i] = '\0';
 }
 
-// static uint8_t isReleased(uint8_t key){
-//     return (key & 0x80);
-// }
-// static uint8_t isPressed(uint8_t key){
-//     return !isReleased(key);
-// }
+static uint8_t isReleased(uint8_t key){
+    return (key & 0x80);
+}
+static uint8_t isPressed(uint8_t key){
+    return !isReleased(key);
+}
 char shiftNum(char num) {
      switch (num) {
             case '1': return '!';
@@ -160,18 +160,15 @@ char toLetter(int i){
 // uint64_t buffer_has_next() {
 //     return dim > 0 && curr < dim;
 // }
-
 // uint64_t current() {
 //     if(!buffer_has_next) {
 //         return 0;
 //     }
 //     return buffer[curr++];
 // }
-
 // static uint8_t releasedKeyToPressedMask(uint8_t key){
 //     return key&0x7F;
 // }
-
 // void keyboardHandler(){
 //     uint8_t key = getKey();
 //     uint8_t key_is_pressed = isPressed(key) ? 1:0;
@@ -182,7 +179,7 @@ char toLetter(int i){
 //         return;
 //     }
 //     uint16_t code = toLetter(key);
-    
+ 
 //     buffer[buffer_dim] = code;
 //     if(buffer_dim < BUFFER_SIZE){
 //         buffer_dim++;

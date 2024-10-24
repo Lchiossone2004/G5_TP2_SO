@@ -1,22 +1,21 @@
 #include "../include/shell.h"
 #include "../include/libc.h"
-void shell() {
-    
-    print("merequetengue, pum pum mi vidrio explota pum");
-    
-    
 
+void shell() {    
+    print("merequetengue, pum pum mi vidrio explota pum");
 }
 char* getCommand(char* buffer){
     char pressed;
     char* command;
-
-
+    print(read());
     /*
     while (1) {
         pressed = getKey(); // Lee una tecla
+        print(pressed);
+        matriz[actual_line][pos_x++]=pressed;
         if(pressed ==28){
-            for (int i=1; matriz[actual_line][i] && i <=BORDER_X; i++){
+            actual_line++;
+            for (int i=0; matriz[actual_line][i] && i <=BORDER_X; i++){
                 command[i]=matriz[actual_line][i];
             }
             if (strcmp(command, "exit") == 0) {

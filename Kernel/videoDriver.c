@@ -131,10 +131,8 @@ void deleteVideo(){ //Borra caracteres
 	x -= MOV_X;
 	}
 	}
-	
-
-
 }
+
 void movVideo(int direction){
 	x += (direction*MOV_X);
 	if(x < 10){
@@ -147,8 +145,8 @@ void movVideo(int direction){
 		x = 0;
 		y = aux;
 	}
-
 }
+
 void printTimeVideo(char hour, char min, char sec) {
 	char * toPrint = "hh:mm:ss";
 	char aux = hour >> 4;
@@ -161,4 +159,4 @@ void printTimeVideo(char hour, char min, char sec) {
 	toPrint[6] = aux + '0';
 	toPrint[7] = (sec&0xF) + '0';
 	imprimirVideo(toPrint, sizeof(toPrint));
-	}
+}

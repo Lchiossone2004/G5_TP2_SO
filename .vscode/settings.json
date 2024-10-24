@@ -6,6 +6,8 @@
         "keyboard.h": "c",
         "interrupts.h": "c",
         "libc.h": "c",
-        "syscallsmanager.h": "c"
+        "syscallsmanager.h": "c",
+        "shell.h": "c",
+        "stdlib.h": "c"
     }
 }

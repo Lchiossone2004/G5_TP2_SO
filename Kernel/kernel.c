@@ -17,7 +17,6 @@ static const uint64_t PageSize = 0x1000;
 
 static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
-static char buff[100] = "hola";
 
 typedef int (*EntryPoint)();
 
@@ -85,9 +84,8 @@ void * initializeKernelBinary()
 
 int main()
 {	
-	load_idt(); 			 						//Cargo las interrupciones
-	while(1);
-	//((EntryPoint)sampleCodeModuleAddress)();		// Llamo al userland
+	load_idt(); 									//Cargo las interrupciones
+	((EntryPoint)sampleCodeModuleAddress)();		// Llamo al userland
 	
 	return 0;
 }
