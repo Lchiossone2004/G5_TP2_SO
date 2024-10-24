@@ -1,7 +1,7 @@
 #include "../include/libc.h"
 #include <stdlib.h>
 #include <stdint.h>
-static char* savedLetter;
+
 extern uint64_t syscall(uint64_t rdi, ...);
 
 void print(char * word){
