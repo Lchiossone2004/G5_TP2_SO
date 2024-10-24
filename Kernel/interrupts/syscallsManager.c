@@ -5,7 +5,7 @@
 #include <videoDriver.h>
 #include <naiveConsole.h>
 
-extern char* savedLetter;
+static char* savedLetter;
 
 size_t sys_read(unsigned int fd, const char * buffer, size_t count) {
     *savedLetter=toLetter(buffer);
