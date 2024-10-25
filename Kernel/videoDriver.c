@@ -118,26 +118,26 @@ void charVideo(int num, char isEndLine){
 }
 
 void nlVideo(){ //Hace un salto de linea
-	if(y < BORDER_Y -16){
-	aux += MOV_Y;
-	y += MOV_Y;
+	if(y < BORDER_Y -(16*(zoom+1))){
+	aux += MOV_Y*(zoom+1);
+	y += MOV_Y*(zoom+1);
 	x = 0;
 	}
 }
 
 void deleteVideo(){ //Borra caracteres
 	if(!(y == 0 && x <= 0)){
-	if(x >= MOV_X){
-	x -= MOV_X;
+	if(x >= MOV_X*(zoom+1)){
+	x -= MOV_X*(zoom+1);
 	charVideo(0,1);
-	x -= MOV_X;
+	x -= MOV_X*(zoom+1);
 	}
 	else{
 	x = VBE_mode_info->width -8;
-	y -= MOV_Y;
-	aux -= MOV_Y;
+	y -= MOV_Y*(zoom+1);
+	aux -= MOV_Y*(zoom+1);
 	charVideo(0,0);
-	x -= MOV_X;
+	x -= MOV_X*(zoom+1);
 	}
 	}
 }
