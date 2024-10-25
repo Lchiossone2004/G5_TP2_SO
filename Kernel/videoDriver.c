@@ -61,7 +61,6 @@ static int maxX = 0;
 static int maxY = 0;
 static int num_columns = BORDER_X / MOV_X; 
 static int num_rows = BORDER_Y / MOV_Y; 
-static char letters[BORDER_Y / MOV_Y][BORDER_X / MOV_X] = {0};
 
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
@@ -75,43 +74,46 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
 void imprimirVideo(char * palabra, int size){
 		for(int i = 0; i< size; i++){
 			y = aux;	
-			charVideo(palabra[i],1);
+			charVideo(palabra[i],zoom);
 		}
 }
 
-void charVideo(int num, int flag){
+void charVideo(int num, char isEndLine){
 	if(x<=BORDER_X && y < BORDER_Y){
 	int set;
 	char *bitmap;
+	char scale=zoom+1;
 	bitmap = font[num];//aca habria que cambiarlo por new_font y adaptar todo porque ahora cada letra ocupa 2 *zoom
-	if(flag){
-		letters[y/MOV_Y][x/MOV_X] = num;
-	}
-	else{
-		letters[y/MOV_Y][x/MOV_X] = 0;
-	}
 	for(int i = 0; i <8; i++){
 		for(int j = 0; j<8; j++){
 			set = bitmap[i] & 1 << j;
 			if(set){
-				putPixel(0x00FF0000,(x)+j,(y)+i);
+				for(int dy=0;dy<scale;dy++){
+					for (int dx = 0; dx < scale; dx++) {
+                            putPixel(0x00FF0000, x + j * scale + dx, y + i * scale + dy);
+                        }
+				}
 			}
 			else{
-				putPixel(0x0,(x)+j,(y)+i);
+				for (int dy = 0; dy < scale; dy++) {
+                    for (int dx = 0; dx < scale; dx++) {
+                        putPixel(0x0, x + j * scale + dx, y + i * scale + dy);
+                    }
+                }
 			}
 		}
-		y += 1;
+		y += scale;
 	}
-		x += MOV_X;
-		if(x>maxX){
-			maxX = x;
-		}
-		if(x >= VBE_mode_info->width && flag){ //Estaria bueno sacar este flag, que es para que borre correctamente 
-			aux += MOV_Y;
-			x = 0;
-			maxX = 0;
-		}
-		y = aux;
+	x += MOV_X*scale;
+	if(x>maxX){
+		maxX = x;
+	}
+	if(x >= VBE_mode_info->width && isEndLine){ //Estaria bueno sacar este flag, que es para que borre correctamente 
+		aux += MOV_Y*scale;
+		x = 0;
+		maxX = 0;
+	}
+	y = aux;
 	}
 }
 
@@ -174,7 +176,13 @@ void printHexaVideo(uint64_t value){
 }
 
 
-//newBitMap tiene que tener 8 * (flag+2) x 128*(flag+2)
+void  zoomIN() {
+    zoom=1;
+}
+void zoomOUT() {
+	zoom=0;
+}
+/*
 void expand(uint8_t ** newBitMap) {
         zoom++; //siempre quiero que se agrande hasta zoom+1
         for(int i = 0; i < 128 * (zoom+1); i+zoom) { //para cada fila en newBitMap
@@ -220,22 +228,6 @@ int outOfBoundsZoom() {
     return 0;
 }
 
-void  zoomIN() {
-    if(outOfBoundsZoom) {
-        return;
-    }
-    uint8_t newBitMap[WIDTH*(zoom+2)][HEIGHT*(zoom+2)]; 
-    expand(newBitMap);
-    copyBitMap(newBitMap);
-}
-void zoomOUT() {
-    if(outOfBoundsZoom) {
-        return;
-    }
-    uint8_t newBitMap[WIDTH*(zoom+2)][HEIGHT*(zoom+2)]; 
-    reduce(newBitMap);
-    copyBitMap(newBitMap);
-}
 
 
 
@@ -249,3 +241,6 @@ void copyBitMap(uint8_t newBitMap[WIDTH*(zoom+2)][HEIGHT*(zoom+2)]) {
  void copy() {
     copyBitMap(font);
   }
+
+*/
+//newBitMap tiene que tener 8 * (flag+2) x 128*(flag+2)

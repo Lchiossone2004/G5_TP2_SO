@@ -193,11 +193,11 @@ char toLetter(int i){
     if(aux >= '0' && aux <= '9' && shift_pressed) { //si es un número y esta el shift apretado
         aux = shiftNum(aux); //actua segun el numero que corresponda
     }
-    if(aux == '-' && ctrl_pressed) {
+    if(aux == 'b') {
       zoomOUT();
         
-    } else if(aux == '=' && ctrl_pressed) {
+    } if(aux == 'a') {
      zoomIN();
-    } else copy();
+    }
     return aux; 
 }

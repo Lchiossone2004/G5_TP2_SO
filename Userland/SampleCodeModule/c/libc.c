@@ -23,3 +23,6 @@ void read(char * buffer){
 void printRegisters(){
     syscall(1,STDOUT);
 }
+char stringcmp(const char* str1, const char* str2){
+    syscall(5, str1, str2);
+}
