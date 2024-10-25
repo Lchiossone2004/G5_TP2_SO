@@ -1,12 +1,11 @@
 
 #include "../include/shell.h"
 #include "../include/libc.h"
+#define NEW_LINE " >"
 
 static char buffer[100] = {0};
 static char *letra;
 static int index;
-#define NEW_LINE " >"
-
 
 void shell() { 
         print(NEW_LINE,sizeof(NEW_LINE));
@@ -17,7 +16,6 @@ void shell() {
             buffer[index] = 0;
         }
         else if (*letra == 1){
-            index = 0;
             chekCommand();
         }  
         else{
@@ -27,8 +25,25 @@ void shell() {
 }
 
 void chekCommand(){
+    if(0){
+        print("here are the help potions:",sizeof("here are the help potions:")); 
+    }
+    else{
+        print("command not found.",sizeof("command not found.")); 
+    }
     print(NEW_LINE,sizeof(NEW_LINE));
     index = 0;
+}
+
+int compare(){
+    int flag = 1;
+    char *aux = "help";
+    for(int i = 0; i< index && flag; i++){
+        if(!(buffer[i] = aux[i])){
+            flag = 0;
+        }
+    }
+    return flag;
 }
 char* getCommand(char* buffer){
     char pressed;
