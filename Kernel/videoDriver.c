@@ -178,8 +178,10 @@ void printHexaVideo(uint64_t value){
 
 void  zoomIN() {
     zoom=1;
+	nlVideo();
 }
 void zoomOUT() {
+	nlVideo();
 	zoom=0;
 }
 /*
