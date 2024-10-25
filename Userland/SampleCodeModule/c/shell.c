@@ -5,28 +5,30 @@
 static char buffer[100] = {0};
 static char *letra;
 static int index;
+#define NEW_LINE " >"
+
 
 void shell() { 
+        print(NEW_LINE,sizeof(NEW_LINE));
         while(1){
-            getKey();
+         getChar(letra);
+        if(*letra == 0 && index >0){
+            index -= 1;
+            buffer[index] = 0;
         }
+        else if (*letra == 1){
+            index = 0;
+            chekCommand();
+        }  
+        else{
+            buffer[index++] = *letra;
+        }
+    }
 }
 
-void getKey(){
-    getChar(letra);
-    if(*letra == 0 && index >0){
-        index -= 1;
-        buffer[index] = 0;
-    }
-    else if (*letra == 1)
-    {
-        index = 0;
-        print(buffer,index);
-    }
-    
-    else{
-    buffer[index++] = *letra;
-    }
+void chekCommand(){
+    print(NEW_LINE,sizeof(NEW_LINE));
+    index = 0;
 }
 char* getCommand(char* buffer){
     char pressed;

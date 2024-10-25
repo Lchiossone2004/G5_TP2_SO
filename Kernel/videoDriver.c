@@ -90,7 +90,7 @@ void charVideo(int num, char isEndLine){
 			if(set){
 				for(int dy=0;dy<scale;dy++){
 					for (int dx = 0; dx < scale; dx++) {
-                            putPixel(0x00FF0000, x + j * scale + dx, y + i * scale + dy);
+                            putPixel(0xFFFFFF, x + j * scale + dx, y + i * scale + dy);
                         }
 				}
 			}
