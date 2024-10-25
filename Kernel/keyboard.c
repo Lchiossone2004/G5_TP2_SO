@@ -194,10 +194,10 @@ char toLetter(int i){
         aux = shiftNum(aux); //actua segun el numero que corresponda
     }
     if(aux == '-' && ctrl_pressed) {
-      //  new_font = reduceFull();
+      zoomOUT();
         
     } else if(aux == '=' && ctrl_pressed) {
-      //  new_font = expandFull();
-    } //else copy(new_font);
+     zoomIN();
+    } else copy();
     return aux; 
 }

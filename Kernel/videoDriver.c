@@ -7,6 +7,9 @@
 #define MOV_Y 16 //Lo que ocupa en y de un char
 #define BORDER_X 1016 //maximo ancho (en pixeles) de la pantalla
 #define BORDER_Y 768 //maximo largo (en pixeles) de la pantalla
+#define HEIGHT 8
+#define WIDTH 128
+#define MAX_ZOOM 10
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -49,7 +52,8 @@ typedef struct vbe_mode_info_structure * VBEInfoPtr;
 
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
-
+uint8_t new_font[MAX_ZOOM + 1][WIDTH * (MAX_ZOOM + 2)][HEIGHT * (MAX_ZOOM + 2)];
+static int zoom = 0; //zoom inicial
 static int x = 0;
 static int y = 0;
 static int aux = 0;
@@ -79,7 +83,7 @@ void charVideo(int num, int flag){
 	if(x<=BORDER_X && y < BORDER_Y){
 	int set;
 	char *bitmap;
-	bitmap = font[num]; //esto es lo que habria q cambiar x new_font
+	bitmap = font[num];//aca habria que cambiarlo por new_font y adaptar todo porque ahora cada letra ocupa 2 *zoom
 	if(flag){
 		letters[y/MOV_Y][x/MOV_X] = num;
 	}
@@ -168,15 +172,15 @@ void printHexaVideo(uint64_t value){
 	uint32_t digits=uintToBase(value, buffer, 16);
 	imprimirVideo(buffer, digits);
 }
-static int flag = 0; //arranca en 0 porque es el zoom default
+
 
 //newBitMap tiene que tener 8 * (flag+2) x 128*(flag+2)
 void expand(uint8_t ** newBitMap) {
-        flag++; //siempre quiero que se agrande hasta flag+1
-        for(int i = 0; i < 128 * (flag+1); i+flag) { //para cada fila en newBitMap
+        zoom++; //siempre quiero que se agrande hasta zoom+1
+        for(int i = 0; i < 128 * (zoom+1); i+zoom) { //para cada fila en newBitMap
         for(int j = 0; j < 128; j++) { //para cada fila en font
-            expandirFila(font[j], newBitMap[i], flag); //expando la fila de font en la fila de newBitMap
-            for(int k = 1; k < flag*2; k++) { 
+            expandirFila(font[j], newBitMap[i], zoom); //expando la fila de font en la fila de newBitMap
+            for(int k = 1; k < zoom*2; k++) { 
             newBitMap[i + k] = newBitMap[i]; //duplico la columna n veces
             }
         }
@@ -184,14 +188,14 @@ void expand(uint8_t ** newBitMap) {
 }
 
  void reduce(uint8_t ** newBitMap) {
-   if (flag <= 1) {
-    flag = 0;
+   if (zoom <= 1) {
+    zoom = 0;
     copy(newBitMap); 
     return;
    }
-   flag-=2; //disminuyo la flag en 2 para que el expand trabaje con flagOrg -1
+   zoom-=2; //disminuyo la zoom en 2 para que el expand trabaje con zoomOrg -1
    expand(newBitMap);
-   //en el mismo expand se agranda flag en  una unidad entonces queda en -1
+   //en el mismo expand se agranda zoom en  una unidad entonces queda en -1
 }
 
 
@@ -209,21 +213,39 @@ void expand(uint8_t ** newBitMap) {
         }
     }
 }
- void copy(uint8_t * * new) {
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 128; j++) {
-            new[i][j] = font[i][j];
+int outOfBoundsZoom() {
+    if(zoom < 0 || zoom > MAX_ZOOM ) {
+        return 1;
+    }
+    return 0;
+}
+
+void  zoomIN() {
+    if(outOfBoundsZoom) {
+        return;
+    }
+    uint8_t newBitMap[WIDTH*(zoom+2)][HEIGHT*(zoom+2)]; 
+    expand(newBitMap);
+    copyBitMap(newBitMap);
+}
+void zoomOUT() {
+    if(outOfBoundsZoom) {
+        return;
+    }
+    uint8_t newBitMap[WIDTH*(zoom+2)][HEIGHT*(zoom+2)]; 
+    reduce(newBitMap);
+    copyBitMap(newBitMap);
+}
+
+
+
+void copyBitMap(uint8_t newBitMap[WIDTH*(zoom+2)][HEIGHT*(zoom+2)]) {
+    for (int i = 0; i < WIDTH * (zoom + 2); i++) {
+        for (int j = 0; j < HEIGHT * (zoom + 2); j++) {
+            new_font[zoom][i][j] = newBitMap[i][j];
         }
     }
+}
+ void copy() {
+    copyBitMap(font);
   }
-
-uint8_t **  expandFull() {
-    uint8_t newBitMap[128*(flag+2)][8*(flag+2)]; 
-    expand(newBitMap);
-    return newBitMap;
-}
-uint8_t ** reduceFull() {
-    uint8_t newBitMap[128*(flag+2)][8*(flag+2)]; 
-    reduce(newBitMap);
-    return newBitMap;
-}
