@@ -15,6 +15,7 @@ static uint64_t dim = 0; //dimension del buffer
 static uint64_t curr = 0; //posicion actual del buffer
 
 void loadBuffer(int key){
+    updateKeyboardStatus(key);
     if(key!= 0 && key != 14 && key != 75 && key != 77 && key != 28){
         buffer[curr++] = toLetter(key);
     }
