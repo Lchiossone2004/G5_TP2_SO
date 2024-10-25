@@ -5,9 +5,12 @@ static char buffer[100] = {0};
 static char *letra;
 
 void shell() { 
+ //   printRegisters();
     while(1){
     getChar(buffer);
     print(buffer,1);
+//    printRegisters();
+
     }
 }
 char* getCommand(char* buffer){

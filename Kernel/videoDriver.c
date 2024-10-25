@@ -163,7 +163,8 @@ void printTimeVideo(char hour, char min, char sec) {
 	toPrint[7] = (sec&0xF) + '0';
 	imprimirVideo(toPrint, sizeof(toPrint));
 }
-void printHexaVideo(uint64_t value, char* buffer){
+void printHexaVideo(uint64_t value){
+	char* buffer;
 	uint32_t digits=uintToBase(value, buffer, 16);
 	imprimirVideo(buffer, digits);
 }

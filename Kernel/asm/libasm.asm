@@ -82,8 +82,6 @@ getKey:
 	ret
 
 getCPURegisters:
-	mov rbp, rsp
-	push rbp
     mov [rdi], r15
     mov [rdi+8], r14
     mov [rdi+16], r13
@@ -99,5 +97,5 @@ getCPURegisters:
     mov [rdi+96], rcx
     mov [rdi+104], rbx
     mov [rdi+112], rax
-    leave
+
 	ret

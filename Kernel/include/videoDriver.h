@@ -5,4 +5,5 @@ void charVideo(int num, int flag);
 void nlVideo();
 void deleteVideo();
 void movVideo(int direc);
+void printHexaVideo(uint64_t value);
 //uint8_t ** new_font;
