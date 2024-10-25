@@ -4,7 +4,7 @@
 static char buffer[100] = {0};
 
 void shell() {    
-    read(buffer);
+  //  read(buffer);
     printRegisters();
     print(buffer);
     }

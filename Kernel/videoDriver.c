@@ -1,6 +1,7 @@
 #include<stdint.h>
 #include <videoDriver.h>
 #include <font.h>
+#include <naiveConsole.h>
 
 #define MOV_X 8  //Lo que ocupa en x de un char 
 #define MOV_Y 16 //Lo que ocupa en y de un char
@@ -159,4 +160,8 @@ void printTimeVideo(char hour, char min, char sec) {
 	toPrint[6] = aux + '0';
 	toPrint[7] = (sec&0xF) + '0';
 	imprimirVideo(toPrint, sizeof(toPrint));
+}
+void printHexaVideo(uint64_t value, char* buffer){
+	uint32_t digits=uintToBase(value, buffer, 16);
+	imprimirVideo(buffer, digits);
 }

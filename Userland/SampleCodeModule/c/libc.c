@@ -25,5 +25,5 @@ void read(char * buffer){
     return;
 }
 void printRegisters(){
-    syscall(1);
+    syscall(1,STDOUT);
 }
