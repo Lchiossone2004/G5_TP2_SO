@@ -18,6 +18,12 @@ void getKey(){
         index -= 1;
         buffer[index] = 0;
     }
+    else if (*letra == 1)
+    {
+        index = 0;
+        print(buffer,index);
+    }
+    
     else{
     buffer[index++] = *letra;
     }

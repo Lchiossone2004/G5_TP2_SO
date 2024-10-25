@@ -15,6 +15,10 @@ void sys_getChar(unsigned int fd, char * buffer, size_t count){
     if(*buffer == 0){
         deleteVideo();
     }
+    else if (*buffer == 1)
+    {
+        nlVideo();
+    }
     else{
     imprimirVideo(buffer,1);
     }
