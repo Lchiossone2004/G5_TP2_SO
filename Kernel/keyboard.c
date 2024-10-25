@@ -182,11 +182,11 @@ char toLetter(int i){
         case 0x15: aux =  'y'; break;
         case 0x2C: aux =  'z'; break;
         case 0x39: aux =  ' '; break;
-        case 0x2A: aux =  ' '; break; //shift izquierdo
-        case 0x36: aux =  ' '; break; //shift derecho
-        case 0x1D: aux =  ' '; break; //ctrl
-        case 0x3A: aux =  ' '; break; //capslock
-        //en estos ultimos 4 no quiero que ponga ? ----> ahora hace un espacio
+        case 0x2A:  break; //shift izquierdo
+        case 0x36:  break; //shift derecho
+        case 0x1D:  break; //ctrl
+        case 0x3A:  break; //capslock
+        //en estos ultimos 4 no quiero que ponga ? 
         default: return '?';       // Tecla no reconocida
     }
     if (aux >= 'a' && aux <= 'z' && (caps_pressed || shift_pressed )) {  //si es una letra y esta apretado shift o prendido el capslock
