@@ -14,12 +14,24 @@ static uint16_t buffer[BUFFER_SIZE];
 static uint64_t dim = 0; //dimension del buffer
 static uint64_t curr = 0; //posicion actual del buffer
 
-char getFromBuffer(){
-    char aux = buffer[0];
-    for(int i = 0; i<curr;i++){
-        buffer[i] = buffer[i+1];
-        curr--;
+void loadBuffer(int key){
+    buffer[curr] = toLetter(key);
+    curr += 1;
+}
+
+int isBufferEmpty(){
+    if(curr == 0){
+        return 1;
     }
+    return 0;
+}
+
+char getBuffer(){
+    char aux = buffer[0];
+    for(int i = 0; i<= curr; i++){
+        buffer[i] = buffer[i+1];
+    }
+    curr -= 1;
     return aux;
 }
 

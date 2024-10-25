@@ -2,12 +2,14 @@
 #include "../include/libc.h"
 
 static char buffer[100] = {0};
+static char *letra;
 
-void shell() {    
-  //  read(buffer);
-    printRegisters();
-    print(buffer);
+void shell() { 
+    while(1){
+    getChar(buffer);
+    print(buffer,1);
     }
+}
 char* getCommand(char* buffer){
     char pressed;
     char* command;

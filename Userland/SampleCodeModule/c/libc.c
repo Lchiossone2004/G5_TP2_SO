@@ -9,15 +9,11 @@
 extern uint64_t syscall(uint64_t rdi, ...);
 
 void getChar(char * buffer){
-    syscall(1,STDOUT,buffer);
+    syscall(2,STDOUT,buffer,1);
 }
 
-void print(char * word){
-    int i = 0;
-    while(word[i] != 0){
-        i++;
-    }
-    syscall(4,STDOUT,word,i);
+void print(char * word, int size){
+    syscall(4,STDOUT,word,size);
 }
 
 void read(char * buffer){

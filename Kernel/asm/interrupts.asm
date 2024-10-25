@@ -15,6 +15,7 @@ GLOBAL _irq05Handler
 GLOBAL _irq08Handler
 
 GLOBAL _exception0Handler
+GLOBAL activateSti
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -147,6 +148,10 @@ _irq08Handler:
 	popState
 	iretq			;no se por que con ret no funciona pero con iretq si
 
+;activa el sti (para poder recibir interrupciones dentro del getChar)
+activateSti:
+	sti 
+	ret
 
 ;Zero Division Exception
 _exception0Handler:
