@@ -8,7 +8,6 @@ void shell() {
     printRegisters();
     print(buffer);
     }
-}
 char* getCommand(char* buffer){
     char pressed;
     char* command;
