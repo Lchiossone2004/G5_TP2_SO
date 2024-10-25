@@ -5,3 +5,4 @@ void charVideo(int num, int flag);
 void nlVideo();
 void deleteVideo();
 void movVideo(int direc);
+//uint8_t ** new_font;

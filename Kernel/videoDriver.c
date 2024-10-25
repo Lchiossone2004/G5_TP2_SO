@@ -49,6 +49,7 @@ typedef struct vbe_mode_info_structure * VBEInfoPtr;
 
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
+
 static int x = 0;
 static int y = 0;
 static int aux = 0;
@@ -57,6 +58,7 @@ static int maxY = 0;
 static int num_columns = BORDER_X / MOV_X; 
 static int num_rows = BORDER_Y / MOV_Y; 
 static char letters[BORDER_Y / MOV_Y][BORDER_X / MOV_X] = {0};
+
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
@@ -77,7 +79,7 @@ void charVideo(int num, int flag){
 	if(x<=BORDER_X && y < BORDER_Y){
 	int set;
 	char *bitmap;
-	bitmap = font[num];
+	bitmap = font[num]; //esto es lo que habria q cambiar x new_font
 	if(flag){
 		letters[y/MOV_Y][x/MOV_X] = num;
 	}
@@ -164,4 +166,63 @@ void printTimeVideo(char hour, char min, char sec) {
 void printHexaVideo(uint64_t value, char* buffer){
 	uint32_t digits=uintToBase(value, buffer, 16);
 	imprimirVideo(buffer, digits);
+}
+static int flag = 0; //arranca en 0 porque es el zoom default
+
+//newBitMap tiene que tener 8 * (flag+2) x 128*(flag+2)
+void expand(uint8_t ** newBitMap) {
+        flag++; //siempre quiero que se agrande hasta flag+1
+        for(int i = 0; i < 128 * (flag+1); i+flag) { //para cada fila en newBitMap
+        for(int j = 0; j < 128; j++) { //para cada fila en font
+            expandirFila(font[j], newBitMap[i], flag); //expando la fila de font en la fila de newBitMap
+            for(int k = 1; k < flag*2; k++) { 
+            newBitMap[i + k] = newBitMap[i]; //duplico la columna n veces
+            }
+        }
+    }
+}
+
+ void reduce(uint8_t ** newBitMap) {
+   if (flag <= 1) {
+    flag = 0;
+    copy(newBitMap); 
+    return;
+   }
+   flag-=2; //disminuyo la flag en 2 para que el expand trabaje con flagOrg -1
+   expand(newBitMap);
+   //en el mismo expand se agranda flag en  una unidad entonces queda en -1
+}
+
+
+ void expandirFila(uint8_t * original, uint16_t *expandido, int n) {
+    int idx = 0;
+    // recorro cada byte en la fila original
+    for (int i = 0; i < 8; i++) {
+        uint8_t byte = original[i];
+        // recorro los bits del byte
+        for (int bitPos = 7; bitPos >= 0; bitPos--) {
+            uint16_t bit = (byte >> bitPos) & 1; // extraigo el bit
+            for (int j = 0; j < n; j++) {
+                expandido[idx++] = bit; // lo duplico n veces y lo guardo en idx
+            }
+        }
+    }
+}
+ void copy(uint8_t * * new) {
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 128; j++) {
+            new[i][j] = font[i][j];
+        }
+    }
+  }
+
+uint8_t **  expandFull() {
+    uint8_t newBitMap[128*(flag+2)][8*(flag+2)]; 
+    expand(newBitMap);
+    return newBitMap;
+}
+uint8_t ** reduceFull() {
+    uint8_t newBitMap[128*(flag+2)][8*(flag+2)]; 
+    reduce(newBitMap);
+    return newBitMap;
 }

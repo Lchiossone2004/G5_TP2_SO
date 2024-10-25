@@ -1,12 +1,14 @@
-#include <stdint.h>  // Bueno hay que arreglar el shift nomas 
+#include <stdint.h>  // Bueno hay que arreglar el shift nomas y el ctrl(tema release)
 #include <string.h>
 #include <naiveConsole.h>
 #include <keyboard.h>
 #include <videoDriver.h>
 #include <lib.h>
+
 static uint64_t buffer_dim = 0;
 static uint64_t shift_pressed = 0;
 static uint64_t caps_pressed = 0;
+static uint64_t ctrl_pressed = 0;
 
 static uint16_t buffer[BUFFER_SIZE];
 static uint64_t dim = 0; //dimension del buffer
@@ -31,8 +33,14 @@ void updateKeyboardStatus(int scancode) {
         case 0xB6:  // shift der
             shift_pressed = 0;
             break;
-        case 0x3A:  //mayuscula presionado
+        case 0x3A:  //mayuscula presionado (on/off)
            caps_pressed = !caps_pressed;
+            break;
+        case 0x1D: //ctrl presionado
+            ctrl_pressed = 1;
+            break;
+        case 0x9D: //ctrl liberado
+            ctrl_pressed = 0; 
             break;
     }
 }
@@ -112,7 +120,7 @@ char shiftNum(char num) {
 char toLetter(int i){
     char aux;
     switch (i) {
-        // Números
+        // Números y símbolos
         case 0x02: aux =  '1'; break;
         case 0x03: aux =  '2'; break;
         case 0x04: aux =  '3'; break;
@@ -123,6 +131,8 @@ char toLetter(int i){
         case 0x09: aux =  '8'; break;
         case 0x0A: aux =  '9'; break;
         case 0x0B: aux =  '0'; break;
+        case 0x0C: aux =  '-'; break;
+        case 0x0D: aux =  '='; break;
         
         // Letras (minúsculas)
         case 0x1E: aux =  'a'; break;
@@ -154,8 +164,9 @@ char toLetter(int i){
         case 0x39: aux =  ' '; break;
         case 0x2A: aux =  ' '; break; //shift izquierdo
         case 0x36: aux =  ' '; break; //shift derecho
+        case 0x1D: aux =  ' '; break; //ctrl
         case 0x3A: aux =  ' '; break; //capslock
-        //en estos ultimos 3 no quiero que ponga ? ----> ahora hace un espacio
+        //en estos ultimos 4 no quiero que ponga ? ----> ahora hace un espacio
         default: return '?';       // Tecla no reconocida
     }
     if (aux >= 'a' && aux <= 'z' && (caps_pressed || shift_pressed )) {  //si es una letra y esta apretado shift o prendido el capslock
@@ -164,5 +175,11 @@ char toLetter(int i){
     if(aux >= '0' && aux <= '9' && shift_pressed) { //si es un número y esta el shift apretado
         aux = shiftNum(aux); //actua segun el numero que corresponda
     }
+    if(aux == '-' && ctrl_pressed) {
+      //  new_font = reduceFull();
+        
+    } else if(aux == '=' && ctrl_pressed) {
+      //  new_font = expandFull();
+    } //else copy(new_font);
     return aux; 
 }
