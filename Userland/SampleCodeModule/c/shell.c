@@ -1,16 +1,25 @@
+
 #include "../include/shell.h"
 #include "../include/libc.h"
 
 static char buffer[100] = {0};
 static char *letra;
+static int index;
 
 void shell() { 
- //   printRegisters();
-    while(1){
-    getChar(buffer);
-    print(buffer,1);
-//    printRegisters();
+        while(1){
+            getKey();
+        }
+}
 
+void getKey(){
+    getChar(letra);
+    if(*letra == 0 && index >0){
+        index -= 1;
+        buffer[index] = 0;
+    }
+    else{
+    buffer[index++] = *letra;
     }
 }
 char* getCommand(char* buffer){

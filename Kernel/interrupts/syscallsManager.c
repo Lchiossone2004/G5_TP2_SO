@@ -11,9 +11,16 @@ extern void activateSti();
 void sys_getChar(unsigned int fd, char * buffer, size_t count){
     activateSti();
     while(isBufferEmpty());
-    buffer[0] = getBuffer();
+    *buffer = getBuffer();
+    if(*buffer == 0){
+        deleteVideo();
+    }
+    else{
+    imprimirVideo(buffer,1);
+    }
     return;
 }
+
 
 void sys_read(unsigned int fd, char * buffer, size_t count) {
 return;
