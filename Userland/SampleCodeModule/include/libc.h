@@ -1,3 +1,3 @@
-void getChar(char *buffer);
-void print(char * word);
+void print();
 void read(char * buffer);
+void printRegisters();

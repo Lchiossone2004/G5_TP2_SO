@@ -3,9 +3,9 @@
 
 static char buffer[100] = {0};
 
-void shell() {   
-    while(1){ 
-    getChar(buffer);
+void shell() {    
+    read(buffer);
+    printRegisters();
     print(buffer);
     }
 }
