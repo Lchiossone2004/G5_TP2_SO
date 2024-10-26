@@ -5,7 +5,6 @@
 #include <stdio.h>
 
 static char buffer[WORD_BUFFER_SIZE] = {0};
-static char word[WORD_BUFFER_SIZE];
 static char *letra;
 static int ultimaLetra;
 static int index = 0;
@@ -20,11 +19,12 @@ void shell() {
             buffer[index] = 0;
         }
         if (*letra == 1){
+            clearBuffer();
             chekCommand();
         }  
         if(*letra != 0 && *letra != 1){
                 if(*letra == ' '){
-                buffer[index++] = 0;
+                buffer[index++] = ' ';
                 }
                 else{
                 buffer[index++] = *letra;
@@ -52,7 +52,7 @@ void chekCommand(){
     }
     if(command == 0){
         printErr("command: [", 10);
-        printErr(word, strSize(word));
+        printErr(buffer, strSize(buffer));
         printErr("] not found.", 12);
     }
     nlPrint();
@@ -60,27 +60,26 @@ void chekCommand(){
     index = 0;
 }
 
-void getCommand(){
+void clearBuffer(){
     int i = 0;
     int j = 0;
-    while(buffer[i] == 0){
+    while(buffer[i] == ' '){
         i++;
     }
-    while(buffer[i] != 0){
-        word[j++] = buffer[i++];
+    while(i <= ultimaLetra){
+        buffer[j++] = buffer[i++];
     }
-    word[j] = 0;
-    return word;
+    buffer[j-1] = 0;
+    return;
 }
 
 int processCommand(){
     int found = 0;
     int ret = 0;
-    char * s1;
-    getCommand();
+    char * aux;
     while(ret < NUMBER_OF_COMMANDS && !found){
-        s1 = commands[ret++];
-        found = strCompare(s1,word);
+        aux = commands[ret++];
+        found = strCompare(aux,buffer);
     }
     if(found == 0){
         ret = 0;

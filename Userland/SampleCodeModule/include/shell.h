@@ -5,5 +5,5 @@
 void shell();
 void getKey();
 void chekCommand();
-void getCommand();
+void clearBuffer();
 int processCommand();
