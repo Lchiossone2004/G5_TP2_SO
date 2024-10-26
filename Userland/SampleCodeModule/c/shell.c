@@ -60,21 +60,22 @@ void chekCommand(){
         clear();
     }
     if(command == 0){
-        printErr("command: [", 10);
+        printErr("     command: [", 15);
         printErr(buffer, strSize(buffer));
         printErr("] not found.", 12);
     }
-    if(command != 6){
+    if(command != 6 && command != -1){
     nlPrint();
     }
     print(NEW_LINE,sizeof(NEW_LINE));
     index = 0;
+    ultimaLetra = 0;
 }
 
 void clearBuffer(){
     int i = 0;
     int j = 0;
-    while(buffer[i] == ' '){
+    while(buffer[i] == ' ' && i <= ultimaLetra){
         i++;
     }
     while(i <= ultimaLetra){
@@ -88,6 +89,10 @@ int processCommand(){
     int found = 0;
     int ret = 0;
     char * aux;
+    if(ultimaLetra == 0){
+        found = 1;
+        ret = -1;
+    }
     while(ret < NUMBER_OF_COMMANDS && !found){
         aux = commands[ret++];
         found = strCompare(aux,buffer);
