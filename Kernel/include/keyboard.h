@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <lib.h>
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 12
 
 static uint8_t isReleased(uint8_t key);
 static uint8_t isPressed(uint8_t key);

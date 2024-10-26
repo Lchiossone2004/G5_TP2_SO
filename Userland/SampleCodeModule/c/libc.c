@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#define STDOUT 1
-#define STDIN 0
+#define STDOUT 0
+#define STDIN 1
 #define STDERR 2
 
 extern uint64_t syscall(uint64_t rdi, ...);
@@ -13,7 +13,7 @@ void getChar(char * buffer, int index){
 }
 
 void print(char * word, int size){
-    syscall(4,STDOUT,word,size);
+    syscall(4,STDIN,word,size);
 }
 
 void read(char * buffer){
@@ -29,4 +29,8 @@ void printRegisters(){
 
 void nlPrint(){
     syscall(5,STDOUT);
+}
+
+void printErr(char * word, int size){
+    syscall(4,STDERR,word,size);
 }

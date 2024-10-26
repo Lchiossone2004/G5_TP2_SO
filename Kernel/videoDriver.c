@@ -10,6 +10,7 @@
 #define HEIGHT 8
 #define WIDTH 128
 #define MAX_ZOOM 10
+#define BLANCO 0xFFFFFF
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -71,14 +72,14 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     framebuffer[offset+2]   =  (hexColor >> 16) & 0xFF;
 }
 
-void imprimirVideo(char * palabra, int size){
+void imprimirVideo(char * palabra, int size, uint32_t color){
 		for(int i = 0; i< size; i++){
 			y = aux;	
-			charVideo(palabra[i],zoom);
+			charVideo(palabra[i],1,color); //Che ojo que el 1 ese es importante para cunado se termina la oracion, no lo cambien por el parametro zoom
 		}
 }
 
-void charVideo(int num, char isEndLine){
+void charVideo(int num, char isEndLine, uint32_t color){
 	if(x<=BORDER_X && y < BORDER_Y){
 	int set;
 	char *bitmap;
@@ -90,7 +91,7 @@ void charVideo(int num, char isEndLine){
 			if(set){
 				for(int dy=0;dy<scale;dy++){
 					for (int dx = 0; dx < scale; dx++) {
-                            putPixel(0xFFFFFF, x + j * scale + dx, y + i * scale + dy);
+                            putPixel(color, x + j * scale + dx, y + i * scale + dy);
                         }
 				}
 			}
@@ -129,14 +130,14 @@ void deleteVideo(){ //Borra caracteres
 	if(!(y == 0 && x <= 0)){
 	if(x >= MOV_X*(zoom+1)){
 	x -= MOV_X*(zoom+1);
-	charVideo(0,1);
+	charVideo(0,1,BLANCO);
 	x -= MOV_X*(zoom+1);
 	}
 	else{
 	x = VBE_mode_info->width -8;
 	y -= MOV_Y*(zoom+1);
 	aux -= MOV_Y*(zoom+1);
-	charVideo(0,0);
+	charVideo(0,0,BLANCO);
 	x -= MOV_X*(zoom+1);
 	}
 	}
@@ -167,12 +168,12 @@ void printTimeVideo(char hour, char min, char sec) {
 	aux = sec >> 4;
 	toPrint[6] = aux + '0';
 	toPrint[7] = (sec&0xF) + '0';
-	imprimirVideo(toPrint, sizeof(toPrint));
+	imprimirVideo(toPrint, sizeof(toPrint),BLANCO);
 }
 void printHexaVideo(uint64_t value){
 	char* buffer;
 	uint32_t digits=uintToBase(value, buffer, 16);
-	imprimirVideo(buffer, digits);
+	imprimirVideo(buffer, digits,BLANCO);
 }
 
 

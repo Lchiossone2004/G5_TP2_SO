@@ -1,25 +1,28 @@
 
 #include "../include/shell.h"
 #include "../include/libc.h"
-#define NEW_LINE " >"
 
-static char buffer[100] = {0};
+static char buffer[WORD_BUFFER_SIZE] = {0};
 static char *letra;
-static int index;
+static int ultimaLetra;
+static int index = 0;
 static char* commands[] = {"help", "time", "deci spe"};
 void shell() { 
         print(NEW_LINE,sizeof(NEW_LINE));
         while(1){
          getChar(letra,index);
-        if(*letra == 0 && index >0){
+        if(*letra == 0 && index > 0){
             index -= 1;
             buffer[index] = 0;
         }
-        else if (*letra == 1){
+        if (*letra == 1){
             chekCommand();
         }  
-        else{
+        if(*letra != 0 && *letra != 1){
             buffer[index++] = *letra;
+            if(*letra != ' '){
+                ultimaLetra = index;
+            }
         }
     }
 }
@@ -35,8 +38,8 @@ void chekCommand(){
     if(command == 3){
         print("sapee",5);
     }
-    if(command == -1){
-        print("command not found",17);
+    if(command == 0){
+        printErr("command not found",17);
     }
     nlPrint();
     print(NEW_LINE,sizeof(NEW_LINE));
@@ -49,12 +52,12 @@ int compare(){
     char * aux;
     int ret = 0;
     while(ret < 3 && !found){
-        aux = commands[ret++];
+        aux = commands[ret];
         flag = 1;
-        if(index != size(aux)){
+        if(ultimaLetra != size(aux)){
             flag = 0;
         }
-        for(int i = 0; i<index && flag; i++){
+        for(int i = 0; i<ultimaLetra && flag; i++){
             if(!(buffer[i] == aux[i])){
                 flag = 0;
             }
@@ -62,13 +65,13 @@ int compare(){
         if(flag == 1){
             found = 1;
         }
+        ret++;
     }
     if(found == 0){
-        ret = -1;
+        ret = 0;
     }
     return ret;
 }
-
 int size(char * word){
     int toRet = 0;
     while(word[toRet] != 0){

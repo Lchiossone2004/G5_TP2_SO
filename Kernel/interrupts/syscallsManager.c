@@ -5,6 +5,8 @@
 #include <videoDriver.h>
 #include <naiveConsole.h>
 
+#define ROJO    0xFF0000
+#define BLANCO  0xFFFFFF
 extern void getCPURegisters(Reg *regs);
 extern void activateSti();
 
@@ -37,12 +39,12 @@ void sys_getChar(unsigned int fd, char * buffer, size_t count){
     if(*buffer == 0 && count >= 1){
         deleteVideo();
     }
-    else if (*buffer == 1)
+    if (*buffer == 1)
     {
         nlVideo();
     }
-    else{
-    imprimirVideo(buffer,1);
+    if(*buffer != 0 && *buffer != 1){
+    imprimirVideo(buffer,1,BLANCO);
     }
     return;
 }
@@ -53,7 +55,12 @@ return;
 }
 
 void sys_write(unsigned int fd, const char *buffer, size_t count) {
-    imprimirVideo(buffer,count);
+    if(fd == 1){
+    imprimirVideo(buffer,count,BLANCO);
+    }
+    if(fd == 2){
+    imprimirVideo(buffer,count,ROJO);
+    }
     return;
 }
 

@@ -64,65 +64,7 @@ void updateKeyboardStatus(int scancode) {
             break;
     }
 }
-void printKey(){ //Busca e impirme la letra que se quiere o si borra si se toco la tecla de borrado
-int i = getKey();
-updateKeyboardStatus(i);
-	if(i!= 0 && i != 14 && i != 75 && i != 77 && i != 28){
-    buffer[curr++] = toLetter(i);
-	ncPrintChar(toLetter(i));
-    //charVideo(toLetter(i),1);
 
-	}
-    if(i == 14){
-        ncDelete();
-        deleteVideo();
-    }
-    if(i == 75){
-        ncMovIzq();
-        movVideo(-1);
-    }
-    if(i== 77){
-        ncMovDir();
-        movVideo(1);
-    }
-    if(i==28){
-        ncNewline();
-        nlVideo();
-    }
-}
-void keysInBuffer(char buffer[128], int idx) { //entran 128 caracteres en una fila
-    int key = getKey();
-    updateKeyboardStatus(key);
-    if(key == 28 || idx == 127) { //si es el enter o si llegue al final del renglon, se vacía el buffer
-        buffer[0] = '\0';
-    }
-    if(key == 77) { //flecha a derecha
-        idx++;
-    }
-    if(key == 75) { //flecha a izquierda
-        idx--;
-    }
-    if(key == 14) { //delete
-        deleteFromBuffer(buffer, idx);
-    }
-    buffer[idx++];
-}
-
-void deleteFromBuffer(char *buffer, int idx) {
-    int i = idx;
-    while(i < sizeof(buffer) -1) {
-        buffer[i] = buffer[i+1];
-        i++;
-    }
-    buffer[i] = '\0';
-}
-// 
-// static uint8_t isReleased(uint8_t key){
-    // return (key & 0x80);
-// }
-// static uint8_t isPressed(uint8_t key){
-    // return !isReleased(key);
-// }
 char shiftNum(char num) {
      switch (num) {
             case '1': return '!';
