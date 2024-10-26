@@ -88,7 +88,7 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
 void imprimirVideo(char * palabra, int size, uint32_t color){
 		for(int i = 0; i< size; i++){
 			y = aux;
-			charsInShell[yMatrizShell][xMatrizShell++]=*palabra;
+			charsInShell[yMatrizShell][xMatrizShell++]=palabra[i];
 			if(xMatrizShell==MAX_COLLS_IN_SHELL){
 				yMatrizShell++;
 				xMatrizShell=0;
@@ -96,7 +96,6 @@ void imprimirVideo(char * palabra, int size, uint32_t color){
 			charVideo(palabra[i],1,color); //Che ojo que el 1 ese es importante para cunado se termina la oracion, no lo cambien por el parametro zoom
 		}
 }
-
 void charVideo(int num, char isEndLine, uint32_t color){
 	if(x<=BORDER_X && y < BORDER_Y){
 	int set;
@@ -184,7 +183,7 @@ void deleteVideo(){ //Borra caracteres
 // }
 
 void printTimeVideo(char hour, char min, char sec) {
-	char * toPrint = "hh:mm:ss";
+	char toPrint[9] = "hh:mm:ss";
 	char aux = hour >> 4;
 	toPrint[0] = aux + '0';
 	toPrint[1] = (hour&0xF) + '0'; //guardo los 4 bits menos significativos y el resto lo pongo en 0
