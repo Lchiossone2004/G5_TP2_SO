@@ -243,15 +243,15 @@ void putRectangle(int posx, int posy, uint32_t color) {
 	}
 }
 
-void snakeCanvas(uint32_t firstColor, uint32_t secondColor) {
+void snakeCanvas() {
 	int flag = 0;
 	for(int i = 0; i < BORDER_X + 1; i += REC_ANCHO) {
 		flag = !flag;
 		for(int j = 0; j < BORDER_Y; j += REC_LARGO) {
 			if(flag) {
-				putRectangle(i, j, firstColor);
+				putRectangle(i, j, 0x00b6e2f0);
 			} else {
-				putRectangle(i,j,secondColor);
+				putRectangle(i,j,0x009de0f5);
 			}
 			flag = !flag;
 		}

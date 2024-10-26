@@ -8,5 +8,6 @@ void movVideo(int direc);
 void printHexaVideo(uint64_t value);
 void zoomIN();
 void zoomOUT();
-void snakeCanvas(uint32_t firstColor, uint32_t secondColor);
+void snakeCanvas();
 void printMatriz();
+
