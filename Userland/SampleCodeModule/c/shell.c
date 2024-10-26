@@ -20,16 +20,21 @@ void shell() {
             chekCommand();
         }  
         if(*letra != 0 && *letra != 1){
+            if(*letra == ' '){
+                if(index != 0 && buffer[index - 1] != ' '){
+                    buffer[index++] = *letra;
+                }
+            }
+            else{
             buffer[index++] = *letra;
-            if(*letra != ' '){
-                ultimaLetra = index;
+            ultimaLetra = index;
             }
         }
     }
 }
 
 void chekCommand(){
-    int command = compare();
+    int command = processCommand();
     if(command == 1){
         print("help", 4);
     }
@@ -44,14 +49,14 @@ void chekCommand(){
         zoomOut();
     }
     if(command == 0){
-        printErr("command not found",17);
+        printErr(buffer,index);
     }
     nlPrint();
     print(NEW_LINE,sizeof(NEW_LINE));
     index = 0;
 }
 
-int compare(){
+int processCommand(){
     int found = 0;
     int flag = 1;
     char * aux;
