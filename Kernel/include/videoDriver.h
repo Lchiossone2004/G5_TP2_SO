@@ -10,4 +10,4 @@ void zoomIN();
 void zoomOUT();
 void snakeCanvas();
 void printMatriz();
-
+void videoClear(int borderX, int borderY);

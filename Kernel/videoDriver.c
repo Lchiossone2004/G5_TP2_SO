@@ -133,7 +133,10 @@ void charVideo(int num, char isEndLine, uint32_t color){
 		maxX = 0;
 	}
 	y = aux;
+	if(y >= BORDER_Y -16 && x >BORDER_X-8){
+		videoClear(BORDER_Y,BORDER_X + 8);
 	}
+}
 }
 
 void nlVideo(){ //Hace un salto de linea
@@ -143,6 +146,9 @@ void nlVideo(){ //Hace un salto de linea
 	aux += MOV_Y*(zoom+1);
 	y += MOV_Y*(zoom+1);
 	x = 0;
+	}
+	else{
+		videoClear(BORDER_Y,BORDER_X);
 	}
 }
 
@@ -196,9 +202,9 @@ void printHexaVideo(uint64_t value){
 	imprimirVideo(buffer, digits,BLANCO);
 }
 
-void videoClear(){ //funcion que devuelve la pantalla a su estado "incial"
-	for(int i = 0; i<BORDER_Y; i++){
-		for(int j = 0; j<BORDER_X;j++){
+void videoClear(int borderY, int borderX){ //funcion que devuelve la pantalla a su estado "incial"
+	for(int i = 0; i<borderY; i++){
+		for(int j = 0; j<borderX;j++){
 			putPixel(0x0, j, i);
 		}
 	}
