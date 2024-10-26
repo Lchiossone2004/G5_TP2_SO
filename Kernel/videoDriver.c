@@ -2,6 +2,7 @@
 #include <videoDriver.h>
 #include <font.h>
 #include <naiveConsole.h>
+#include <lib.h>
 
 #define MOV_X 8  //Lo que ocupa en x de un char 
 #define MOV_Y 16 //Lo que ocupa en y de un char
@@ -13,6 +14,8 @@
 #define BLANCO 0xFFFFFF
 #define REC_ANCHO 32
 #define REC_LARGO 32
+#define REC_X_FIL BORDER_X / REC_ANCHO
+#define REC_X_COL BORDER_Y / REC_LARGO
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -214,6 +217,25 @@ void snakeCanvas(uint32_t firstColor, uint32_t secondColor) {
 		
 	}
 }
+//imprime un rectangulo en una pos random NO BORRAR!!es para desp hacer las manzanas del snake
+/*void getRandomPosition() {
+    int minutes = getMins(); 
+    int seconds = getSec(); 
+    // Generar índices de fila y columna basados en los minutos y segundos
+    int totalSquares = REC_X_FIL * REC_X_COL;
+     int randomIndex = (minutes * 60 + seconds) % totalSquares;
+
+    // Calcular la fila y columna a partir del índice
+    int columnIndex = randomIndex % REC_X_COL;          // Columna
+    int rowIndex = randomIndex / REC_X_COL;             // Fila
+
+    int newx = columnIndex * REC_ANCHO; // Multiplicamos el índice de columna por el ancho del cuadrado
+    int newy = (randomIndex % REC_X_COL) * REC_LARGO;
+	putRectangle(newx, newy, 0x00ffffff);
+}*/
+
+
+
 /*
 void expand(uint8_t ** newBitMap) {
         zoom++; //siempre quiero que se agrande hasta zoom+1
