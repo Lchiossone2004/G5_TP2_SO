@@ -8,8 +8,8 @@
 
 extern uint64_t syscall(uint64_t rdi, ...);
 
-void getChar(char * buffer){
-    syscall(2,STDOUT,buffer,1);
+void getChar(char * buffer, int index){
+    syscall(2,STDOUT,buffer,index);
 }
 
 void print(char * word, int size){

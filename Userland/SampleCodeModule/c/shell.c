@@ -10,7 +10,7 @@ static char* commands[] = {"help", "time", "deci spe"};
 void shell() { 
         print(NEW_LINE,sizeof(NEW_LINE));
         while(1){
-         getChar(letra);
+         getChar(letra,index);
         if(*letra == 0 && index >0){
             index -= 1;
             buffer[index] = 0;
