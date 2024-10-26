@@ -12,4 +12,5 @@ void sysCallManager(Reg * registers);
 void sysCallManager(Reg * registers);
 void sys_zoomIn(unsigned int fd);
 void sys_zoomOut(unsigned int fd);
+void videoClear();
 void sys_history(unsigned int fd);

@@ -163,19 +163,19 @@ void deleteVideo(){ //Borra caracteres
 	}
 }
 
-void movVideo(int direction){
-	x += (direction*MOV_X);
-	if(x < 10){
-	x = VBE_mode_info->width -8;
-	y -= MOV_Y;
-	aux -= MOV_Y;
-	}
-	if(x > VBE_mode_info->width - 10){
-		aux += MOV_Y;
-		x = 0;
-		y = aux;
-	}
-}
+// void movVideo(int direction){
+// 	x += (direction*MOV_X);
+// 	if(x < 10){
+// 	x = VBE_mode_info->width -8;
+// 	y -= MOV_Y;
+// 	aux -= MOV_Y;
+// 	}
+// 	if(x > VBE_mode_info->width - 10){
+// 		aux += MOV_Y;
+// 		x = 0;
+// 		y = aux;
+// 	}
+// }
 
 void printTimeVideo(char hour, char min, char sec) {
 	char * toPrint = "hh:mm:ss";
@@ -194,6 +194,17 @@ void printHexaVideo(uint64_t value){
 	char* buffer;
 	uint32_t digits=uintToBase(value, buffer, 16);
 	imprimirVideo(buffer, digits,BLANCO);
+}
+
+void videoClear(){ //funcion que devuelve la pantalla a su estado "incial"
+	for(int i = 0; i<BORDER_Y; i++){
+		for(int j = 0; j<BORDER_X;j++){
+			putPixel(0x0, j, i);
+		}
+	}
+	x = 0;
+	y = 0;
+	aux = 0;
 }
 
 

@@ -10,11 +10,6 @@ extern uint64_t syscall(uint64_t rdi, ...);
 void printRegisters(){
     syscall(1,STDOUT);
 }
-
-void getChar(char * buffer, int index){
-    syscall(2,STDOUT,buffer,index);
-}
-
 void print(char * word, int size){
     syscall(4,STDIN,word,size);
 }
@@ -30,7 +25,7 @@ void printErr(char * word, int size){
 void nlPrint(){
     syscall(5,STDOUT);
 }
-void zoomIn(){
+void zoomIn(){  //estas tal vez las moveria a un archivo que sea zoom, tipo la lib.c es para que la use el usuario
     syscall(6,STDOUT);
 }
 void zoomOut(){

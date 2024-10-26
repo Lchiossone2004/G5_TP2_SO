@@ -1,19 +1,17 @@
 
 #include "../include/shell.h"
-#include "../include/libc.h"
-#include <stdlib.h>
-#include <stdio.h>
+
 
 static char buffer[WORD_BUFFER_SIZE] = {0};
 static char *letra;
 static int ultimaLetra;
 static int index = 0;
-static char* commands[] = {"help", "time", "zoomin", "zoomout","history"};
+static char* commands[] = {"help", "time", "zoomin", "zoomout","history","clear"};
 
 void shell() { 
         print(NEW_LINE,sizeof(NEW_LINE));
         while(1){
-        getChar(letra,index);
+        getKey(letra,index);
         if(*letra == 0 && index > 0){
             index -= 1;
             buffer[index] = 0;
@@ -35,6 +33,10 @@ void shell() {
     }
 }
 
+void getKey(char * buffer, int index){
+    syscall(2,STDOUT,buffer,index);
+}
+
 void chekCommand(){
     int command = processCommand();
     if(command == 1){
@@ -54,12 +56,17 @@ void chekCommand(){
     {
         history();
     }
+    if(command == 6){
+        clear();
+    }
     if(command == 0){
         printErr("command: [", 10);
         printErr(buffer, strSize(buffer));
         printErr("] not found.", 12);
     }
+    if(command != 6){
     nlPrint();
+    }
     print(NEW_LINE,sizeof(NEW_LINE));
     index = 0;
 }
@@ -89,4 +96,8 @@ int processCommand(){
         ret = 0;
     }
     return ret;
+}
+
+void clear(){
+    syscall(9,STDIN);
 }

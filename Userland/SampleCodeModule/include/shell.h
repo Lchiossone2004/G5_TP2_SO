@@ -1,9 +1,17 @@
+#include "../include/libc.h"
+#include <stdlib.h>
+#include <stdio.h>
+
 #define NEW_LINE " >"
 #define WORD_BUFFER_SIZE 1024
-#define NUMBER_OF_COMMANDS 5
+#define NUMBER_OF_COMMANDS 6
+#define STDOUT 0
+#define STDIN 1
+#define STDERR 2
 
 void shell();
-void getKey();
+void getKey(char * buffer, int index);
 void chekCommand();
 void clearBuffer();
 int processCommand();
+void clear();

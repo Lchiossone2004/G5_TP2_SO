@@ -75,6 +75,11 @@ void sys_newLine(){
 void sys_history(unsigned int fd){
     printMatriz();
 }
+void sys_clear(unsigned int fd){
+    if(fd == 1){
+        videoClear();
+    }
+}
 
 uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
     switch(rdi) {
@@ -86,6 +91,7 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 6: sys_zoomIn(rsi); return;
         case 7: sys_zoomOut(rsi); return;
         case 8: sys_history(rsi); return;
+        case 9: sys_clear(rsi); 
 
     }
     return;
