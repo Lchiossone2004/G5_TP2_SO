@@ -141,15 +141,6 @@ char toLetter(int i){
     if(aux >= '0' && aux <= '9' && shift_pressed) { //si es un número y esta el shift apretado
         aux = shiftNum(aux); //actua segun el numero que corresponda
     }
-    if(aux == '-' && ctrl_pressed) {
-      zoomOUT();
-      return;
-        
-    } if(aux == '=' && ctrl_pressed) {
-     zoomIN();
-     return; //return porque no queremos que se escriba = o - cada vez que hacemos zoom
-     
-    }
     return aux; 
 }
 
