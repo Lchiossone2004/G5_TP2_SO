@@ -80,6 +80,15 @@ void sys_clear(unsigned int fd){
          videoClear(768,1024);
     }
 }
+void sys_putPixel(int posx, int posy, uint32_t hexColor) {
+    putPixel(hexColor, posx, posy);
+}
+void sys_getSecs() {
+    getSec();
+}
+void sys_getMins() {
+    getMins();
+}
 
 uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
     switch(rdi) {
@@ -92,7 +101,9 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 7: sys_zoomOut(rsi); return;
         case 8: sys_history(rsi); return;
         case 9: sys_clear(rsi); 
-
+        case 10: sys_putPixel(rsi, rdx, rcx); return;
+        case 11: sys_getSecs(); return;
+        case 12: sys_getMins(); return;
     }
     return;
 }
