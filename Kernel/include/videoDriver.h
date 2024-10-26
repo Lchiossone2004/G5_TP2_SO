@@ -6,4 +6,6 @@ void nlVideo();
 void deleteVideo();
 void movVideo(int direc);
 void printHexaVideo(uint64_t value);
+void zoomIN();
+void zoomOUT();
 //uint8_t ** new_font;

@@ -63,7 +63,12 @@ void sys_write(unsigned int fd, const char *buffer, size_t count) {
     }
     return;
 }
-
+void sys_zoomIn(unsigned int fd){
+    zoomIN();
+}
+void sys_zoomOut(unsigned int fd){
+    zoomOUT();
+}
 void sys_newLine(){
     nlVideo();
 }
@@ -74,7 +79,10 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 2: sys_getChar(rsi,rdx,rcx); return;
         case 3: sys_read(rsi, rdx, rcx); return;
         case 4: sys_write(rsi, (const char *)rdx, rcx); return;
-        case 5: sys_newLine(rdi);
+        case 5: sys_newLine(rdi); return;
+        case 6: sys_zoomIn(rsi); return;
+        case 7: sys_zoomOut(rsi); return;
+        
 
     }
     return;

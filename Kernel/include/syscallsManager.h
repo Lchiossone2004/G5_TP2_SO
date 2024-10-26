@@ -9,3 +9,7 @@ void sys_read(unsigned int fd, char * buffer, size_t count);
 void sys_write(unsigned int fd, const char *buffer, size_t count);
 void sys_newLine();
 void sysCallManager(Reg * registers);
+void sysCallManager(Reg * registers);
+void sys_zoomIn(unsigned int fd);
+void sys_zoomOut(unsigned int fd);
+
