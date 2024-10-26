@@ -27,12 +27,9 @@ void read(char * buffer){
 void printErr(char * word, int size){
     syscall(4,STDERR,word,size);
 }
-
-
 void nlPrint(){
     syscall(5,STDOUT);
 }
-
 void zoomIn(){
     syscall(6,STDOUT);
 }
@@ -59,4 +56,7 @@ int strSize(char * word){
         toRet++;
     }
     return toRet;
+}
+void history(){
+    syscall(8,STDOUT);
 }

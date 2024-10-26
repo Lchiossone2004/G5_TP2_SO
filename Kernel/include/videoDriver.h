@@ -9,3 +9,4 @@ void printHexaVideo(uint64_t value);
 void zoomIN();
 void zoomOUT();
 void snakeCanvas(uint32_t firstColor, uint32_t secondColor);
+void printMatriz();
