@@ -248,22 +248,33 @@ void snakeCanvas(uint32_t firstColor, uint32_t secondColor) {
 		
 	}
 }
-//imprime un rectangulo en una pos random NO BORRAR!!es para desp hacer las manzanas del snake
-/*void getRandomPosition() {
+void putCircle(int posx, int posy, uint32_t color) {
+    int centerX = posx + REC_ANCHO / 2;  
+    int centerY = posy + REC_LARGO / 2;  
+    int radius = (REC_ANCHO < REC_LARGO ? REC_ANCHO : REC_LARGO) / 2;  
+    for (int i = posx; i < posx + REC_ANCHO; i++) {
+        for (int j = posy; j < posy + REC_LARGO; j++) {
+            int dx = i - centerX;  
+            int dy = j - centerY;  
+            if (dx * dx + dy * dy <= radius * radius) {  
+                putPixel(color, i, j);
+            }
+        }
+    }
+}
+//imprime un circulo en una pos random (seria la manzana)
+void putRandomCircle() {
     int minutes = getMins(); 
     int seconds = getSec(); 
-    // Generar índices de fila y columna basados en los minutos y segundos
+
     int totalSquares = REC_X_FIL * REC_X_COL;
      int randomIndex = (minutes * 60 + seconds) % totalSquares;
 
-    // Calcular la fila y columna a partir del índice
-    int columnIndex = randomIndex % REC_X_COL;          // Columna
-    int rowIndex = randomIndex / REC_X_COL;             // Fila
-
-    int newx = columnIndex * REC_ANCHO; // Multiplicamos el índice de columna por el ancho del cuadrado
-    int newy = (randomIndex % REC_X_COL) * REC_LARGO;
-	putRectangle(newx, newy, 0x00ffffff);
-}*/
+    int columnIndex = randomIndex % REC_X_COL;          
+    int newx = columnIndex * REC_ANCHO; 
+    int newy = columnIndex * REC_LARGO;
+	putCircle(newx, newy, 0x00ffffff);
+}
 
 
 
