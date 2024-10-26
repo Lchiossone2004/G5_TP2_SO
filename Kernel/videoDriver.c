@@ -16,6 +16,10 @@
 #define REC_LARGO 32
 #define REC_X_FIL BORDER_X / REC_ANCHO
 #define REC_X_COL BORDER_Y / REC_LARGO
+#define MAX_COLLS_IN_SHELL 127
+#define MAX_FIL_IN_SHELL 48
+
+
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -69,6 +73,10 @@ static int num_columns = BORDER_X / MOV_X;
 static int num_rows = BORDER_Y / MOV_Y; 
 
 
+static char charsInShell[MAX_FIL_IN_SHELL][MAX_COLLS_IN_SHELL];
+static int xMatrizShell=0;
+static int yMatrizShell=0;
+
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
     uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch);
@@ -79,7 +87,12 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
 
 void imprimirVideo(char * palabra, int size, uint32_t color){
 		for(int i = 0; i< size; i++){
-			y = aux;	
+			y = aux;
+			charsInShell[yMatrizShell][xMatrizShell++]=*palabra;
+			if(xMatrizShell==MAX_COLLS_IN_SHELL){
+				yMatrizShell++;
+				xMatrizShell=0;
+			}
 			charVideo(palabra[i],1,color); //Che ojo que el 1 ese es importante para cunado se termina la oracion, no lo cambien por el parametro zoom
 		}
 }
@@ -124,6 +137,8 @@ void charVideo(int num, char isEndLine, uint32_t color){
 }
 
 void nlVideo(){ //Hace un salto de linea
+	yMatrizShell++;
+	xMatrizShell=0;
 	if(y < BORDER_Y -(16*(zoom+1))){
 	aux += MOV_Y*(zoom+1);
 	y += MOV_Y*(zoom+1);
@@ -193,28 +208,28 @@ void zoomOUT() {
 	}
 }
 
+void printMatriz(){
+	for(int i=0;i<MAX_FIL_IN_SHELL;i++){
+		for (int j = 0; i < MAX_COLLS_IN_SHELL; j++){
+			charVideo(charsInShell[i][j],1,BLANCO);
+			if(!charsInShell[i][j]){
+				break;
+			}
+		}
+		if(!charsInShell[i][0]){
+			return;
+		}
+	}
+	return;
+}
+
+
 void putRectangle(int posx, int posy, uint32_t color) {
 	for(int i = posx; i < posx+REC_ANCHO; i++) {
 		for(int j = posy; j < posy+REC_LARGO; j++) {
 			putPixel(color, i, j);
 		}
 	}
-}
-
-void putCircle(int posx, int posy, uint32_t color) {
-    int centerX = posx + REC_ANCHO / 2;  
-    int centerY = posy + REC_LARGO / 2;  
-    int radius = (REC_ANCHO < REC_LARGO ? REC_ANCHO : REC_LARGO) / 2;  
-
-    for (int i = posx; i < posx + REC_ANCHO; i++) {
-        for (int j = posy; j < posy + REC_LARGO; j++) {
-            int dx = i - centerX;  
-            int dy = j - centerY;  
-            if (dx * dx + dy * dy <= radius * radius) {  
-                putPixel(color, i, j);
-            }
-        }
-    }
 }
 
 void snakeCanvas(uint32_t firstColor, uint32_t secondColor) {
@@ -233,17 +248,22 @@ void snakeCanvas(uint32_t firstColor, uint32_t secondColor) {
 		
 	}
 }
-//imprime un circulo en una pos random NO BORRAR!!es para desp hacer las manzanas del snake
-void putRandomCircle() {
+//imprime un rectangulo en una pos random NO BORRAR!!es para desp hacer las manzanas del snake
+/*void getRandomPosition() {
     int minutes = getMins(); 
     int seconds = getSec(); 
-    int area = REC_X_FIL * REC_X_COL;
-    int randomIndex = (minutes * 60 + seconds) % area;
-    int columnIndex = randomIndex % REC_X_COL;                     
-    int newx = columnIndex * REC_ANCHO; 
-    int newy = columnIndex * REC_LARGO;
-	putCircle(newx, newy, 0x00ffffff);
-}
+    // Generar índices de fila y columna basados en los minutos y segundos
+    int totalSquares = REC_X_FIL * REC_X_COL;
+     int randomIndex = (minutes * 60 + seconds) % totalSquares;
+
+    // Calcular la fila y columna a partir del índice
+    int columnIndex = randomIndex % REC_X_COL;          // Columna
+    int rowIndex = randomIndex / REC_X_COL;             // Fila
+
+    int newx = columnIndex * REC_ANCHO; // Multiplicamos el índice de columna por el ancho del cuadrado
+    int newy = (randomIndex % REC_X_COL) * REC_LARGO;
+	putRectangle(newx, newy, 0x00ffffff);
+}*/
 
 
 

@@ -72,6 +72,9 @@ void sys_zoomOut(unsigned int fd){
 void sys_newLine(){
     nlVideo();
 }
+void sys_history(unsigned int fd){
+    printMatriz();
+}
 
 uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
     switch(rdi) {
@@ -82,7 +85,7 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 5: sys_newLine(rdi); return;
         case 6: sys_zoomIn(rsi); return;
         case 7: sys_zoomOut(rsi); return;
-        
+        case 8: sys_history(rsi); return;
 
     }
     return;
