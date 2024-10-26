@@ -11,8 +11,8 @@
 #define WIDTH 128
 #define MAX_ZOOM 10
 #define BLANCO 0xFFFFFF
-#define REC_ANCHO 32
-#define REC_LARGO 32
+#define REC_ANCHO 8
+#define REC_LARGO 8
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -193,6 +193,23 @@ void putRectangle(int posx, int posy, uint32_t color) {
 		for(int j = posy; j < posy+REC_LARGO; j++) {
 			putPixel(color, i, j);
 		}
+	}
+}
+
+void snakeCanvas(uint32_t firstColor, uint32_t secondColor) {
+	int flag = 0;
+	for(int i = 0; i < BORDER_X + 1; i += REC_ANCHO) {
+		flag = !flag;
+		for(int j = 0; j < BORDER_Y; j += REC_LARGO) {
+			if(flag) {
+				putRectangle(i, j, firstColor);
+			} else {
+				putRectangle(i,j,secondColor);
+			}
+			flag = !flag;
+		}
+		
+		
 	}
 }
 /*
