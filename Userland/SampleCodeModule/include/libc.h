@@ -6,3 +6,5 @@ void nlPrint();
 void printErr();
 void zoomIn();
 void zoomOut();
+int strCompare(char *s1, char*s2);
+int strSize(char * word);

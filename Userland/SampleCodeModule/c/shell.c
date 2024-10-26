@@ -1,8 +1,11 @@
 
 #include "../include/shell.h"
 #include "../include/libc.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 static char buffer[WORD_BUFFER_SIZE] = {0};
+static char word[WORD_BUFFER_SIZE];
 static char *letra;
 static int ultimaLetra;
 static int index = 0;
@@ -20,15 +23,14 @@ void shell() {
             chekCommand();
         }  
         if(*letra != 0 && *letra != 1){
-            if(*letra == ' '){
-                if(index != 0 && buffer[index - 1] != ' '){
-                    buffer[index++] = *letra;
+                if(*letra == ' '){
+                buffer[index++] = 0;
                 }
-            }
-            else{
-            buffer[index++] = *letra;
-            ultimaLetra = index;
-            }
+                else{
+                buffer[index++] = *letra;
+                ultimaLetra = index;
+                }
+                buffer[index] = 0;
         }
     }
 }
@@ -49,43 +51,39 @@ void chekCommand(){
         zoomOut();
     }
     if(command == 0){
-        printErr(buffer,index);
+        printErr("command: [", 10);
+        printErr(word, strSize(word));
+        printErr("] not found.", 12);
     }
     nlPrint();
     print(NEW_LINE,sizeof(NEW_LINE));
     index = 0;
 }
 
+void getCommand(){
+    int i = 0;
+    int j = 0;
+    while(buffer[i] == 0){
+        i++;
+    }
+    while(buffer[i] != 0){
+        word[j++] = buffer[i++];
+    }
+    word[j] = 0;
+    return word;
+}
+
 int processCommand(){
     int found = 0;
-    int flag = 1;
-    char * aux;
     int ret = 0;
-    while(ret < 5 && !found){
-        aux = commands[ret];
-        flag = 1;
-        if(ultimaLetra != size(aux)){
-            flag = 0;
-        }
-        for(int i = 0; i<ultimaLetra && flag; i++){
-            if(!(buffer[i] == aux[i])){
-                flag = 0;
-            }
-        }
-        if(flag == 1){
-            found = 1;
-        }
-        ret++;
+    char * s1;
+    getCommand();
+    while(ret < NUMBER_OF_COMMANDS && !found){
+        s1 = commands[ret++];
+        found = strCompare(s1,word);
     }
     if(found == 0){
         ret = 0;
     }
     return ret;
-}
-int size(char * word){
-    int toRet = 0;
-    while(word[toRet] != 0){
-        toRet++;
-    }
-    return toRet;
 }
