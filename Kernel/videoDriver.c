@@ -262,7 +262,7 @@ void snakeCanvas(uint32_t firstColor, uint32_t secondColor) {
 void putCircle(int posx, int posy, uint32_t color) {
     int centerX = posx + REC_ANCHO / 2;  
     int centerY = posy + REC_LARGO / 2;  
-    int radius = (REC_ANCHO < REC_LARGO ? REC_ANCHO : REC_LARGO) / 2;  
+    int radius = (REC_ANCHO < REC_LARGO ? REC_ANCHO : REC_LARGO) / 4;  
     for (int i = posx; i < posx + REC_ANCHO; i++) {
         for (int j = posy; j < posy + REC_LARGO; j++) {
             int dx = i - centerX;  
@@ -278,12 +278,12 @@ void putRandomCircle() {
     int minutes = getMins(); 
     int seconds = getSec(); 
 
-    int totalSquares = REC_X_FIL * REC_X_COL;
-     int randomIndex = (minutes * 60 + seconds) % totalSquares;
+    int area = REC_X_FIL * REC_X_COL;
+     int idx = (minutes * 60 + seconds) % area;
 
-    int columnIndex = randomIndex % REC_X_COL;          
-    int newx = columnIndex * REC_ANCHO; 
-    int newy = columnIndex * REC_LARGO;
+    int col = idx % REC_X_COL;          
+    int newx = col * REC_ANCHO; 
+    int newy = col * REC_LARGO;
 	putCircle(newx, newy, 0x00ffffff);
 }
 
