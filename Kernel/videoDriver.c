@@ -294,13 +294,15 @@ void putRandomCircle() {
 }
 
 void deleteCircle() {
-	if((pos_circle_x % 2 == 0 && pos_circle_y % 2 ==0)||(pos_circle_x % 2 != 0 && pos_circle_y % 2 !=0)) {
+	if((isPair(pos_circle_x) && isPair(pos_circle_y))||(!isPair(pos_circle_x) && !isPair(pos_circle_y))) {
 		putRectangle(pos_circle_x, pos_circle_y, COLOR_1);
 	} else {
 		putRectangle(pos_circle_x, pos_circle_y, COLOR_2);
 	}
 }
-
+int isPair(int pos) {
+	return pos % 2 == 0;
+}
 /*
 void expand(uint8_t ** newBitMap) {
         zoom++; //siempre quiero que se agrande hasta zoom+1
