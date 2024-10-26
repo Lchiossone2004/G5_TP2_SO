@@ -40,7 +40,7 @@ void getKey(char * buffer, int index){
 void chekCommand(){
     int command = processCommand();
     if(command == 1){
-        print("help", 4);
+        help();
     }
     if(command == 2){
         print("time", 4);
@@ -105,4 +105,14 @@ int processCommand(){
 
 void clear(){
     syscall(9,STDIN);
+}
+
+void help(){
+    print("     Here is a list of the commands:",36);
+    nlPrint();
+    for(int i = 0; i<NUMBER_OF_COMMANDS; i++){
+        print("     #) ",7);
+        print(commands[i],strSize(commands[i]));
+        nlPrint();
+    }
 }

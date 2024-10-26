@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define NEW_LINE "/shell: >"
+#define NEW_LINE "shell: >"
 #define WORD_BUFFER_SIZE 1024
 #define NUMBER_OF_COMMANDS 6
 #define STDOUT 0
@@ -15,3 +15,4 @@ void chekCommand();
 void clearBuffer();
 int processCommand();
 void clear();
+void help();
