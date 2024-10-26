@@ -180,12 +180,14 @@ void printHexaVideo(uint64_t value){
 
 
 void  zoomIN() {
-    zoom=1;
-	nlVideo();
+	if(zoom <2){
+    	zoom++;
+	}
 }
 void zoomOUT() {
-	nlVideo();
-	zoom=0;
+	if (zoom>0){
+		zoom--;
+	}
 }
 
 void putRectangle(int posx, int posy, uint32_t color) {
