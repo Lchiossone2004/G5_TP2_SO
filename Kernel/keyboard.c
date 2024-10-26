@@ -14,9 +14,12 @@ static uint16_t buffer[BUFFER_SIZE];
 static uint64_t dim = 0; //dimension del buffer
 static uint64_t curr = 0; //posicion actual del buffer
 
+int specialKey(int key) {
+    return  (key == 0 || key == 14 || key == 75 || key == 77 || key == 28 || key == 0x1D || key == 0x3A || key == 0x2A || key == 0x36);
+}
 void loadBuffer(int key){
     updateKeyboardStatus(key);
-    if(key!= 0 && key != 14 && key != 75 && key != 77 && key != 28){
+    if(!specialKey(key)){
         buffer[curr++] = toLetter(key);
     }
     if(key == 14){
@@ -128,7 +131,7 @@ char toLetter(int i){
         case 0x36:  break; //shift derecho
         case 0x1D:  break; //ctrl
         case 0x3A:  break; //capslock
-        //en estos ultimos 4 no quiero que ponga ? 
+        
         default: return '?';       // Tecla no reconocida
     }
     if (aux >= 'a' && aux <= 'z' && (caps_pressed || shift_pressed )) {  //si es una letra y esta apretado shift o prendido el capslock
@@ -137,11 +140,15 @@ char toLetter(int i){
     if(aux >= '0' && aux <= '9' && shift_pressed) { //si es un número y esta el shift apretado
         aux = shiftNum(aux); //actua segun el numero que corresponda
     }
-    if(aux == 'b') {
+    if(aux == '-' && ctrl_pressed) {
       zoomOUT();
+      return;
         
-    } if(aux == 'a') {
+    } if(aux == '=' && ctrl_pressed) {
      zoomIN();
+     return; //return porque no queremos que se escriba = o - cada vez que hacemos zoom
+     
     }
     return aux; 
 }
+
