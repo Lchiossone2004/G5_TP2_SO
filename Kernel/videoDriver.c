@@ -11,8 +11,8 @@
 #define WIDTH 128
 #define MAX_ZOOM 10
 #define BLANCO 0xFFFFFF
-#define REC_ANCHO 8
-#define REC_LARGO 8
+#define REC_ANCHO 32
+#define REC_LARGO 32
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
