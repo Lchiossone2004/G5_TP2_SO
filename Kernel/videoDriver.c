@@ -18,6 +18,8 @@
 #define REC_X_COL BORDER_Y / REC_LARGO
 #define MAX_COLLS_IN_SHELL 127
 #define MAX_FIL_IN_SHELL 48
+#define COLOR_1 0x00b6e2f0
+#define COLOR_2 0x009de0f5
 
 
 struct vbe_mode_info_structure {
@@ -69,6 +71,8 @@ static int y = 0;
 static int aux = 0;
 static int maxX = 0;
 static int maxY = 0;
+static int pos_circle_x;
+static int pos_circle_y;
 static int num_columns = BORDER_X / MOV_X; 
 static int num_rows = BORDER_Y / MOV_Y; 
 
@@ -254,14 +258,12 @@ void snakeCanvas() {
 		flag = !flag;
 		for(int j = 0; j < BORDER_Y; j += REC_LARGO) {
 			if(flag) {
-				putRectangle(i, j, 0x00b6e2f0);
+				putRectangle(i, j, COLOR_1);
 			} else {
-				putRectangle(i,j,0x009de0f5);
+				putRectangle(i,j,COLOR_2);
 			}
 			flag = !flag;
 		}
-		
-		
 	}
 }
 void putCircle(int posx, int posy, uint32_t color) {
@@ -278,21 +280,26 @@ void putCircle(int posx, int posy, uint32_t color) {
         }
     }
 }
-//imprime un circulo en una pos random (seria la manzana)
+//imprime un circulo en una pos random (seria la manzana) y guarda la posición
 void putRandomCircle() {
-    int minutes = getMins(); 
-    int seconds = getSec(); 
+    int min = getMins(); 
+    int sec = getSec(); 
 
     int area = REC_X_FIL * REC_X_COL;
-     int idx = (minutes * 60 + seconds) % area;
-
+    int idx = (min * 60 + sec) % area;
     int col = idx % REC_X_COL;          
-    int newx = col * REC_ANCHO; 
-    int newy = col * REC_LARGO;
-	putCircle(newx, newy, 0x00ffffff);
+    pos_circle_x = col * REC_ANCHO; 
+    pos_circle_y = col * REC_LARGO;
+	putCircle(pos_circle_x, pos_circle_y, BLANCO);
 }
 
-
+void deleteCircle() {
+	if((pos_circle_x % 2 == 0 && pos_circle_y % 2 ==0)||(pos_circle_x % 2 != 0 && pos_circle_y % 2 !=0)) {
+		putRectangle(pos_circle_x, pos_circle_y, COLOR_1);
+	} else {
+		putRectangle(pos_circle_x, pos_circle_y, COLOR_2);
+	}
+}
 
 /*
 void expand(uint8_t ** newBitMap) {
