@@ -6,7 +6,7 @@ static char buffer[WORD_BUFFER_SIZE] = {0};
 static char *letra;
 static int ultimaLetra;
 static int index = 0;
-static char* commands[] = {"help", "time", "deci spe", "zoomin", "zoomout"};
+static char* commands[] = {"help", "time", "zoomin", "zoomout"};
 
 void shell() { 
         print(NEW_LINE,sizeof(NEW_LINE));
@@ -36,13 +36,10 @@ void chekCommand(){
     if(command == 2){
         print("time", 4);
     }
-    if(command == 3){
-        print("sapee",5);
-    }
-    if(command==4){
+    if(command==3){
         zoomIn();
     }
-    if (command==5)
+    if (command==4)
     {
         zoomOut();
     }
