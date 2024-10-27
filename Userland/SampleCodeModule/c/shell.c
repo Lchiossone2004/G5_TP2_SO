@@ -6,7 +6,7 @@ static char buffer[WORD_BUFFER_SIZE] = {0};
 static char *letra;
 static int ultimaLetra;
 static int index = 0;
-static char* commands[] = {"help", "time", "zoomin", "zoomout","history","clear"};
+static char* commands[] = {"help", "time", "zoomin", "zoomout","history","clear", "snake"};
 
 void shell() { 
         print(NEW_LINE,sizeof(NEW_LINE));
@@ -58,6 +58,9 @@ void chekCommand(){
     }
     if(command == 6){
         clear();
+    }
+    if(command == 7) {
+        //playSnake
     }
     if(command == 0){
         printErr("     command: [", 15);

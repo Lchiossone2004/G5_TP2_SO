@@ -4,7 +4,7 @@
 
 #define NEW_LINE "shell: >"
 #define WORD_BUFFER_SIZE 1024
-#define NUMBER_OF_COMMANDS 6
+#define NUMBER_OF_COMMANDS 7
 #define STDOUT 0
 #define STDIN 1
 #define STDERR 2
