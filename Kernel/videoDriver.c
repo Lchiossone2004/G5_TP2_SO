@@ -65,7 +65,7 @@ typedef struct vbe_mode_info_structure * VBEInfoPtr;
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
 uint8_t new_font[MAX_ZOOM + 1][WIDTH * (MAX_ZOOM + 2)][HEIGHT * (MAX_ZOOM + 2)];
-static int zoom = 0; //zoom inicial
+static int zoom = 1; //zoom inicial
 static int x = 0;
 static int y = 0;
 static int aux = 0;
@@ -92,46 +92,46 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
 void imprimirVideo(char * palabra, int size, uint32_t color){
 		for(int i = 0; i< size; i++){
 			y = aux;
-			charsInShell[yMatrizShell][xMatrizShell++]=palabra[i];
+			
+			charVideo(palabra[i],1,color); //Che ojo que el 1 ese es importante para cunado se termina la oracion, no lo cambien por el parametro zoom
+		}
+}
+void charVideo(char num, char isEndLine, uint32_t color){
+	charsInShell[yMatrizShell][xMatrizShell++]=num;
 			if(xMatrizShell==MAX_COLLS_IN_SHELL){
 				yMatrizShell++;
 				xMatrizShell=0;
 			}
-			charVideo(palabra[i],1,color); //Che ojo que el 1 ese es importante para cunado se termina la oracion, no lo cambien por el parametro zoom
-		}
-}
-void charVideo(int num, char isEndLine, uint32_t color){
 	if(x<=BORDER_X && y < BORDER_Y){
 	int set;
 	char *bitmap;
-	char scale=zoom+1;
 	bitmap = font[num];//aca habria que cambiarlo por new_font y adaptar todo porque ahora cada letra ocupa 2 *zoom
 	for(int i = 0; i <8; i++){
 		for(int j = 0; j<8; j++){
 			set = bitmap[i] & 1 << j;
 			if(set){
-				for(int dy=0;dy<scale;dy++){
-					for (int dx = 0; dx < scale; dx++) {
-                            putPixel(color, x + j * scale + dx, y + i * scale + dy);
+				for(int dy=0;dy<zoom;dy++){
+					for (int dx = 0; dx < zoom; dx++) {
+                            putPixel(color, x + j * zoom + dx, y + i * zoom + dy);
                         }
 				}
 			}
 			else{
-				for (int dy = 0; dy < scale; dy++) {
-                    for (int dx = 0; dx < scale; dx++) {
-                        putPixel(0x0, x + j * scale + dx, y + i * scale + dy);
+				for (int dy = 0; dy < zoom; dy++) {
+                    for (int dx = 0; dx < zoom; dx++) {
+                        putPixel(0x0, x + j * zoom + dx, y + i * zoom + dy);
                     }
                 }
 			}
 		}
-		y += scale;
+		y += zoom;
 	}
-	x += MOV_X*scale;
+	x += MOV_X*zoom;
 	if(x>maxX){
 		maxX = x;
 	}
 	if(x >= VBE_mode_info->width && isEndLine){ //Estaria bueno sacar este flag, que es para que borre correctamente 
-		aux += MOV_Y*scale;
+		aux += MOV_Y*zoom;
 		x = 0;
 		maxX = 0;
 	}
@@ -145,9 +145,9 @@ void charVideo(int num, char isEndLine, uint32_t color){
 void nlVideo(){ //Hace un salto de linea
 	yMatrizShell++;
 	xMatrizShell=0;
-	if(y < BORDER_Y -(16*(zoom+1))){
-	aux += MOV_Y*(zoom+1);
-	y += MOV_Y*(zoom+1);
+	if(y < BORDER_Y -(16*zoom)){
+	aux += MOV_Y*zoom;
+	y += MOV_Y*zoom;
 	x = 0;
 	}
 	else{
@@ -157,17 +157,17 @@ void nlVideo(){ //Hace un salto de linea
 
 void deleteVideo(){ //Borra caracteres
 	if(!(y == 0 && x <= 0)){
-	if(x >= MOV_X*(zoom+1)){
-	x -= MOV_X*(zoom+1);
+	if(x >= MOV_X*zoom){
+	x -= MOV_X*zoom;
 	charVideo(0,1,BLANCO);
-	x -= MOV_X*(zoom+1);
+	x -= MOV_X*zoom;
 	}
 	else{
 	x = VBE_mode_info->width -8;
-	y -= MOV_Y*(zoom+1);
-	aux -= MOV_Y*(zoom+1);
+	y -= MOV_Y*zoom;
+	aux -= MOV_Y*zoom;
 	charVideo(0,0,BLANCO);
-	x -= MOV_X*(zoom+1);
+	x -= MOV_X*zoom;
 	}
 	}
 }
@@ -306,7 +306,7 @@ int isPair(int pos) {
 /*
 void expand(uint8_t ** newBitMap) {
         zoom++; //siempre quiero que se agrande hasta zoom+1
-        for(int i = 0; i < 128 * (zoom+1); i+zoom) { //para cada fila en newBitMap
+        for(int i = 0; i < 128 * zoom; i+zoom) { //para cada fila en newBitMap
         for(int j = 0; j < 128; j++) { //para cada fila en font
             expandirFila(font[j], newBitMap[i], zoom); //expando la fila de font en la fila de newBitMap
             for(int k = 1; k < zoom*2; k++) { 
