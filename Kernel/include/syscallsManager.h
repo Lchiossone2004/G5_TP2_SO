@@ -14,6 +14,6 @@ void sys_zoomIn(unsigned int fd);
 void sys_zoomOut(unsigned int fd);
 void videoClear();
 void sys_history(unsigned int fd);
-void sys_getSecs();
-void sys_getMins();
+void sys_getSecs(uint64_t buffer);
+void sys_getMins(uint64_t buffer);
 void sys_getTime();

@@ -9,6 +9,7 @@
         "syscallsmanager.h": "c",
         "shell.h": "c",
         "stdlib.h": "c",
-        "font.h": "c"
+        "font.h": "c",
+        "snake.h": "c"
     }
 }
