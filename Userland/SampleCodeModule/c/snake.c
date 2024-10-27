@@ -127,7 +127,10 @@ int isSnakeinPos(Snakepos pos) {
 void pointEarned() {
     if(len < 10) {
         len++;
-        //q se guarde otro rec 
+        snake[len-1].pos_x = snake[len-2].pos_x + direc_x;
+        snake[len-1].pos_y = snake[len-2].pos_y + direc_y;
+        //cnequear esto pero creo q va ok
+        putSnake();
     }
     points++;
     deleteCircle();
@@ -135,8 +138,6 @@ void pointEarned() {
 
 }
 //FALTA:
-//unir todo xd y que cuando pisa la casilla donde esta el circulo, se genere nuevo circulo y se borre el que estaba
-//que cuando se llame al comando snake empiece esto
 //q imprima un mensaje q perdiste si llegas al borde o chcoas con vos mismo
 //que cuando perdes se imprima el puntaje
-
+//unirlo todo en funcion play
