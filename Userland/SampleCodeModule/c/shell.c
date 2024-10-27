@@ -1,6 +1,6 @@
 
 #include "../include/shell.h"
-
+#include "../include/snake.h"
 
 static char buffer[WORD_BUFFER_SIZE] = {0};
 static char *letra;
@@ -60,7 +60,7 @@ void chekCommand(){
         clear();
     }
     if(command == 7) {
-        //playSnake
+        playSnake();
     }
     if(command == 0){
         printErr("     command: [", 15);

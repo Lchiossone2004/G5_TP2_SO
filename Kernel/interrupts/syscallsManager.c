@@ -4,6 +4,7 @@
 #include <syscallsManager.h>
 #include <videoDriver.h>
 #include <naiveConsole.h>
+#include <lib.h>
 
 #define ROJO    0xFF0000
 #define BLANCO  0xFFFFFF

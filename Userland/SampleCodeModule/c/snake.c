@@ -64,12 +64,14 @@ void putSnake() {
 }
 
 void moveSnake() {
+    delete(snake[0].pos_x, snake[0].pos_y);
     for(int i = 0; i < len-1; i++) {
         snake[i].pos_x = snake[i+1].pos_x;
         snake[i].pos_y = snake[i+1].pos_y;
-    }
+    } 
         snake[len-1].pos_x += direc_x;
         snake[len-1].pos_y += direc_y;
+        putSnake();
 }
 
 void putCircle(int posx, int posy, uint32_t color) {
@@ -94,6 +96,7 @@ void putRandomCircle() {
 
     int area = REC_X_FIL * REC_X_COL;
     int idx = (min * 60 + sec) % area;
+    int row = idx / REC_X_COL;
     int col = idx % REC_X_COL;          
     circle.pos_x = col * REC_ANCHO; 
     circle.pos_y = col * REC_LARGO;
@@ -105,10 +108,13 @@ int isPair(int pos) {
 }
 
 void deleteCircle() {
-	if((isPair(circle.pos_x) && isPair(circle.pos_y))||(!isPair(circle.pos_x) && !isPair(circle.pos_y))) {
-		putRectangle(circle.pos_x, circle.pos_y, COLOR_1);
+	delete(circle.pos_x, circle.pos_y);
+}
+void delete(int pos_x, int pos_y) {
+    if((isPair(pos_x / REC_ANCHO) && isPair(pos_y / REC_LARGO))||(!isPair(pos_x / REC_ANCHO) && !isPair(pos_y/REC_LARGO))) {
+		putRectangle(pos_x, pos_y, COLOR_1);
 	} else {
-		putRectangle(circle.pos_x,circle.pos_y, COLOR_2);
+		putRectangle(pos_x,pos_y, COLOR_2);
 	}
 }
 
@@ -119,13 +125,13 @@ void changeDir(int newX, int newY) {
     snake->pos_x = newX;
     snake ->pos_y = newY;
 }
-//esto va a ser para ver si llegue al circulo
+
 int isSnakeinPos(Snakepos pos) {
     return snake[len-1].pos_x == pos.pos_x && snake[len-1].pos_y == pos.pos_y;
 }
 
 void pointEarned() {
-    if(len < 10) {
+    if(len < MAX_SNAKE) {
         len++;
         snake[len-1].pos_x = snake[len-2].pos_x + direc_x;
         snake[len-1].pos_y = snake[len-2].pos_y + direc_y;
@@ -137,7 +143,12 @@ void pointEarned() {
     putRandomCircle(); //esto habria q chequear q no se cree donde esta la snake
 
 }
-//FALTA:
-//q imprima un mensaje q perdiste si llegas al borde o chcoas con vos mismo
-//que cuando perdes se imprima el puntaje
-//unirlo todo en funcion play
+
+void playSnake() {
+    snakeCanvas();
+    iniSnake();
+    putSnake();
+    putRandomCircle();
+
+}
+
