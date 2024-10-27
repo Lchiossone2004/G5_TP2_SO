@@ -93,8 +93,8 @@ void putCircle(int posx, int posy, uint32_t color) {
 //imprime un circulo en una pos random (seria la manzana) y guarda la posición
 void putRandomCircle() {
     int min, sec;
-     syscall(12, min); 
-     syscall(11, sec); 
+     syscall(12, &min); 
+     syscall(11, &sec); 
 
     int area = REC_X_FIL * REC_X_COL;
     int idx = (min * 60 + sec) % area;
