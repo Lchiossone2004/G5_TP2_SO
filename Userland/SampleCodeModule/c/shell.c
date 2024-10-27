@@ -43,7 +43,7 @@ void chekCommand(){
         help();
     }
     if(command == 2){
-        print("time", 4);
+        printTime();
     }
     if(command==3){
         zoomIn();

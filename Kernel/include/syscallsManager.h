@@ -1,5 +1,8 @@
 #include <stdint.h>
 #include <stdlib.h>
+
+
+
 typedef struct {
     uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rdi, rbp, rdx, rcx, rbx, rax;
 } Reg;
@@ -17,3 +20,4 @@ void sys_history(unsigned int fd);
 void sys_getSecs(uint64_t buffer);
 void sys_getMins(uint64_t buffer);
 void sys_getTime();
+void sys_ranN(int* toRan);

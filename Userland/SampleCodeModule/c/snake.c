@@ -92,17 +92,16 @@ void putCircle(int posx, int posy, uint32_t color) {
 
 //imprime un circulo en una pos random (seria la manzana) y guarda la posición
 void putRandomCircle() {
-    int min, sec;
-     syscall(12, &min); 
-     syscall(11, &sec); 
-
-    int area = REC_X_FIL * REC_X_COL;
-    int idx = (min * 60 + sec) % area;
-    int col = idx % REC_X_COL;          
-    circle.pos_x = col * REC_ANCHO; 
-    circle.pos_y = col * REC_LARGO;
+    int ran;
+    syscall(15,&ran);
+    int colApple = ran % REC_X_COL;
+    int filApple = ran % REC_X_FIL;
+    circle.pos_x = colApple * REC_ANCHO; 
+    circle.pos_y = filApple * REC_LARGO;
 	putCircle(circle.pos_x, circle.pos_y, 0x00FA0202);
 }
+
+
 
 int isPair(int pos) {
 	return pos % 2 == 0;

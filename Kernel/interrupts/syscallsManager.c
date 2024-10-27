@@ -8,8 +8,14 @@
 
 #define ROJO    0xFF0000
 #define BLANCO  0xFFFFFF
+
+#define PARA_ALEATORIOS_1 1664525
+#define PARA_ALEATORIOS_2 1013904223   
+
 extern void getCPURegisters(Reg *regs);
 extern void activateSti();
+
+static int seed = 0;
 
 void sys_registers_print(unsigned int fd){
     printHexaVideo(5);
@@ -105,6 +111,17 @@ void sys_getTime() {
 void sys_getKey(uint64_t buffer) {
     buffer = getKey();
 }
+void seed_changer() {
+    seed = (getHours() * 3600 + getMins() * 60 + getSec());
+}
+void sys_ranN(int* toRan){
+    seed_changer();
+    *toRan = (PARA_ALEATORIOS_1 * seed + PARA_ALEATORIOS_2);
+    if(*toRan<0){
+        *toRan=-*toRan;
+    }
+    return;
+}
 
 uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
     switch(rdi) {
@@ -116,12 +133,13 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 6: sys_zoomIn(rsi); return;
         case 7: sys_zoomOut(rsi); return;
         case 8: sys_history(rsi); return;
-        case 9: sys_clear(rsi); 
+        case 9: sys_clear(rsi); return;
         case 10: sys_putPixel(rsi, rdx, rcx); return;
         case 11: sys_getSecs(rsi); return;
         case 12: sys_getMins(rsi); return;
         case 13: sys_getTime(); return;
         case 14: sys_getKey(rsi); return;
+        case 15: sys_ranN(rsi); return;
     }
     return;
 }

@@ -31,6 +31,9 @@ void zoomIn(){  //estas tal vez las moveria a un archivo que sea zoom, tipo la l
 void zoomOut(){
     syscall(7,STDOUT);
 }
+void printTime(){
+    syscall(13,STDOUT);
+}
 
 int strCompare(char *s1, char*s2){
     int flag = 1;

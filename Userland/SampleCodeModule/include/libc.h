@@ -8,3 +8,4 @@ void zoomOut();
 int strCompare(char *s1, char*s2);
 int strSize(char * word);
 void history();
+void printTime();
