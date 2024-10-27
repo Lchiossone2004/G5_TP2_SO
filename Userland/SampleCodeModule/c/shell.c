@@ -67,7 +67,7 @@ void chekCommand(){
         printErr(buffer, strSize(buffer));
         printErr("] not found.", 12);
     }
-    if(command != 6 && command != -1){
+    if(command != 6 && command != -1 && command != 3 && command != 4){
     nlPrint();
     }
     print(NEW_LINE,sizeof(NEW_LINE));

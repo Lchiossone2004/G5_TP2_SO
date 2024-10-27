@@ -73,7 +73,7 @@ static int maxX = 0;
 static int maxY = 0;
 static int pos_circle_x;
 static int pos_circle_y;
-static char matrix[BORDER_Y/MOV_Y][BORDER_X/MOV_X] = {0};
+static word matrix[BORDER_Y/MOV_Y][BORDER_X/MOV_X] = {0};
 static int flag = 1;
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
@@ -87,7 +87,10 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
 void imprimirVideo(char * palabra, int size, uint32_t color){
 		for(int i = 0; i< size; i++){
 			y = aux;
-			matrix[(y/zoom)/MOV_Y][(x/zoom)/MOV_X] = palabra[i];
+			word vol;
+			vol.num = palabra[i];
+			vol.color = color;
+			matrix[(y/zoom)/MOV_Y][(x/zoom)/MOV_X] = vol;
 			charVideo(palabra[i],1,color); //Che ojo que el 1 ese es importante para cunado se termina la oracion, no lo cambien por el parametro zoom
 		}
 }
@@ -138,10 +141,13 @@ void nlVideo(){ //Hace un salto de linea
 }
 
 void deleteVideo(){ //Borra caracteres
+	word vol;
+	vol.num = 0;
+	vol.color = BLANCO;
 	if(!(y == 0 && x <= 0)){
 		if(x >= MOV_X*zoom){
 			x -= MOV_X*zoom;
-			matrix[(y/zoom)/MOV_Y][(x/zoom)/MOV_X] = 0;
+			matrix[(y/zoom)/MOV_Y][(x/zoom)/MOV_X] = vol;
 			charVideo(0,1,BLANCO);
 			x -= MOV_X*zoom;
 	}
@@ -149,7 +155,7 @@ void deleteVideo(){ //Borra caracteres
 	x = VBE_mode_info->width -MOV_X*zoom;
 	y -= MOV_Y*zoom;
 	aux -= MOV_Y*zoom;
-	matrix[(y/zoom)/MOV_Y][(x/zoom)/MOV_X] = 0;
+	matrix[(y/zoom)/MOV_Y][(x/zoom)/MOV_X] = vol;
 	charVideo(0,0,BLANCO);
 	x -= MOV_X*zoom;
 	}
@@ -190,9 +196,9 @@ void rePrint(){
 	aux = 0;
 	for(int i = 0; i<(BORDER_Y/MOV_Y)/zoom; i++){
 		for(int j= 0; j<(BORDER_X/MOV_X)/zoom; j++){
-				charVideo(matrix[i][j],1, BLANCO);
+				charVideo(matrix[i][j].num,1, matrix[i][j].color);
 		}
-		if(matrix[i+2][0]== 0){
+		if(matrix[i+1][0].num == 0){
 			break;
 		}
 	}
@@ -207,7 +213,7 @@ void videoClear(int borderY, int borderX){ //funcion que devuelve la pantalla a 
 	}
 	for(int i = 0; i<(BORDER_Y/MOV_Y); i++){
 		for(int j= 0; j<(BORDER_X/MOV_X ); j++){
-			matrix[i][j]= 0;
+			matrix[i][j].num = 0;
 		}
 	}
 	x = 0;
