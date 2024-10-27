@@ -97,13 +97,6 @@ void sys_putPixel(int posx, int posy, uint32_t hexColor) {
     putPixel(hexColor, posx, posy);
 }
 
-void sys_getSecs(uint64_t buffer) {
-  buffer = getSec();
-}
-
-void sys_getMins(uint64_t buffer) {
-   buffer = getMins();
-}
 
 void sys_getTime() {
     printTimeVideo(getHours(), getMins(), getSec());
@@ -135,8 +128,6 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 8: sys_history(rsi); return;
         case 9: sys_clear(rsi); return;
         case 10: sys_putPixel(rsi, rdx, rcx); return;
-        case 11: sys_getSecs(rsi); return;
-        case 12: sys_getMins(rsi); return;
         case 13: sys_getTime(); return;
         case 14: sys_getKey(rsi); return;
         case 15: sys_ranN(rsi); return;

@@ -155,18 +155,19 @@ void pointEarned() {
     }
     points++;
     deleteCircle();
-    putRandomCircle(); //esto habria q chequear q no se cree donde esta la snake
+    putRandomCircle(); 
 
 }
 
-void direc(int key) {
-    int newX, newY;
+void direc(char key) {
+    int newX = direc_x;
+    int newY = direc_y;
     switch(key) {
         case 0x48: newX = 0; newY = -REC_LARGO; break;//flecha arriba
         case 0x50: newX = 0; newY = REC_LARGO; break;//flecha abajo
         case 0x4B: newX = -REC_ANCHO; newY = 0; break;//flecha izquierda
         case 0x4D: newX = REC_ANCHO; newY = 0; break;//flecha derecha
-        default: newX = direc_x; newY = direc_y; 
+        default: break;
     }
     changeDir(newX, newY);
 }
