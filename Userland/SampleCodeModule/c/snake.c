@@ -89,19 +89,34 @@ void putCircle(int posx, int posy, uint32_t color) {
         }
     }
 }
-
-//imprime un circulo en una pos random (seria la manzana) y guarda la posición
-void putRandomCircle() {
-    int ran;
-    syscall(15,&ran);
-    int colApple = ran % REC_X_COL;
-    int filApple = ran % REC_X_FIL;
-    circle.pos_x = colApple * REC_ANCHO; 
-    circle.pos_y = filApple * REC_LARGO;
-	putCircle(circle.pos_x, circle.pos_y, 0x00FA0202);
+int isPositionOccupied(int x, int y) {
+    for (int i = 0; i < len; i++) {
+        if (snake[i].pos_x == x && snake[i].pos_y == y) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
+void putRandomCircle() {
+    int ran;
+    int colApple, filApple;
+    int posX, posY;
 
+    do {
+        syscall(15, &ran); 
+        colApple = ran % REC_X_FIL;
+        filApple = (ran / REC_X_FIL) % REC_X_COL;
+
+        posX = colApple * REC_ANCHO;
+        posY = filApple * REC_LARGO;
+
+    } while (isPositionOccupied(posX, posY));  // Repite si la posición está ocupada
+
+    circle.pos_x = posX;
+    circle.pos_y = posY;
+    putCircle(circle.pos_x, circle.pos_y, 0x00FA0202);
+}
 
 int isPair(int pos) {
 	return pos % 2 == 0;
