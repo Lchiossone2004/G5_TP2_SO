@@ -102,6 +102,9 @@ void sys_getMins(uint64_t buffer) {
 void sys_getTime() {
     printTimeVideo(getHours(), getMins(), getSec());
 }
+void sys_getKey(uint64_t buffer) {
+    buffer = getKey();
+}
 
 uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
     switch(rdi) {
@@ -118,6 +121,7 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 11: sys_getSecs(rsi); return;
         case 12: sys_getMins(rsi); return;
         case 13: sys_getTime(); return;
+        case 14: sys_getKey(rsi); return;
     }
     return;
 }
