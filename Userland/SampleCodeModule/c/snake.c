@@ -23,6 +23,7 @@ static int direc_x = REC_ANCHO; // dirección en x. arranca por default hacia la
 static int direc_y = 0; //como arranca por default hacia la derecha el movimiento en y default es 0
 static int len = 4; //tamaño inicial: 4 cuadraditos
 static int points = 0;
+static int snake_is_active=1;
 
 Snakepos snake[MAX_SNAKE]; 
 Snakepos circle;
@@ -163,6 +164,7 @@ void direc(char key) {
     int newX = direc_x;
     int newY = direc_y;
     switch(key) {
+        case 0x1B: snake_is_active=0; //apreto ESC
         case 0x48: newX = 0; newY = -REC_LARGO; break;//flecha arriba
         case 0x50: newX = 0; newY = REC_LARGO; break;//flecha abajo
         case 0x4B: newX = -REC_ANCHO; newY = 0; break;//flecha izquierda
@@ -176,6 +178,9 @@ void playSnake() {
     iniSnake();
     putSnake();
     putRandomCircle();
+    while(snake_is_active){
+        direc(0x48);
+    }
     
 }
 

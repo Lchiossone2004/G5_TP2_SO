@@ -7,10 +7,11 @@ static char *letra;
 static int ultimaLetra;
 static int index = 0;
 static char* commands[] = {"help", "time", "zoomin", "zoomout","history","clear", "snake"};
+static shell_is_active=1;
 
 void shell() { 
         print(NEW_LINE,sizeof(NEW_LINE));
-        while(1){
+        while(shell_is_active){
         getKey(letra,index);
         if(*letra == 0 && index > 0){
             index -= 1;
@@ -60,7 +61,9 @@ void chekCommand(){
         clear();
     }
     if(command == 7) {
+        shell_is_active=0;
         playSnake();
+        shell_is_active=1;
     }
     if(command == 0){
         printErr("     command: [", 15);
