@@ -73,10 +73,12 @@ void sys_write(unsigned int fd, const char *buffer, size_t count) {
 
 void sys_zoomIn(unsigned int fd){
     zoomIN();
+    rePrint();
 }
 
 void sys_zoomOut(unsigned int fd){
     zoomOUT();
+    rePrint();
 }
 
 void sys_newLine(){
@@ -84,7 +86,6 @@ void sys_newLine(){
 }
 
 void sys_history(unsigned int fd){
-    printMatriz();
 }
 
 void sys_clear(unsigned int fd){

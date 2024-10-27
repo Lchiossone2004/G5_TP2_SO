@@ -6,7 +6,7 @@
 
 #define MOV_X 8  //Lo que ocupa en x de un char 
 #define MOV_Y 16 //Lo que ocupa en y de un char
-#define BORDER_X 1016 //maximo ancho (en pixeles) de la pantalla
+#define BORDER_X 1024 //maximo ancho (en pixeles) de la pantalla
 #define BORDER_Y 768 //maximo largo (en pixeles) de la pantalla
 #define HEIGHT 8
 #define WIDTH 128
@@ -73,13 +73,8 @@ static int maxX = 0;
 static int maxY = 0;
 static int pos_circle_x;
 static int pos_circle_y;
-static int num_columns = BORDER_X / MOV_X; 
-static int num_rows = BORDER_Y / MOV_Y; 
-
-
-static char charsInShell[MAX_FIL_IN_SHELL][MAX_COLLS_IN_SHELL];
-static int xMatrizShell=0;
-static int yMatrizShell=0;
+static char matrix[BORDER_Y/MOV_Y][BORDER_X/MOV_X] = {0};
+static int flag = 1;
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
@@ -92,16 +87,11 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
 void imprimirVideo(char * palabra, int size, uint32_t color){
 		for(int i = 0; i< size; i++){
 			y = aux;
-			
+			matrix[(y/zoom)/MOV_Y][(x/zoom)/MOV_X] = palabra[i];
 			charVideo(palabra[i],1,color); //Che ojo que el 1 ese es importante para cunado se termina la oracion, no lo cambien por el parametro zoom
 		}
 }
 void charVideo(char num, char isEndLine, uint32_t color){
-	charsInShell[yMatrizShell][xMatrizShell++]=num;
-			if(xMatrizShell==MAX_COLLS_IN_SHELL){
-				yMatrizShell++;
-				xMatrizShell=0;
-			}
 	if(x<=BORDER_X && y < BORDER_Y){
 	int set;
 	char *bitmap;
@@ -130,61 +120,42 @@ void charVideo(char num, char isEndLine, uint32_t color){
 	if(x>maxX){
 		maxX = x;
 	}
-	if(x >= VBE_mode_info->width && isEndLine){ //Estaria bueno sacar este flag, que es para que borre correctamente 
+	if(x >= BORDER_X && isEndLine){ //Estaria bueno sacar este flag, que es para que borre correctamente 
 		aux += MOV_Y*zoom;
 		x = 0;
 		maxX = 0;
 	}
 	y = aux;
-	if(y >= BORDER_Y -16 && x >BORDER_X-8){
-		videoClear(BORDER_Y,BORDER_X + 8);
-	}
 }
 }
 
 void nlVideo(){ //Hace un salto de linea
-	yMatrizShell++;
-	xMatrizShell=0;
 	if(y < BORDER_Y -(16*zoom)){
 	aux += MOV_Y*zoom;
 	y += MOV_Y*zoom;
 	x = 0;
 	}
-	else{
-		videoClear(BORDER_Y,BORDER_X);
-	}
 }
 
 void deleteVideo(){ //Borra caracteres
 	if(!(y == 0 && x <= 0)){
-	if(x >= MOV_X*zoom){
-	x -= MOV_X*zoom;
-	charVideo(0,1,BLANCO);
-	x -= MOV_X*zoom;
+		if(x >= MOV_X*zoom){
+			x -= MOV_X*zoom;
+			matrix[(y/zoom)/MOV_Y][(x/zoom)/MOV_X] = 0;
+			charVideo(0,1,BLANCO);
+			x -= MOV_X*zoom;
 	}
 	else{
-	x = VBE_mode_info->width -8;
+	x = VBE_mode_info->width -MOV_X*zoom;
 	y -= MOV_Y*zoom;
 	aux -= MOV_Y*zoom;
+	matrix[(y/zoom)/MOV_Y][(x/zoom)/MOV_X] = 0;
 	charVideo(0,0,BLANCO);
 	x -= MOV_X*zoom;
 	}
 	}
 }
 
-// void movVideo(int direction){
-// 	x += (direction*MOV_X);
-// 	if(x < 10){
-// 	x = VBE_mode_info->width -8;
-// 	y -= MOV_Y;
-// 	aux -= MOV_Y;
-// 	}
-// 	if(x > VBE_mode_info->width - 10){
-// 		aux += MOV_Y;
-// 		x = 0;
-// 		y = aux;
-// 	}
-// }
 
 void printTimeVideo(char hour, char min, char sec) {
 	char toPrint[9] = "hh:mm:ss";
@@ -205,10 +176,38 @@ void printHexaVideo(uint64_t value){
 	imprimirVideo(buffer, digits,BLANCO);
 }
 
+void rePrint(){
+	x = 0;
+	y = 0;
+	aux = 0;
+	for(int i = 0; i<BORDER_Y; i++){
+		for(int j = 0; j<BORDER_X;j++){
+			putPixel(0x0, j, i);
+		}
+	}
+	x = 0;
+	y = 0;
+	aux = 0;
+	for(int i = 0; i<(BORDER_Y/MOV_Y)/zoom; i++){
+		for(int j= 0; j<(BORDER_X/MOV_X)/zoom; j++){
+				charVideo(matrix[i][j],1, BLANCO);
+		}
+		if(matrix[i+2][0]== 0){
+			break;
+		}
+	}
+	return;
+}
+
 void videoClear(int borderY, int borderX){ //funcion que devuelve la pantalla a su estado "incial"
 	for(int i = 0; i<borderY; i++){
 		for(int j = 0; j<borderX;j++){
 			putPixel(0x0, j, i);
+		}
+	}
+	for(int i = 0; i<(BORDER_Y/MOV_Y); i++){
+		for(int j= 0; j<(BORDER_X/MOV_X ); j++){
+			matrix[i][j]= 0;
 		}
 	}
 	x = 0;
@@ -228,20 +227,36 @@ void zoomOUT() {
 	}
 }
 
-void printMatriz(){
-	for(int i=0;i<MAX_FIL_IN_SHELL;i++){
-		for (int j = 0; i < MAX_COLLS_IN_SHELL; j++){
-			charVideo(charsInShell[i][j],1,BLANCO);
-			if(!charsInShell[i][j]){
-				break;
-			}
-		}
-		if(!charsInShell[i][0]){
-			return;
-		}
-	}
-	return;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 void putRectangle(int posx, int posy, uint32_t color) {
