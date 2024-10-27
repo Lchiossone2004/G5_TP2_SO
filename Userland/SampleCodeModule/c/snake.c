@@ -18,13 +18,13 @@ typedef struct {
 #define REC_X_COL BORDER_Y / REC_LARGO
 #define MAX_SNAKE 10
 
-static int pos_circle_x;
-static int pos_circle_y;
 static int direc_x = REC_ANCHO; // dirección en x. arranca por default hacia la derecha y se mueve en cuadrados
 static int direc_y = 0; //como arranca por default hacia la derecha el movimiento en y default es 0
 static int len = 4; //tamaño inicial: 4 cuadraditos
+static int points = 0;
 
 Snakepos snake[MAX_SNAKE]; 
+Snakepos circle;
 
 //inicializa la snake desde el principio del canvas con dirección hacia la derecha
 void iniSnake() {
@@ -95,9 +95,9 @@ void putRandomCircle() {
     int area = REC_X_FIL * REC_X_COL;
     int idx = (min * 60 + sec) % area;
     int col = idx % REC_X_COL;          
-    pos_circle_x = col * REC_ANCHO; 
-    pos_circle_y = col * REC_LARGO;
-	putCircle(pos_circle_x, pos_circle_y, 0x00FA0202);
+    circle.pos_x = col * REC_ANCHO; 
+    circle.pos_y = col * REC_LARGO;
+	putCircle(circle.pos_x, circle.pos_y, 0x00FA0202);
 }
 
 int isPair(int pos) {
@@ -105,10 +105,10 @@ int isPair(int pos) {
 }
 
 void deleteCircle() {
-	if((isPair(pos_circle_x) && isPair(pos_circle_y))||(!isPair(pos_circle_x) && !isPair(pos_circle_y))) {
-		putRectangle(pos_circle_x, pos_circle_y, COLOR_1);
+	if((isPair(circle.pos_x) && isPair(circle.pos_y))||(!isPair(circle.pos_x) && !isPair(circle.pos_y))) {
+		putRectangle(circle.pos_x, circle.pos_y, COLOR_1);
 	} else {
-		putRectangle(pos_circle_x, pos_circle_y, COLOR_2);
+		putRectangle(circle.pos_x,circle.pos_y, COLOR_2);
 	}
 }
 
@@ -119,7 +119,24 @@ void changeDir(int newX, int newY) {
     snake->pos_x = newX;
     snake ->pos_y = newY;
 }
+//esto va a ser para ver si llegue al circulo
+int isSnakeinPos(Snakepos pos) {
+    return snake[len-1].pos_x == pos.pos_x && snake[len-1].pos_y == pos.pos_y;
+}
+
+void pointEarned() {
+    if(len < 10) {
+        len++;
+        //q se guarde otro rec 
+    }
+    points++;
+    deleteCircle();
+    putRandomCircle(); //esto habria q chequear q no se cree donde esta la snake
+
+}
 //FALTA:
 //unir todo xd y que cuando pisa la casilla donde esta el circulo, se genere nuevo circulo y se borre el que estaba
 //que cuando se llame al comando snake empiece esto
 //q imprima un mensaje q perdiste si llegas al borde o chcoas con vos mismo
+//que cuando perdes se imprima el puntaje
+
