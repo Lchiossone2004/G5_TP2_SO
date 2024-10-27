@@ -96,7 +96,6 @@ void putRandomCircle() {
 
     int area = REC_X_FIL * REC_X_COL;
     int idx = (min * 60 + sec) % area;
-    int row = idx / REC_X_COL;
     int col = idx % REC_X_COL;          
     circle.pos_x = col * REC_ANCHO; 
     circle.pos_y = col * REC_LARGO;
