@@ -13,5 +13,5 @@ void movVideo(int direc);
 void printHexaVideo(uint64_t value);
 void zoomIN();
 void zoomOUT();
-void videoClear(int borderX, int borderY);
+void videoClear();
 void rePrint();

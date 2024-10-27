@@ -90,7 +90,7 @@ void sys_history(unsigned int fd){
 
 void sys_clear(unsigned int fd){
     if(fd == 1){
-         videoClear(768,1024);
+         videoClear();
     }
 }
 

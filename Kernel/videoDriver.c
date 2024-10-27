@@ -69,12 +69,9 @@ static int zoom = 1; //zoom inicial
 static int x = 0;
 static int y = 0;
 static int aux = 0;
-static int maxX = 0;
-static int maxY = 0;
 static int pos_circle_x;
 static int pos_circle_y;
 static word matrix[BORDER_Y/MOV_Y][BORDER_X/MOV_X] = {0};
-static int flag = 1;
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
@@ -120,16 +117,15 @@ void charVideo(char num, char isEndLine, uint32_t color){
 		y += zoom;
 	}
 	x += MOV_X*zoom;
-	if(x>maxX){
-		maxX = x;
-	}
 	if(x >= BORDER_X && isEndLine){ //Estaria bueno sacar este flag, que es para que borre correctamente 
 		aux += MOV_Y*zoom;
 		x = 0;
-		maxX = 0;
 	}
 	y = aux;
-}
+	}
+	if(x >= BORDER_X - 8 && y >= BORDER_Y -16){
+		videoClear();
+	}
 }
 
 void nlVideo(){ //Hace un salto de linea
@@ -137,6 +133,9 @@ void nlVideo(){ //Hace un salto de linea
 	aux += MOV_Y*zoom;
 	y += MOV_Y*zoom;
 	x = 0;
+	}
+	else{
+		videoClear();
 	}
 }
 
@@ -182,18 +181,8 @@ void printHexaVideo(uint64_t value){
 	imprimirVideo(buffer, digits,BLANCO);
 }
 
-void rePrint(){
-	x = 0;
-	y = 0;
-	aux = 0;
-	for(int i = 0; i<BORDER_Y; i++){
-		for(int j = 0; j<BORDER_X;j++){
-			putPixel(0x0, j, i);
-		}
-	}
-	x = 0;
-	y = 0;
-	aux = 0;
+void rePrint(){ // 1 if is zoomIN 0 if zoomOUT
+	clearScrenn();
 	for(int i = 0; i<(BORDER_Y/MOV_Y)/zoom; i++){
 		for(int j= 0; j<(BORDER_X/MOV_X)/zoom; j++){
 				charVideo(matrix[i][j].num,1, matrix[i][j].color);
@@ -205,12 +194,8 @@ void rePrint(){
 	return;
 }
 
-void videoClear(int borderY, int borderX){ //funcion que devuelve la pantalla a su estado "incial"
-	for(int i = 0; i<borderY; i++){
-		for(int j = 0; j<borderX;j++){
-			putPixel(0x0, j, i);
-		}
-	}
+void videoClear(){ //funcion que devuelve la pantalla a su estado "incial"
+	clearScrenn();
 	for(int i = 0; i<(BORDER_Y/MOV_Y); i++){
 		for(int j= 0; j<(BORDER_X/MOV_X ); j++){
 			matrix[i][j].num = 0;
@@ -221,6 +206,16 @@ void videoClear(int borderY, int borderX){ //funcion que devuelve la pantalla a 
 	aux = 0;
 }
 
+void clearScrenn(){
+	for(int i = 0; i<BORDER_Y; i++){
+		for(int j = 0; j<BORDER_X;j++){
+			putPixel(0x0, j, i);
+		}
+	}
+	x = 0;
+	y = 0;
+	aux = 0;
+}
 
 void  zoomIN() {
 	if(zoom <2){
