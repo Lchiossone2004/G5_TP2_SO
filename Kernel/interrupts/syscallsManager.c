@@ -100,7 +100,7 @@ void sys_sleep(int seconds){
 
 void sys_clear(unsigned int fd){
     if(fd == 1){
-         videoClear();
+        videoClear();
     }
 }
 

@@ -189,6 +189,6 @@ void playSnake() {
         direction=0;
         syscall(8,1);
     }
-    
+    syscall(9,1);
 }
 
