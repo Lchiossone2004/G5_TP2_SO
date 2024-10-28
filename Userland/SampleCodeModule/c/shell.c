@@ -14,7 +14,7 @@ void shell() {
         while(shell_is_active){
         if(index == WORD_BUFFER_SIZE){
             clearBuffer();
-            chekCommand();
+            clear();
         }
         getKey(letra,index);
         if(*letra == 0 && index > 0){

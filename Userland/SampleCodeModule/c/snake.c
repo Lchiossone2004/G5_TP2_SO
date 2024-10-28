@@ -23,15 +23,15 @@ static int direc_x = REC_ANCHO; // dirección en x. arranca por default hacia la
 static int direc_y = 0; //como arranca por default hacia la derecha el movimiento en y default es 0
 static int len = 4; //tamaño inicial: 4 cuadraditos
 static int points = 0;
-
+static char snake_is_active=1;
 Snakepos snake[MAX_SNAKE]; 
 Snakepos circle;
 
 //inicializa la snake desde el principio del canvas con dirección hacia la derecha
 void iniSnake() {
-    for(int i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++) {
         snake[i].pos_y = 0;
-        snake[i].pos_x = (len - i)*REC_ANCHO;
+        snake[i].pos_x = (len - 1 - i) * REC_ANCHO; 
     }
 }
 
@@ -66,13 +66,18 @@ void putSnake() {
 
 void moveSnake() {
     delete(snake[0].pos_x, snake[0].pos_y);
+    //va moviendo las partes hacia adelante
     for(int i = 0; i < len-1; i++) {
         snake[i].pos_x = snake[i+1].pos_x;
         snake[i].pos_y = snake[i+1].pos_y;
-    } 
-        snake[len-1].pos_x += direc_x;
-        snake[len-1].pos_y += direc_y;
-        putSnake();
+    }
+    //mueve la cabeza en su direccion
+    snake[len-1].pos_x += direc_x;
+    snake[len-1].pos_y += direc_y;
+    if (isSnakeinPos(circle)) {
+        pointEarned();
+    }
+    putSnake();
 }
 
 void putCircle(int posx, int posy, uint32_t color) {
@@ -138,7 +143,7 @@ int isSnakeinPos(Snakepos pos) {
     return snake[len-1].pos_x == pos.pos_x && snake[len-1].pos_y == pos.pos_y;
 }
 
-void pointEarned() {
+void pointEarned() {//CUANDO CRECE, LO HACE PARA ADELANTE, fijarse si podemos hace que mantenga la cola por una unidad de tiempo
     if(len < MAX_SNAKE) {
         len++;
         snake[len-1].pos_x = snake[len-2].pos_x + direc_x;
@@ -170,25 +175,42 @@ void changeDir(int newX, int newY) {
         direc_y = newY;
     }
 }
+int checkCollision() {
+    // choca con un borde
+    if (snake[len - 1].pos_x < 0 || snake[len - 1].pos_x >= BORDER_X ||snake[len - 1].pos_y < 0 || snake[len - 1].pos_y >= BORDER_Y) {
+        return 1;
+    }
+    //se choca a ella misma NO ESTA FUNCIONADO BIEN ESTO, CUANDO ARRANCA INTERPRETA QUE SE CHOCA
+    // for (int i = 0; i < len - 1; i++) {
+    //     if (snake[len - 1].pos_x == snake[i].pos_x && snake[len - 1].pos_y == snake[i].pos_y) {
+    //         return 1;
+    //     }
+    // }
+    return 0;
+}
+
+void endGame() {
+    snake_is_active = 0;
+    syscall(9, 1);  // Limpia la pantalla usando una llamada al sistema
+}
 
 void playSnake() {
     snakeCanvas();
     iniSnake();
     putSnake();
     putRandomCircle();
-    int endGame=1;
+    int exitPressed;
     int direction;
-    while(1){
+    while(snake_is_active){
         syscall(14, &endGame);
-        if(0x30==endGame){
-            break;
-        }
         syscall(14, &direction);
         direc(direction);
         moveSnake();
         direction=0;
         syscall(8,1);
+        if(0x30==exitPressed || checkCollision()){
+            endGame();
+        }
     }
-    syscall(9,1);
 }
 
