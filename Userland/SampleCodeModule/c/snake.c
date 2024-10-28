@@ -23,7 +23,6 @@ static int direc_x = REC_ANCHO; // dirección en x. arranca por default hacia la
 static int direc_y = 0; //como arranca por default hacia la derecha el movimiento en y default es 0
 static int len = 4; //tamaño inicial: 4 cuadraditos
 static int points = 0;
-static int snake_is_active=1;
 
 Snakepos snake[MAX_SNAKE]; 
 Snakepos circle;
@@ -134,13 +133,6 @@ void delete(int pos_x, int pos_y) {
 	}
 }
 
-void changeDir(int newX, int newY) {
-    if((newX != 0 && snake->pos_x != 0) || (newY != 0 && snake->pos_y != 0)) { //chequear esto
-        return;
-    }
-    snake->pos_x = newX;
-    snake ->pos_y = newY;
-}
 
 int isSnakeinPos(Snakepos pos) {
     return snake[len-1].pos_x == pos.pos_x && snake[len-1].pos_y == pos.pos_y;
@@ -164,22 +156,38 @@ void direc(char key) {
     int newX = direc_x;
     int newY = direc_y;
     switch(key) {
-        case 0x1B: snake_is_active=0; //apreto ESC
-        case 0x48: newX = 0; newY = -REC_LARGO; break;//flecha arriba
-        case 0x50: newX = 0; newY = REC_LARGO; break;//flecha abajo
-        case 0x4B: newX = -REC_ANCHO; newY = 0; break;//flecha izquierda
-        case 0x4D: newX = REC_ANCHO; newY = 0; break;//flecha derecha
-        default: break;
+        case 0x11: newX = 0; newY = -REC_LARGO; break;//w
+        case 0x1F: newX = 0; newY = REC_LARGO; break;//s
+        case 0x1E: newX = -REC_ANCHO; newY = 0; break;//d
+        case 0x20: newX = REC_ANCHO; newY = 0; break;//a
+        default: return;
     }
     changeDir(newX, newY);
 }
+void changeDir(int newX, int newY) {
+    if ((newX != -direc_x) && (newY != -direc_y)) {
+        direc_x = newX;
+        direc_y = newY;
+    }
+}
+
 void playSnake() {
     snakeCanvas();
     iniSnake();
     putSnake();
     putRandomCircle();
-    while(snake_is_active){
-        direc(0x48);
+    int endGame=1;
+    int direction;
+    while(1){
+        syscall(14, &endGame);
+        if(0x30==endGame){
+            break;
+        }
+        syscall(14, &direction);
+        direc(direction);
+        moveSnake();
+        direction=0;
+        syscall(8,1);
     }
     
 }

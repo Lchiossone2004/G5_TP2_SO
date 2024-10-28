@@ -112,8 +112,9 @@ void sys_putPixel(int posx, int posy, uint32_t hexColor) {
 void sys_getTime() {
     printTimeVideo(getHours(), getMins(), getSec());
 }
-void sys_getKey(uint64_t buffer) {
-    buffer = getKey();
+void sys_getKey(int* buffer) {
+    _sti();
+    *buffer = getKey();
 }
 void seed_changer() {
     seed = (getHours() * 3600 + getMins() * 60 + getSec());
