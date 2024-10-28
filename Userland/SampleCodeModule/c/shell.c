@@ -6,7 +6,7 @@ static char buffer[WORD_BUFFER_SIZE] = {0};
 static char *letra;
 static int ultimaLetra;
 static int index = 0;
-static char* commands[] = {"help", "time", "zoomin", "zoomout","history","clear", "snake"};
+static char* commands[] = {"help", "time", "zoomin", "zoomout","history","clear", "snake","exit"};
 static shell_is_active=1;
 
 void shell() { 
@@ -65,6 +65,12 @@ void chekCommand(){
         playSnake();
         shell_is_active=1;
     }
+    if(command == 8){
+        nlPrint();
+        print("closing shell...", 16);
+        shell_is_active = 0;
+        return;
+    }
     if(command == 0){
         printErr("     command: [", 15);
         printErr(buffer, strSize(buffer));
@@ -95,7 +101,7 @@ int processCommand(){
     int found = 0;
     int ret = 0;
     char * aux;
-    if(ultimaLetra == 0){
+    if(ultimaLetra == 0 || (index == 0 && buffer[0] == 0)){
         found = 1;
         ret = -1;
     }

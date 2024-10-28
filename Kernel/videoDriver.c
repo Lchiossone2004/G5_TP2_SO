@@ -223,7 +223,7 @@ void  zoomIN() {
 	}
 }
 void zoomOUT() {
-	if (zoom>0){
+	if (zoom>1){
 		zoom--;
 	}
 }
