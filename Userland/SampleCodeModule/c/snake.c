@@ -148,7 +148,6 @@ void pointEarned() {//CUANDO CRECE, LO HACE PARA ADELANTE, fijarse si podemos ha
         len++;
         snake[len-1].pos_x = snake[len-2].pos_x + direc_x;
         snake[len-1].pos_y = snake[len-2].pos_y + direc_y;
-        //cnequear esto pero creo q va ok
         putSnake();
     }
     points++;
@@ -191,7 +190,9 @@ int checkCollision() {
 
 void endGame() {
     snake_is_active = 0;
+    char * phrase= "You lost! score:";
     syscall(9, 1);  // Limpia la pantalla usando una llamada al sistema
+
 }
 
 void playSnake() {
@@ -208,6 +209,9 @@ void playSnake() {
         moveSnake();
         direction=0;
         syscall(8,1);
+        if(isSnakeinPos(circle)) {
+            pointEarned();
+        }
         if(0x30==exitPressed || checkCollision()){
             endGame();
         }
