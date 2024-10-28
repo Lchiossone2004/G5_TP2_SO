@@ -10,6 +10,10 @@
 
 #include <idtLoader.h>
 
+#define PIC_MASTER_ALL 0xFC
+#define PIC_MASTER_TIMER_O 0xFE
+#define PIC_MASTER_NULL 0xFF
+
 void _irq00Handler(void);
 void _irq01Handler(void);
 void _irq02Handler(void);

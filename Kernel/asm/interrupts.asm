@@ -149,9 +149,7 @@ _irq08Handler:
 	iretq			;no se por que con ret no funciona pero con iretq si
 
 ;activa el sti (para poder recibir interrupciones dentro del getChar)
-activateSti:
-	sti 
-	ret
+
 
 ;Zero Division Exception
 _exception0Handler:

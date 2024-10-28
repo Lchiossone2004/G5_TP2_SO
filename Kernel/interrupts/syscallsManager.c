@@ -5,6 +5,8 @@
 #include <videoDriver.h>
 #include <naiveConsole.h>
 #include <lib.h>
+#include <time.h>
+#include <interrupts.h>
 
 #define ROJO    0xFF0000
 #define BLANCO  0xFFFFFF
@@ -40,7 +42,7 @@ void sys_registers_print(unsigned int fd){
 }
 
 void sys_getChar(unsigned int fd, char * buffer, size_t count){
-    activateSti();
+    _sti();
     while(isBufferEmpty());
     *buffer = getBuffer();
     if(*buffer == 0 && count >= 1){
@@ -85,7 +87,15 @@ void sys_newLine(){
     nlVideo();
 }
 
-void sys_history(unsigned int fd){
+void sys_sleep(int seconds){
+    _sti();
+    picMasterMask(PIC_MASTER_TIMER_O);
+    int max = ticks_elapsed()/18 + seconds;
+    int aux = ticks_elapsed()/18;
+    while(max > ticks_elapsed()/18){
+
+    } 
+    picMasterMask(PIC_MASTER_ALL);
 }
 
 void sys_clear(unsigned int fd){
@@ -126,7 +136,7 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 5: sys_newLine(rdi); return;
         case 6: sys_zoomIn(rsi); return;
         case 7: sys_zoomOut(rsi); return;
-        case 8: sys_history(rsi); return;
+        case 8: sys_sleep(rsi); return;
         case 9: sys_clear(rsi); return;
         case 10: sys_putPixel(rsi, rdx, rcx); return;
         case 13: sys_getTime(); return;
