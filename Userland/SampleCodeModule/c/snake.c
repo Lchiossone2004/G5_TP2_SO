@@ -111,16 +111,9 @@ void putCircle(int posx, int posy, uint32_t color) {
         }
     }
 }
-int isPositionOccupied(int x, int y) {
-    for (int i = 0; i < snake1->len; i++) {
-        if (snake1[i].pos_x == x && snake1[i].pos_y == y) {
-            return 1;
-        }
-    }
-    for(int i = 0;i<snake2->len; i++) {
-        if(snake2[i].pos_x == x && snake2[i].pos_y == y) {
-            return 1;
-        }
+int isPositionOccupied(Snakepos pos) {
+    if(isSnakeinPos(pos,snake1) || isSnakeinPos(pos,snake2)) {
+        return 1;
     }
     return 0;
 }
@@ -128,20 +121,20 @@ int isPositionOccupied(int x, int y) {
 void putRandomCircle() {
     int ran;
     int colApple, filApple;
-    int posX, posY;
+    Snakepos pos;
 
     do {
         syscall(15, &ran); 
         colApple = ran % REC_X_FIL;
         filApple = (ran / REC_X_FIL) % REC_X_COL;
 
-        posX = colApple * REC_ANCHO;
-        posY = filApple * REC_LARGO;
+        pos.pos_x = colApple * REC_ANCHO;
+        pos.pos_y = filApple * REC_LARGO;
 
-    } while (isPositionOccupied(posX, posY));  // Repite si la posición está ocupada
+    } while (isPositionOccupied(pos));  // Repite si la posición está ocupada
 
-    circle.pos_x = posX;
-    circle.pos_y = posY;
+    circle.pos_x = pos.pos_x;
+    circle.pos_y = pos.pos_y;
     putCircle(circle.pos_x, circle.pos_y, 0x00FA0202);
 }
 
