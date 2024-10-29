@@ -311,6 +311,7 @@ void endGame(char players, char winner) {
     syscall(8,36);
     syscall(7,1);
     syscall(9,1);
+    return;
 }   
 
 void play(char players) {
