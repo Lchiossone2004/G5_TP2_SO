@@ -31,7 +31,7 @@ Snakepos circle;
 void iniSnake() {
     for (int i = 0; i < len; i++) {
         snake[i].pos_y = 0;
-        snake[i].pos_x = (len - 1 - i) * REC_ANCHO; 
+        snake[i].pos_x = (1 + i) * REC_ANCHO; 
     }
 }
 
@@ -78,6 +78,7 @@ void moveSnake() {
         pointEarned();
     }
     putSnake();
+    
 }
 
 void putCircle(int posx, int posy, uint32_t color) {
@@ -175,16 +176,17 @@ void changeDir(int newX, int newY) {
     }
 }
 int checkCollision() {
+   
     // choca con un borde
     if (snake[len - 1].pos_x < 0 || snake[len - 1].pos_x >= BORDER_X ||snake[len - 1].pos_y < 0 || snake[len - 1].pos_y >= BORDER_Y) {
         return 1;
     }
-    //se choca a ella misma NO ESTA FUNCIONADO BIEN ESTO, CUANDO ARRANCA INTERPRETA QUE SE CHOCA
-    // for (int i = 0; i < len - 1; i++) {
-    //     if (snake[len - 1].pos_x == snake[i].pos_x && snake[len - 1].pos_y == snake[i].pos_y) {
-    //         return 1;
-    //     }
-    // }
+    //se choca a ella misma 
+     for(int i = 0; i < len -1; i++) {
+         if(snake[i].pos_x == snake[len-1].pos_x && snake[i].pos_y == snake[len-1].pos_y) {
+             return 1;
+         }
+     }
     return 0;
 }
 
@@ -192,6 +194,11 @@ void endGame() {
     snake_is_active = 0;
     char * phrase= "You lost! score:";
     syscall(9, 1);  // Limpia la pantalla usando una llamada al sistema
+    syscall(6,1); //hace zoom asi se imprime el msj mas grande
+    syscall(4,1,phrase,16); //imprime el msj que perdiste
+    syscall(8,2);
+    syscall(7,1);
+    syscall(9,1);
 
 }
 
