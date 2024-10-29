@@ -77,12 +77,10 @@ void sys_newLine(){
     nlVideo();
 }
 
-void sys_sleep(int miliseconds){
+void sys_sleep(int seconds){
     _sti();
-    int max = (ticks_elapsed()/18)/10 + miliseconds;
-    while(max > (ticks_elapsed()/18)){
-
-    } 
+    int max = ticks_elapsed() + seconds*18;
+    while(max > ticks_elapsed());
 }
 
 void sys_clear(unsigned int fd){
