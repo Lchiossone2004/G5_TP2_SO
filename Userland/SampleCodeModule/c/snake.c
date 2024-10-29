@@ -257,16 +257,43 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
      //falta opcion se chocan cabeza con cabeza (pierden los 2)
     return 0;
 }
+void intToStr(int num, char* str) {
+    int i = 0;
+    // Manejar el caso en que el número sea 0
+    if (num == 0) {
+        str[0] = '0';
+        str[1] = '\0';
+        return;
+    }
+
+    // Convertir el número a string en orden inverso
+    while (num != 0) {
+        str[i++] = (num % 10) + '0';
+        num /= 10;
+    }
+    // Terminar la cadena
+    str[i] = '\0';
+
+    // Invertir la cadena
+    for (int j = 0; j < i / 2; j++) {
+        char temp = str[j];
+        str[j] = str[i - j - 1];
+        str[i - j - 1] = temp;
+    }
+}
 
 void endGame(char players, char winner) {
     snake_is_active = 0;
     char * p1 = "PLAYER ONE SCORE: ";
     char *p2;
     char *p3;
+    char *points1P;
+    char *points2P;
+    intToStr(snake1->points, points1P);
     syscall(9, 1);  // Limpia la pantalla usando una llamada al sistema
     syscall(6,1); //hace zoom asi se imprime el msj mas grande
     syscall(4,1,p1,18);
-    //syscall puntos 1
+    syscall(4,1,points1P,1);
     syscall(5);
     if(players == '2') {
         p2 = "PLAYER TWO SCORE: ";
@@ -275,7 +302,8 @@ void endGame(char players, char winner) {
         win[0] = winner;
         win[1] = '\0';
         syscall(4,1,p2,18);
-        //syscall puntos 2
+        intToStr(snake2->points, points2P);
+        syscall(4,1,points2P,1);
         syscall(5);
         syscall(4,1,p3,15);
         syscall(4,1,win,1);
@@ -324,9 +352,6 @@ void play(char players) {
         }
 
     }
-
-
-
     snake_is_active=1;
     return;
 }
