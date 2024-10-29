@@ -269,4 +269,15 @@ void playSnake() {
         }
     }
 }
+void play2Snakes() {
+    
+}
+void play(char players) {
+    if(players == '1') {
+        playSnake();
+        return;
+    }
+    play2Snakes();
+
+}
 

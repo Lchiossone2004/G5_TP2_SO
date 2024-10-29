@@ -62,8 +62,16 @@ void chekCommand(){
         clear();
     }
     if(command == 6) {
+        nlPrint();
+        char buffer;
+        do {
+        print("type '1' for one player, '2' for two players",44);
+        nlPrint();
+        syscall(2,1,&buffer,1);
+        nlPrint();
+        }while (buffer != '1' && buffer != '2');
         shell_is_active=0;
-        playSnake();
+        play(buffer);
         shell_is_active=1;
     }
     if(command == 7){
