@@ -12,5 +12,7 @@ int getHours();
 int getMins();
 int getSec();
 int getKey();
+void outb(uint8_t dest, uint8_t org);
+uint8_t inb(uint8_t dest);
 
 #endif

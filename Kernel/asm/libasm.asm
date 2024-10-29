@@ -4,6 +4,8 @@ GLOBAL getMins
 GLOBAL getSec
 GLOBAL getKey
 GLOBAL getCPURegisters
+GLOBAL outb
+GLOBAL inb
 section .text
 	
 cpuVendor:
@@ -99,6 +101,24 @@ getCPURegisters:
 	add rax, 8
     mov [rax], qword rbp
 	mov rax, regBuffer
+	ret
+
+outb:
+	push rbp
+	mov rbp, rsp
+	mov rdx, rdi
+	mov rax, rsi
+	out dx, al
+	mov rsp, rbp
+	pop rbp
+	ret
+inb:
+	push rbp
+	mov rbp, rsp
+	mov rdx, rdi
+	in al, dx
+	mov rsp, rbp
+	pop rbp
 	ret
 
 section .bss
