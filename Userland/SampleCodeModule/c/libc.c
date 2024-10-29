@@ -7,9 +7,11 @@
 #define STDERR 2
 
 extern uint64_t syscall(uint64_t rdi, ...);
+
 void printRegisters(){
     syscall(1,STDOUT);
 }
+
 void print(char * word, int size){
     syscall(4,STDIN,word,size);
 }
@@ -22,18 +24,22 @@ void read(char * buffer){
 void printErr(char * word, int size){
     syscall(4,STDERR,word,size);
 }
+
 void nlPrint(){
     syscall(5,STDOUT);
 }
+
 void zoomIn(){  //estas tal vez las moveria a un archivo que sea zoom, tipo la lib.c es para que la use el usuario
     syscall(6,STDOUT);
 }
+
 void zoomOut(){
     syscall(7,STDOUT);
 }
-void printTime(){
-    syscall(13,STDOUT);
-}
+
+// void printTime(){
+//     syscall(13,STDOUT);
+// }
 
 int strCompare(char *s1, char*s2){
     int flag = 1;
@@ -55,6 +61,7 @@ int strSize(char * word){
     }
     return toRet;
 }
+
 void history(){
     syscall(8,STDOUT);
 }

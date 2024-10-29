@@ -161,20 +161,6 @@ void deleteVideo(){ //Borra caracteres
 	}
 }
 
-
-void printTimeVideo(char hour, char min, char sec) {
-	char toPrint[9] = "hh:mm:ss";
-	char aux = hour >> 4;
-	toPrint[0] = aux + '0';
-	toPrint[1] = (hour&0xF) + '0'; //guardo los 4 bits menos significativos y el resto lo pongo en 0
-	aux = min >> 4;
-	toPrint[3] = aux + '0';
-	toPrint[4] = (min&0xF) + '0';
-	aux = sec >> 4;
-	toPrint[6] = aux + '0';
-	toPrint[7] = (sec&0xF) + '0';
-	imprimirVideo(toPrint, sizeof(toPrint),BLANCO);
-}
 void printHexaVideo(uint64_t value){
 	char* buffer;
 	uint32_t digits=uintToBase(value, buffer, 16);
@@ -228,37 +214,7 @@ void zoomOUT() {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Funciones para el snake
 
 void putRectangle(int posx, int posy, uint32_t color) {
 	for(int i = posx; i < posx+REC_ANCHO; i++) {
@@ -319,65 +275,3 @@ void deleteCircle() {
 int isPair(int pos) {
 	return pos % 2 == 0;
 }
-/*
-void expand(uint8_t ** newBitMap) {
-        zoom++; //siempre quiero que se agrande hasta zoom+1
-        for(int i = 0; i < 128 * zoom; i+zoom) { //para cada fila en newBitMap
-        for(int j = 0; j < 128; j++) { //para cada fila en font
-            expandirFila(font[j], newBitMap[i], zoom); //expando la fila de font en la fila de newBitMap
-            for(int k = 1; k < zoom*2; k++) { 
-            newBitMap[i + k] = newBitMap[i]; //duplico la columna n veces
-            }
-        }
-    }
-}
-
- void reduce(uint8_t ** newBitMap) {
-   if (zoom <= 1) {
-    zoom = 0;
-    copy(newBitMap); 
-    return;
-   }
-   zoom-=2; //disminuyo la zoom en 2 para que el expand trabaje con zoomOrg -1
-   expand(newBitMap);
-   //en el mismo expand se agranda zoom en  una unidad entonces queda en -1
-}
-
-
- void expandirFila(uint8_t * original, uint16_t *expandido, int n) {
-    int idx = 0;
-    // recorro cada byte en la fila original
-    for (int i = 0; i < 8; i++) {
-        uint8_t byte = original[i];
-        // recorro los bits del byte
-        for (int bitPos = 7; bitPos >= 0; bitPos--) {
-            uint16_t bit = (byte >> bitPos) & 1; // extraigo el bit
-            for (int j = 0; j < n; j++) {
-                expandido[idx++] = bit; // lo duplico n veces y lo guardo en idx
-            }
-        }
-    }
-}
-int outOfBoundsZoom() {
-    if(zoom < 0 || zoom > MAX_ZOOM ) {
-        return 1;
-    }
-    return 0;
-}
-
-
-
-
-void copyBitMap(uint8_t newBitMap[WIDTH*(zoom+2)][HEIGHT*(zoom+2)]) {
-    for (int i = 0; i < WIDTH * (zoom + 2); i++) {
-        for (int j = 0; j < HEIGHT * (zoom + 2); j++) {
-            new_font[zoom][i][j] = newBitMap[i][j];
-        }
-    }
-}
- void copy() {
-    copyBitMap(font);
-  }
-
-*/
-//newBitMap tiene que tener 8 * (flag+2) x 128*(flag+2)

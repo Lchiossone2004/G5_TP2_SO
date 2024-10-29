@@ -1,6 +1,7 @@
 
 #include "../include/shell.h"
 #include "../include/snake.h"
+#include "../include/time.h"
 
 static char buffer[WORD_BUFFER_SIZE] = {0};
 static char *letra;
@@ -10,7 +11,7 @@ static char* commands[] = {"help", "time", "zoomin", "zoomout","clear", "snake",
 static shell_is_active=1;
 
 void shell() { 
-        print(NEW_LINE,sizeof(NEW_LINE));
+        print(NEW_LINE,sizeof(NEW_LINE)-1);
         while(shell_is_active){
         if(index == WORD_BUFFER_SIZE){
             clearBuffer();
@@ -87,7 +88,7 @@ void chekCommand(){
     if(command != 5 && command != -1 && command != 3 && command != 4){
     nlPrint();
     }
-    print(NEW_LINE,sizeof(NEW_LINE));
+    print(NEW_LINE,sizeof(NEW_LINE)-1);
     index = 0;
     ultimaLetra = 0;
 }
