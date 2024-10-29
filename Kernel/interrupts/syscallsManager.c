@@ -14,15 +14,15 @@
 #define PARA_ALEATORIOS_1 1664525
 #define PARA_ALEATORIOS_2 1013904223   
 
-extern char * getCPURegisters();
+extern uint64_t * getCPURegisters();
 extern void activateSti();
 
 static int seed = 0;
 
-static char * regs[8] = {"RAX: ", "RBX: ", "RCX: ", "RDX: ", "RBP: ", "RDI: ", "RSI: ", "RSP: "};
+static char * regs[8] = {"RAX: ", "RBX: ", "RCX: ", "RDX: ", "RSI: ","RDI: ", "RSP: ","RBP: "};
 
 void sys_registers_print(unsigned int fd){
-    char * registers = getCPURegisters();
+    uint64_t * registers = getCPURegisters();
     for(int i = 0; i<8; i++){
     imprimirVideo(regs[i],5,BLANCO);
     printHexaVideo(registers[i]);

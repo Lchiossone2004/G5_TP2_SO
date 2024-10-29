@@ -91,15 +91,15 @@ getCPURegisters:
 	add rax, 8
     mov [rax], qword rdx
 	add rax, 8
-    mov [rax], qword rbp
-	mov rax, 8
+	mov [rax], qword rsi
+	add rax, 8
     mov [rax], qword rdi
-	mov rax, 8
-    mov [rax], qword rsi
-	mov rax, 8
+	add rax, 8
 	mov [rax], qword rsp
+	add rax, 8
+    mov [rax], qword rbp
 	mov rax, regBuffer
 	ret
 
 section .bss
-	regBuffer resb 200
+	regBuffer resq 10
