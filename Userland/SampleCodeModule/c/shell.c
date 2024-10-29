@@ -47,19 +47,24 @@ void chekCommand(){
     int command = processCommand();
     if(command == 1){
         help();
+        return;
     }
     if(command == 2){
         printTime();
+        return;
     }
     if(command==3){
         zoomIn();
+        return;
     }
     if (command==4)
     {
         zoomOut();
+        return;
     }
     if(command == 5){
         clear();
+        return;
     }
     if(command == 6) {
         nlPrint();
@@ -75,6 +80,7 @@ void chekCommand(){
     }
     if(command == 7){
         syscall(1);
+        return;
     }
     if(command == 8){
         nlPrint();

@@ -43,6 +43,7 @@ void iniSnake1() {
         snake1[i].pos_y = 0;
         snake1[i].pos_x = (1 + i) * REC_ANCHO; 
     }
+    return;
 }
 void iniSnake2() {
     snake2->points = 0;
@@ -54,6 +55,7 @@ void iniSnake2() {
         snake2[i].pos_x = (BORDER_X / 2 / REC_ANCHO) * 2 * REC_ANCHO;
         snake2[i].pos_y = BORDER_Y - (3+i) * REC_LARGO;
     }
+    return;
 }
 
 void putRectangle(int posx, int posy, uint32_t color) {
@@ -62,6 +64,7 @@ void putRectangle(int posx, int posy, uint32_t color) {
 			syscall(10,i, j, color);
 		}
 	}
+    return;
 }
 
 void snakeCanvas() {
@@ -77,12 +80,14 @@ void snakeCanvas() {
 			flag = !flag;
 		}
 	}
+    return;
 }
 
 void putSnake(Snakepos snake[]) {
     for(int i = 0; i < snake->len; i++) {
         putRectangle(snake[i].pos_x, snake[i].pos_y, snake->color);
     }
+    return;
 }
 void moveSnake(Snakepos snake[]) {
     int l = snake->len - 1;
@@ -100,6 +105,7 @@ void moveSnake(Snakepos snake[]) {
     snake[l].pos_y += snake->direc_y;
 
     putSnake(snake); // Dibuja la snake después de mover
+    return;
 }
 
 
@@ -116,6 +122,7 @@ void putCircle(int posx, int posy, uint32_t color) {
             }
         }
     }
+    return;
 }
 int isPositionOccupied(Snakepos pos) {
     if(isSnakeinPos(pos,snake1) || isSnakeinPos(pos,snake2)) {
@@ -142,6 +149,7 @@ void putRandomCircle() {
     circle.pos_x = pos.pos_x;
     circle.pos_y = pos.pos_y;
     putCircle(circle.pos_x, circle.pos_y, 0x00FA0202);
+    return;
 }
 
 int isPair(int pos) {
@@ -150,6 +158,7 @@ int isPair(int pos) {
 
 void deleteCircle() {
 	delete(circle.pos_x, circle.pos_y);
+    return;
 }
 void delete(int pos_x, int pos_y) {
     if((isPair(pos_x / REC_ANCHO) && isPair(pos_y / REC_LARGO))||(!isPair(pos_x / REC_ANCHO) && !isPair(pos_y/REC_LARGO))) {
@@ -157,6 +166,7 @@ void delete(int pos_x, int pos_y) {
 	} else {
 		putRectangle(pos_x,pos_y, COLOR_2);
 	}
+    return;
 }
 
 
@@ -176,7 +186,7 @@ void pointEarned(Snakepos snake[]){
     snake->points++;
     deleteCircle();
     putRandomCircle(); 
-
+    return;
 }
 void direcSnake(char cantPlayers) {
     int newX1 = snake1->direc_x;
@@ -208,11 +218,11 @@ void direcSnake(char cantPlayers) {
         }
         keysPressed[i] = 0;
     }
-
     changeDir(newX1, newY1, snake1);
     if (cantPlayers == 2) {
         changeDir(newX2, newY2, snake2);
     }
+    return;
 }
 
 void changeDir(int newX, int newY, Snakepos snake[]) {
@@ -220,6 +230,7 @@ void changeDir(int newX, int newY, Snakepos snake[]) {
         snake->direc_x = newX;
         snake->direc_y = newY;
     }
+    return;
 }
 int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
     int len = snake->len;
@@ -296,7 +307,6 @@ void endGameTwoPlayers(int n) {
 
 void playSnake() {
     int exitPressed;
-    
     char count=0;
     while(snake_is_active){
     syscall(14, &exitPressed);
@@ -312,6 +322,7 @@ void playSnake() {
             endGameOnePlayer();
         }
     }
+    return;
 }
 void play2Snakes() {
     iniSnake2();
@@ -341,9 +352,8 @@ void play2Snakes() {
         if(checkCollision(snake2, snake1)) {
             endGameTwoPlayers(1);
         }
-
-
-}
+    }
+    return;
 }
 void play(char players) {
     snake_is_active = 1;
@@ -357,4 +367,5 @@ void play(char players) {
     }
     play2Snakes();
     snake_is_active=1;
+    return;
 }
