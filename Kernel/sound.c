@@ -35,8 +35,10 @@
  }
  //Make a beep
  void beep() {
- 	 play_sound(1000);
- 	 timer_wait(10);
- 	 nosound();
+    play_sound(500);
+    timer_wait(2);
+    play_sound(1000);
+    timer_wait(2);
+ 	nosound();
           //set_PIT_2(old_frequency);
  }

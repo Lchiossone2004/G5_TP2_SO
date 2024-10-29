@@ -159,7 +159,8 @@ int isSnakeinPos(Snakepos pos, Snakepos snake[]) {
     return snake[l].pos_x == pos.pos_x && snake[l].pos_y == pos.pos_y;
 }
 
-void pointEarned(Snakepos snake[]){
+void pointEarned(Snakepos snake[]){  
+    syscall(11,1);
     if(snake->len < MAX_SNAKE) {
         snake->len++;
         snake[snake->len-1].pos_x = snake[snake->len-2].pos_x + snake->direc_x;
@@ -282,7 +283,6 @@ void playSnake() {
         moveSnake(snake1);
         syscall(8,8);
         if(isSnakeinPos(circle, snake1)) {
-            syscall(11,1);
             pointEarned(snake1);
         }
         if(0x2D==exitPressed || checkCollision(snake1, snake2)){
