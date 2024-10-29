@@ -159,7 +159,8 @@ int isSnakeinPos(Snakepos pos, Snakepos snake[]) {
     return snake[l].pos_x == pos.pos_x && snake[l].pos_y == pos.pos_y;
 }
 
-void pointEarned(Snakepos snake[]){
+void pointEarned(Snakepos snake[]){  
+    syscall(11,0);
     if(snake->len < MAX_SNAKE) {
         snake->len++;
         snake[snake->len-1].pos_x = snake[snake->len-2].pos_x + snake->direc_x;
@@ -207,17 +208,20 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
    
     // choca con un borde
     if (snake[len - 1].pos_x < 0 || snake[len - 1].pos_x >= BORDER_X ||snake[len - 1].pos_y < 0 || snake[len - 1].pos_y >= BORDER_Y) {
+        syscall(11,1);
         return 1;
     }
     //se choca a ella misma 
      for(int i = 0; i < len -1; i++) {
          if(snake[i].pos_x == snake[len-1].pos_x && snake[i].pos_y == snake[len-1].pos_y) {
+            syscall(11,1);
              return 1;
          }
      }
      //se choca con la otra
      for(int i = 0; i < othersnake->len; i++) {
         if(othersnake[i].pos_x == snake[len-1].pos_x && othersnake[i].pos_y == snake[len-1].pos_y) {
+            syscall(11,1);
             return 1;
         }
      }
@@ -282,7 +286,6 @@ void playSnake() {
         moveSnake(snake1);
         syscall(8,8);
         if(isSnakeinPos(circle, snake1)) {
-            syscall(11,1);
             pointEarned(snake1);
         }
         if(0x2D==exitPressed || checkCollision(snake1, snake2)){

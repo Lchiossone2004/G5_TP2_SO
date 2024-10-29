@@ -93,10 +93,11 @@ void sys_clear(unsigned int fd){
 void sys_putPixel(int posx, int posy, uint32_t hexColor) {
     putPixel(hexColor, posx, posy);
 }
-void sys_beep() {
+void sys_beep(int flag) {
     _sti();
-    beep();
+    beep(flag);
 }
+
 
 void sys_getTime(time * ret) {
     ret->hours = getHours();
