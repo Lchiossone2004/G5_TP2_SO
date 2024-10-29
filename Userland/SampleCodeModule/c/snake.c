@@ -193,9 +193,13 @@ int checkCollision() {
 void endGame() {
     snake_is_active = 0;
     char * phrase= "You lost! score:";
+    char pts[2];
+    pts[0] = points + '0';
+    pts[1] = '\0';
     syscall(9, 1);  // Limpia la pantalla usando una llamada al sistema
     syscall(6,1); //hace zoom asi se imprime el msj mas grande
     syscall(4,1,phrase,16); //imprime el msj que perdiste
+    syscall(4,1,pts,1);
     syscall(8,2);
     syscall(7,1);
     syscall(9,1);
