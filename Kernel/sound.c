@@ -37,6 +37,6 @@
  void beep() {
  	 play_sound(1000);
  	 timer_wait(10);
- 	// nosound();
+ 	 nosound();
           //set_PIT_2(old_frequency);
  }

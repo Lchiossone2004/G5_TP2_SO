@@ -7,6 +7,7 @@
 #include <lib.h>
 #include <time.h>
 #include <interrupts.h>
+#include <sound.h>
 
 #define ROJO    0xFF0000
 #define BLANCO  0xFFFFFF
@@ -92,7 +93,10 @@ void sys_clear(unsigned int fd){
 void sys_putPixel(int posx, int posy, uint32_t hexColor) {
     putPixel(hexColor, posx, posy);
 }
-
+void sys_beep() {
+    _sti();
+    beep();
+}
 
 void sys_getTime(time * ret) {
     ret->hours = getHours();
@@ -127,6 +131,7 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 8: sys_sleep(rsi); return;
         case 9: sys_clear(rsi); return;
         case 10: sys_putPixel(rsi, rdx, rcx); return;
+        case 11: sys_beep(rsi);return;
         case 13: sys_getTime(rsi); return;
         case 14: sys_getKey(rsi); return;
         case 15: sys_ranN(rsi); return;
