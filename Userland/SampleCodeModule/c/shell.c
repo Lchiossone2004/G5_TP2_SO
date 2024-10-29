@@ -70,9 +70,7 @@ void chekCommand(){
         syscall(2,1,&buffer,1);
         nlPrint();
         }while (buffer != '1' && buffer != '2');
-        shell_is_active=0;
         play(buffer);
-        shell_is_active=1;
         return;
     }
     if(command == 7){

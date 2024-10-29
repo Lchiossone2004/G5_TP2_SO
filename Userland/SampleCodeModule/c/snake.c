@@ -325,6 +325,7 @@ void play2Snakes() {
 }
 }
 void play(char players) {
+    snake_is_active = 1;
     snakeCanvas();
     iniSnake1();
     putSnake(snake1);
