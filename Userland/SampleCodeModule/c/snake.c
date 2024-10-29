@@ -282,6 +282,7 @@ void playSnake() {
         moveSnake(snake1);
         syscall(8,8);
         if(isSnakeinPos(circle, snake1)) {
+            syscall(11,1);
             pointEarned(snake1);
         }
         if(0x2D==exitPressed || checkCollision(snake1, snake2)){
