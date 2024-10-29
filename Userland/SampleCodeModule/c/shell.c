@@ -51,7 +51,6 @@ void chekCommand(){
         printTime();
     }
     if(command==3){
-        syscall(8,4);
         zoomIn();
     }
     if (command==4)
