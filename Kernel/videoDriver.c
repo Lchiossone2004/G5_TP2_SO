@@ -207,14 +207,14 @@ void  zoomIN() {
 	if(zoom <2){
     	zoom++;
 	}else{
-		imprimirVideo("max zoomed!",12,BLANCO);
+		return;
 	}
 }
 void zoomOUT() {
 	if (zoom>1){
 		zoom--;
 	}else{
-		imprimirVideo("min zoomed!",12,BLANCO);
+		return;
 	}
 }
 

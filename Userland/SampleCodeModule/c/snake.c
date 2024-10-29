@@ -237,7 +237,7 @@ void endGameOnePlayer() {
     syscall(8,36);
     syscall(7,1);
     syscall(9,1);
-
+    return;
 }
 void endGameTwoPlayers(int n) {
     snake_is_active = 0;
@@ -269,7 +269,7 @@ void endGameTwoPlayers(int n) {
     syscall(8,36);
     syscall(7,1);
     syscall(9,1);
-
+    return;
 }
 
 void playSnake() {
@@ -334,6 +334,6 @@ void play(char players) {
         return;
     }
     play2Snakes();
-
+    snake_is_active=1;
 }
 
