@@ -82,20 +82,24 @@ getKey:
 	ret
 
 getCPURegisters:
-    mov [rdi], r15
-    mov [rdi+8], r14
-    mov [rdi+16], r13
-    mov [rdi+24], r12
-    mov [rdi+32], r11
-    mov [rdi+40], r10
-    mov [rdi+48], r9
-    mov [rdi+56], r8
-    mov [rdi+64], rsi
-    mov [rdi+72], rdi
-    mov [rdi+80], rbp
-    mov [rdi+88], rdx
-    mov [rdi+96], rcx
-    mov [rdi+104], rbx
-    mov [rdi+112], rax
-
+    mov [regBuffer], qword rax
+	mov rax, regBuffer
+	add rax, 8
+    mov [rax], qword rbx
+	add rax,8
+    mov [rax], qword rcx
+	add rax, 8
+    mov [rax], qword rdx
+	add rax, 8
+    mov [rax], qword rbp
+	mov rax, 8
+    mov [rax], qword rdi
+	mov rax, 8
+    mov [rax], qword rsi
+	mov rax, 8
+	mov [rax], qword rsp
+	mov rax, regBuffer
 	ret
+
+section .bss
+	regBuffer resb 200

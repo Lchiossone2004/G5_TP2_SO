@@ -7,15 +7,15 @@ static char buffer[WORD_BUFFER_SIZE] = {0};
 static char *letra;
 static int ultimaLetra;
 static int index = 0;
-static char* commands[] = {"help", "time", "zoomin", "zoomout","clear", "snake","exit"};
+static char* commands[] = {"help", "time", "zoomin", "zoomout","clear", "snake","print registers","exit"};
 static shell_is_active=1;
 
 void shell() { 
         print(NEW_LINE,sizeof(NEW_LINE)-1);
         while(shell_is_active){
-        if(index == WORD_BUFFER_SIZE){
+        if(index == WORD_BUFFER_SIZE-1){
             clearBuffer();
-            clear();
+            chekCommand();
         }
         getKey(letra,index);
         if(*letra == 0 && index > 0){
@@ -75,6 +75,9 @@ void chekCommand(){
         shell_is_active=1;
     }
     if(command == 7){
+        syscall(1);
+    }
+    if(command == 8){
         nlPrint();
         print("closing shell...", 16);
         shell_is_active = 0;
