@@ -29,7 +29,7 @@
 
  void timer_wait(int wait) {
     int ticks = ticks_elapsed();
-    while(ticks_elapsed - ticks < wait) {
+    while(ticks_elapsed() - ticks < wait) {
 
     }
  }
