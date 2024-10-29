@@ -48,7 +48,7 @@ void iniSnake2() {
     snake2->len = 4;
     snake2->color = 0x00f54290;
     for(int i = 0; i < snake2->len; i++) {
-        snake2[i].pos_x = BORDER_X - 2 * REC_ANCHO;
+        snake2[i].pos_x = (BORDER_X / 2 / REC_ANCHO) * 2 * REC_ANCHO;
         snake2[i].pos_y = BORDER_Y - (3+i) * REC_LARGO;
     }
 }
@@ -209,7 +209,7 @@ void changeDir(int newX, int newY, Snakepos snake[]) {
         snake->direc_y = newY;
     }
 }
-int checkCollision(Snakepos snake[]) {
+int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
     int len = snake->len;
    
     // choca con un borde
@@ -221,6 +221,12 @@ int checkCollision(Snakepos snake[]) {
          if(snake[i].pos_x == snake[len-1].pos_x && snake[i].pos_y == snake[len-1].pos_y) {
              return 1;
          }
+     }
+     //se choca con la otra
+     for(int i = 0; i < othersnake->len; i++) {
+        if(othersnake[i].pos_x == snake[len-1].pos_x && othersnake[i].pos_y == snake[len-1].pos_y) {
+            return 1;
+        }
      }
     return 0;
 }
@@ -284,7 +290,7 @@ void playSnake() {
         if(isSnakeinPos(circle, snake1)) {
             pointEarned(snake1);
         }
-        if(0x30==exitPressed || checkCollision(snake1)){
+        if(0x30==exitPressed || checkCollision(snake1, snake2)){
             endGameOnePlayer();
         }
     }
@@ -312,10 +318,10 @@ void play2Snakes() {
         if(0x30 == exitPressed) {
             endGameTwoPlayers(0);
         }
-        if(checkCollision(snake1)) {
+        if(checkCollision(snake1, snake2)) {
             endGameTwoPlayers(2);
         }
-        if(checkCollision(snake2)) {
+        if(checkCollision(snake2, snake1)) {
             endGameTwoPlayers(1);
         }
 
