@@ -22,7 +22,7 @@ typedef struct {
 #define BORDER_Y 768
 #define REC_X_FIL BORDER_X / REC_ANCHO
 #define REC_X_COL BORDER_Y / REC_LARGO
-#define MAX_SNAKE 10
+#define MAX_SNAKE 120
 
 static char snake_is_active=1;
 Snakepos snake1[MAX_SNAKE]; 
@@ -159,7 +159,7 @@ int isSnakeinPos(Snakepos pos, Snakepos snake[]) {
     return snake[l].pos_x == pos.pos_x && snake[l].pos_y == pos.pos_y;
 }
 
-void pointEarned(Snakepos snake[]) {//CUANDO CRECE, LO HACE PARA ADELANTE, fijarse si podemos hace que mantenga la cola por una unidad de tiempo
+void pointEarned(Snakepos snake[]){
     if(snake->len < MAX_SNAKE) {
         snake->len++;
         snake[snake->len-1].pos_x = snake[snake->len-2].pos_x + snake->direc_x;
@@ -234,7 +234,7 @@ void endGameOnePlayer() {
     syscall(6,1); //hace zoom asi se imprime el msj mas grande
     syscall(4,1,phrase,7); //imprime el msj 
     syscall(4,1,pts,1);
-    syscall(8,2);
+    syscall(8,36);
     syscall(7,1);
     syscall(9,1);
 
@@ -266,7 +266,7 @@ void endGameTwoPlayers(int n) {
     }
     syscall(4,1,p3,15);
     syscall(4,1,pts3,1);
-    syscall(8,5);
+    syscall(8,36);
     syscall(7,1);
     syscall(9,1);
 
@@ -280,8 +280,7 @@ void playSnake() {
         syscall(14, &direction);
         direcSnake1(direction);
         moveSnake(snake1);
-        direction=0;
-        syscall(8,1);
+        syscall(8,8);
         if(isSnakeinPos(circle, snake1)) {
             pointEarned(snake1);
         }
@@ -294,16 +293,17 @@ void play2Snakes() {
     iniSnake2();
     putSnake(snake2);
     int exitPressed;
-    int direction;
+    int direction1;
+    int direction2;
     while(snake_is_active){
         syscall(14, &exitPressed);
-        syscall(14, &direction);
-        direcSnake1(direction);
-        direcSnake2(direction);
+        syscall(14, &direction2);
+        syscall(14, &direction1);
+        direcSnake1(direction1);
+        direcSnake2(direction2);
         moveSnake(snake1);
         moveSnake(snake2);
-        direction=0;
-        syscall(8,1);
+        syscall(8,8);
         if(isSnakeinPos(circle, snake1)) {
             pointEarned(snake1);
         }

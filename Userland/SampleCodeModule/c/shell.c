@@ -73,6 +73,7 @@ void chekCommand(){
         shell_is_active=0;
         play(buffer);
         shell_is_active=1;
+        return;
     }
     if(command == 7){
         syscall(1);

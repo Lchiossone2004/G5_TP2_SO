@@ -61,7 +61,3 @@ int strSize(char * word){
     }
     return toRet;
 }
-
-void history(){
-    syscall(8,STDOUT);
-}

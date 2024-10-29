@@ -79,7 +79,7 @@ void sys_newLine(){
 
 void sys_sleep(int seconds){
     _sti();
-    int max = ticks_elapsed() + seconds*18;
+    int max = ticks_elapsed() + seconds;
     while(max > ticks_elapsed());
 }
 
