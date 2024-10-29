@@ -233,13 +233,13 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
 
 void endGameOnePlayer() {
     snake_is_active = 0;
-    char * phrase= "You lost! SCORE: ";
+    char * phrase= "SCORE: ";
     char pts[2];
     pts[0] = snake1->points + '0';
     pts[1] = '\0';
     syscall(9, 1);  // Limpia la pantalla usando una llamada al sistema
     syscall(6,1); //hace zoom asi se imprime el msj mas grande
-    syscall(4,1,phrase,17); //imprime el msj que perdiste
+    syscall(4,1,phrase,7); //imprime el msj 
     syscall(4,1,pts,1);
     syscall(8,2);
     syscall(7,1);
@@ -283,7 +283,7 @@ void playSnake() {
     int exitPressed;
     int direction;
     while(snake_is_active){
-        syscall(14, &endGameOnePlayer);
+       syscall(14, &exitPressed);
         syscall(14, &direction);
         direcSnake1(direction);
         moveSnake(snake1);
@@ -292,7 +292,7 @@ void playSnake() {
         if(isSnakeinPos(circle, snake1)) {
             pointEarned(snake1);
         }
-        if(0x30==exitPressed || checkCollision(snake1, snake2)){
+        if(0x2D==exitPressed || checkCollision(snake1, snake2)){
             endGameOnePlayer();
         }
     }
@@ -303,7 +303,7 @@ void play2Snakes() {
     int exitPressed;
     int direction;
     while(snake_is_active){
-        syscall(14, &endGameTwoPlayers);
+        syscall(14, &exitPressed);
         syscall(14, &direction);
         direcSnake1(direction);
         direcSnake2(direction);
@@ -317,7 +317,7 @@ void play2Snakes() {
         if(isSnakeinPos(circle, snake2)) {
             pointEarned(snake2);
         }
-        if(0x30 == exitPressed) {
+        if(0x2D == exitPressed) {
             endGameTwoPlayers(0);
         }
         if(checkCollision(snake1, snake2)) {
