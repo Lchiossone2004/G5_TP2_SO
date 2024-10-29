@@ -264,8 +264,10 @@ void endGameTwoPlayers(int n) {
     syscall(6,1); //hace zoom asi se imprime el msj mas grande
     syscall(4,1,p1,18);
     syscall(4,1,ptsO,1);
+    syscall(5);
     syscall(4,1,p2,18); 
     syscall(4,1,ptsT,1);
+    syscall(5);
     if(n == 0) {
         return;
     }
