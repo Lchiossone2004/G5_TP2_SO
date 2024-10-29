@@ -1,4 +1,5 @@
 typedef struct {
+    char aux;
     char hours;
     char mins;
     char seconds;
