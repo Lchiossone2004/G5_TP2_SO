@@ -193,7 +193,7 @@ void direcSnake(char cantPlayers) {
     int newY1 = snake1->direc_y;
     int newX2 = 0, newY2 = 0;
 
-    if (cantPlayers == 2) {
+    if (cantPlayers == '2') {
         newX2 = snake2->direc_x;
         newY2 = snake2->direc_y;
     }
@@ -207,7 +207,7 @@ void direcSnake(char cantPlayers) {
             default: break;
         }
 
-        if (cantPlayers == 2) {
+        if (cantPlayers == '2') {
             switch (keysPressed[i]) {
                 case 0x17: newX2 = 0; newY2 = -REC_LARGO; break; // I
                 case 0x25: newX2 = 0; newY2 = REC_LARGO; break;  // K
@@ -219,7 +219,7 @@ void direcSnake(char cantPlayers) {
         keysPressed[i] = 0;
     }
     changeDir(newX1, newY1, snake1);
-    if (cantPlayers == 2) {
+    if (cantPlayers == '2') {
         changeDir(newX2, newY2, snake2);
     }
     return;
@@ -254,118 +254,79 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
             return 1;
         }
      }
+     //falta opcion se chocan cabeza con cabeza (pierden los 2)
     return 0;
 }
 
-void endGameOnePlayer() {
-    snake_is_active = 0;
-    char * phrase= "SCORE: ";
-    char pts[2];
-    pts[0] = snake1->points + '0';
-    pts[1] = '\0';
-    syscall(9, 1);  // Limpia la pantalla usando una llamada al sistema
-    syscall(6,1); //hace zoom asi se imprime el msj mas grande
-    syscall(4,1,phrase,7); //imprime el msj 
-    syscall(4,1,pts,1);
-    syscall(8,36);
-    syscall(7,1);
-    syscall(9,1);
-    return;
-}
-void endGameTwoPlayers(int n) {
+void endGame(char players, char winner) {
     snake_is_active = 0;
     char * p1 = "PLAYER ONE SCORE: ";
-    char *p2 = "PLAYER TWO SCORE: ";
-    char *p3 = "WINNER: PLAYER ";
-    char ptsO[2];
-    ptsO[0] = snake1->points + '0';
-    ptsO[1] = '\0';
-    char ptsT[2];
-    ptsT[0] = snake2->points + '0';
-    ptsT[1] = '\0';
-    char pts3[2];
-    pts3[0] = n + '0';
-    pts3[1] = '\0';
+    char *p2;
+    char *p3;
     syscall(9, 1);  // Limpia la pantalla usando una llamada al sistema
     syscall(6,1); //hace zoom asi se imprime el msj mas grande
     syscall(4,1,p1,18);
-    syscall(4,1,ptsO,1);
+    //syscall puntos 1
     syscall(5);
-    syscall(4,1,p2,18); 
-    syscall(4,1,ptsT,1);
-    syscall(5);
-    if(n == 0) {
-        return;
+    if(players == '2') {
+        p2 = "PLAYER TWO SCORE: ";
+        p3 = "WINNER: PLAYER ";
+        char win[2];
+        win[0] = winner;
+        win[1] = '\0';
+        syscall(4,1,p2,18);
+        //syscall puntos 2
+        syscall(5);
+        syscall(4,1,p3,15);
+        syscall(4,1,win,1);
     }
-    syscall(4,1,p3,15);
-    syscall(4,1,pts3,1);
     syscall(8,36);
     syscall(7,1);
     syscall(9,1);
-    return;
-}
+}   
 
-void playSnake() {
-    int exitPressed;
-    char count=0;
-    while(snake_is_active){
-    syscall(14, &exitPressed);
-        syscall(14, keysPressed+(count++));
-        direcSnake(1);
-        moveSnake(snake1);
-        syscall(8,8);
-        count=0;
-        if(isSnakeinPos(circle, snake1)) {
-            pointEarned(snake1);
-        }
-        if(0x2D==exitPressed || checkCollision(snake1, snake2)){
-            endGameOnePlayer();
-        }
-    }
-    return;
-}
-void play2Snakes() {
-    iniSnake2();
-    putSnake(snake2);
-    int exitPressed;
-    char count=0;
-    while(snake_is_active){
-        syscall(14, &exitPressed);
-        syscall(14, keysPressed+(count++));
-        direcSnake(2);
-        moveSnake(snake1);
-        moveSnake(snake2);
-        syscall(8,8);
-        count=0;
-        if(isSnakeinPos(circle, snake1)) {
-            pointEarned(snake1);
-        }
-        if(isSnakeinPos(circle, snake2)) {
-            pointEarned(snake2);
-        }
-        if(0x2D == exitPressed) {
-            endGameTwoPlayers(0);
-        }
-        if(checkCollision(snake1, snake2)) {
-            endGameTwoPlayers(2);
-        }
-        if(checkCollision(snake2, snake1)) {
-            endGameTwoPlayers(1);
-        }
-    }
-    return;
-}
 void play(char players) {
     snake_is_active = 1;
     snakeCanvas();
     iniSnake1();
     putSnake(snake1);
     putRandomCircle();
-    if(players == '1') {
-        playSnake();
-        return;
+    if(players == '2') {
+        iniSnake2();
+        putSnake(snake2);
     }
-    play2Snakes();
+    int exitPressed;
+    char count=0;
+    while(snake_is_active){ 
+        syscall(14, &exitPressed);
+        syscall(14, keysPressed+(count++));
+        direcSnake(players);
+        moveSnake(snake1);
+        if(players == '2') {
+            moveSnake(snake2);
+        }
+        syscall(8,8);
+        count=0;
+        if(isSnakeinPos(circle, snake1)) {
+            pointEarned(snake1);
+        }
+        if(players == '2' && isSnakeinPos(circle, snake2)) {
+            pointEarned(snake2);
+        }
+        if(0x2D == exitPressed) {
+            endGame(players, '0');
+        }
+        if(checkCollision(snake1, snake2)) {
+            endGame(players, '2');
+        }
+        if(players == '2' && checkCollision(snake2, snake1)) {
+            endGame(players,'1');
+        }
+
+    }
+
+
+
     snake_is_active=1;
     return;
 }
