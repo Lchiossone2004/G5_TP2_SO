@@ -29,6 +29,9 @@ Snakepos snake1[MAX_SNAKE];
 Snakepos snake2[MAX_SNAKE];
 Snakepos circle;
 
+static int keysPressed[100]={0};
+
+
 //inicializa la snake desde el principio del canvas con dirección hacia la derecha
 void iniSnake1() {
     snake1->points = 0;
@@ -81,21 +84,24 @@ void putSnake(Snakepos snake[]) {
         putRectangle(snake[i].pos_x, snake[i].pos_y, snake->color);
     }
 }
-
 void moveSnake(Snakepos snake[]) {
-    int l = (snake->len) -1;
-    delete(snake[0].pos_x, snake[0].pos_y);
-    //va moviendo las partes hacia adelante
-    for(int i = 0; i < l; i++) {
-        snake[i].pos_x = snake[i+1].pos_x;
-        snake[i].pos_y = snake[i+1].pos_y;
+    int l = snake->len - 1;
+
+    delete(snake[0].pos_x, snake[0].pos_y); // Limpia la cola
+
+    // Mueve los segmentos de la snake
+    for (int i = 0; i < l; i++) {
+        snake[i].pos_x = snake[i + 1].pos_x;
+        snake[i].pos_y = snake[i + 1].pos_y;
     }
-    //mueve la cabeza en su direccion
+
+    // Mueve la cabeza en la dirección actual
     snake[l].pos_x += snake->direc_x;
     snake[l].pos_y += snake->direc_y;
-    putSnake(snake);
-    
+
+    putSnake(snake); // Dibuja la snake después de mover
 }
+
 
 void putCircle(int posx, int posy, uint32_t color) {
     int centerX = posx + REC_ANCHO / 2;  
@@ -172,31 +178,43 @@ void pointEarned(Snakepos snake[]){
     putRandomCircle(); 
 
 }
+void direcSnake(char cantPlayers) {
+    int newX1 = snake1->direc_x;
+    int newY1 = snake1->direc_y;
+    int newX2 = 0, newY2 = 0;
 
-void direcSnake1(char key) {
-    int newX = snake1->direc_x;
-    int newY = snake1->direc_y;
-    switch(key) {
-        case 0x11: newX = 0; newY = -REC_LARGO; break;//w
-        case 0x1F: newX = 0; newY = REC_LARGO; break;//s
-        case 0x1E: newX = -REC_ANCHO; newY = 0; break;//d
-        case 0x20: newX = REC_ANCHO; newY = 0; break;//a
-        default: return;
+    if (cantPlayers == 2) {
+        newX2 = snake2->direc_x;
+        newY2 = snake2->direc_y;
     }
-    changeDir(newX, newY,snake1);
-}
-void direcSnake2(char key) {
-    int newX = snake2->direc_x;
-    int newY = snake2->direc_y;
-    switch(key) {
-        case 0x17: newX = 0; newY = -REC_LARGO; break;//i
-        case 0x25: newX = 0; newY = REC_LARGO; break;//k
-        case 0x24: newX = -REC_ANCHO; newY = 0; break;//j
-        case 0x26: newX = REC_ANCHO; newY = 0; break;//l
-        default: return;
+
+    for (int i = 0; keysPressed[i]; i++) {
+        switch (keysPressed[i]) {
+            case 0x11: newX1 = 0; newY1 = -REC_LARGO; break; // W
+            case 0x1F: newX1 = 0; newY1 = REC_LARGO; break;  // S
+            case 0x1E: newX1 = -REC_ANCHO; newY1 = 0; break; // A
+            case 0x20: newX1 = REC_ANCHO; newY1 = 0; break;  // D
+            default: break;
+        }
+
+        if (cantPlayers == 2) {
+            switch (keysPressed[i]) {
+                case 0x17: newX2 = 0; newY2 = -REC_LARGO; break; // I
+                case 0x25: newX2 = 0; newY2 = REC_LARGO; break;  // K
+                case 0x24: newX2 = -REC_ANCHO; newY2 = 0; break; // J
+                case 0x26: newX2 = REC_ANCHO; newY2 = 0; break;  // L
+                default: break;
+            }
+        }
+        keysPressed[i] = 0;
     }
-    changeDir(newX, newY,snake2);
+
+    changeDir(newX1, newY1, snake1);
+    if (cantPlayers == 2) {
+        changeDir(newX2, newY2, snake2);
+    }
 }
+
 void changeDir(int newX, int newY, Snakepos snake[]) {
     if ((newX != -(snake->direc_x)) && (newY != -(snake->direc_y))) {
         snake->direc_x = newX;
@@ -278,13 +296,15 @@ void endGameTwoPlayers(int n) {
 
 void playSnake() {
     int exitPressed;
-    int direction;
+    
+    char count=0;
     while(snake_is_active){
-       syscall(14, &exitPressed);
-        syscall(14, &direction);
-        direcSnake1(direction);
+    syscall(14, &exitPressed);
+        syscall(14, keysPressed+(count++));
+        direcSnake(1);
         moveSnake(snake1);
         syscall(8,8);
+        count=0;
         if(isSnakeinPos(circle, snake1)) {
             pointEarned(snake1);
         }
@@ -297,17 +317,15 @@ void play2Snakes() {
     iniSnake2();
     putSnake(snake2);
     int exitPressed;
-    int direction1;
-    int direction2;
+    char count=0;
     while(snake_is_active){
         syscall(14, &exitPressed);
-        syscall(14, &direction2);
-        syscall(14, &direction1);
-        direcSnake1(direction1);
-        direcSnake2(direction2);
+        syscall(14, keysPressed+(count++));
+        direcSnake(2);
         moveSnake(snake1);
         moveSnake(snake2);
         syscall(8,8);
+        count=0;
         if(isSnakeinPos(circle, snake1)) {
             pointEarned(snake1);
         }
@@ -340,4 +358,3 @@ void play(char players) {
     play2Snakes();
     snake_is_active=1;
 }
-
