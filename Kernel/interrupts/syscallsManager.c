@@ -77,15 +77,12 @@ void sys_newLine(){
     nlVideo();
 }
 
-void sys_sleep(int seconds){
+void sys_sleep(int miliseconds){
     _sti();
-    picMasterMask(PIC_MASTER_TIMER_O);
-    int max = ticks_elapsed()/18 + seconds;
-    int aux = ticks_elapsed()/18;
-    while(max > ticks_elapsed()/18){
+    int max = (ticks_elapsed()/18)/10 + miliseconds;
+    while(max > (ticks_elapsed()/18)){
 
     } 
-    picMasterMask(PIC_MASTER_ALL);
 }
 
 void sys_clear(unsigned int fd){
