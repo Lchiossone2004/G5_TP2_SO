@@ -225,37 +225,57 @@ int checkCollision(Snakepos snake[]) {
     return 0;
 }
 
-void endGame() {
+void endGameOnePlayer() {
     snake_is_active = 0;
-    char * phrase= "Score player one:";
-    //char *phrase2 = "Score player two:";
-    //char pts2[2];
+    char * phrase= "You lost! SCORE: ";
     char pts[2];
     pts[0] = snake1->points + '0';
     pts[1] = '\0';
-   // pts2[0] = snake2->points + '0';
-   // pts2[1] = "\0";
     syscall(9, 1);  // Limpia la pantalla usando una llamada al sistema
     syscall(6,1); //hace zoom asi se imprime el msj mas grande
     syscall(4,1,phrase,17); //imprime el msj que perdiste
     syscall(4,1,pts,1);
-    //syscall(4,1,phrase2,17); //imprime el msj que perdiste
-    //syscall(4,1,pts2,1);
     syscall(8,2);
+    syscall(7,1);
+    syscall(9,1);
+
+}
+void endGameTwoPlayers(int n) {
+    snake_is_active = 0;
+    char * p1 = "PLAYER ONE SCORE: ";
+    char *p2 = "PLAYER TWO SCORE: ";
+    char *p3 = "WINNER: PLAYER ";
+    char ptsO[2];
+    ptsO[0] = snake1->points + '0';
+    ptsO[1] = '\0';
+    char ptsT[2];
+    ptsT[0] = snake2->points + '0';
+    ptsT[1] = '\0';
+    char pts3[2];
+    pts3[0] = n + '0';
+    pts3[1] = '\0';
+    syscall(9, 1);  // Limpia la pantalla usando una llamada al sistema
+    syscall(6,1); //hace zoom asi se imprime el msj mas grande
+    syscall(4,1,p1,18);
+    syscall(4,1,ptsO,1);
+    syscall(4,1,p2,18); 
+    syscall(4,1,ptsT,1);
+    if(n == 0) {
+        return;
+    }
+    syscall(4,1,p3,15);
+    syscall(4,1,pts3,1);
+    syscall(8,5);
     syscall(7,1);
     syscall(9,1);
 
 }
 
 void playSnake() {
-    snakeCanvas();
-    iniSnake1();
-    putSnake(snake1);
-    putRandomCircle();
     int exitPressed;
     int direction;
     while(snake_is_active){
-        syscall(14, &endGame);
+        syscall(14, &endGameOnePlayer);
         syscall(14, &direction);
         direcSnake1(direction);
         moveSnake(snake1);
@@ -265,14 +285,48 @@ void playSnake() {
             pointEarned(snake1);
         }
         if(0x30==exitPressed || checkCollision(snake1)){
-            endGame();
+            endGameOnePlayer();
         }
     }
 }
 void play2Snakes() {
-    
+    iniSnake2();
+    putSnake(snake2);
+    int exitPressed;
+    int direction;
+    while(snake_is_active){
+        syscall(14, &endGameTwoPlayers);
+        syscall(14, &direction);
+        direcSnake1(direction);
+        direcSnake2(direction);
+        moveSnake(snake1);
+        moveSnake(snake2);
+        direction=0;
+        syscall(8,1);
+        if(isSnakeinPos(circle, snake1)) {
+            pointEarned(snake1);
+        }
+        if(isSnakeinPos(circle, snake2)) {
+            pointEarned(snake2);
+        }
+        if(0x30 == exitPressed) {
+            endGameTwoPlayers(0);
+        }
+        if(checkCollision(snake1)) {
+            endGameTwoPlayers(2);
+        }
+        if(checkCollision(snake2)) {
+            endGameTwoPlayers(1);
+        }
+
+
+}
 }
 void play(char players) {
+    snakeCanvas();
+    iniSnake1();
+    putSnake(snake1);
+    putRandomCircle();
     if(players == '1') {
         playSnake();
         return;
