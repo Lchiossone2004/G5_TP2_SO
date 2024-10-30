@@ -16,7 +16,7 @@
 #define PARA_ALEATORIOS_2 1013904223   
 
 extern uint64_t * getCPURegisters();
-extern void activateSti();
+extern void _sti();
 
 static int seed = 0;
 
@@ -36,7 +36,7 @@ void sys_getChar(unsigned int fd, char * buffer, size_t count){
     _sti();
     while(isBufferEmpty());
     *buffer = getBuffer();
-    if(*buffer == 0 && count >= 1){
+    if(*buffer == 0){
         deleteVideo();
     }
     if (*buffer == 1)

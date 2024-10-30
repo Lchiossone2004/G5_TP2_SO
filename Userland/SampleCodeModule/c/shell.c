@@ -13,7 +13,7 @@ static shell_is_active=1;
 void shell() { 
         print(NEW_LINE,sizeof(NEW_LINE)-1);
         while(shell_is_active){
-        if(index == WORD_BUFFER_SIZE-1 || *letra == 1){
+        if(index == WORD_BUFFER_SIZE-1){
             clearBuffer();
             chekCommand();
         }
@@ -22,6 +22,10 @@ void shell() {
             index -= 1;
             buffer[index] = 0;
         }
+        if (*letra == 1){
+            clearBuffer();
+            chekCommand();
+        }  
         if(*letra != 0 && *letra != 1){
                 if(*letra == ' '){
                 buffer[index++] = ' ';
@@ -43,24 +47,24 @@ void chekCommand(){
     int command = processCommand();
     if(command == 1){
         help();
-        return;
+    
     }
     if(command == 2){
         printTime();
-        return;
+      
     }
     if(command==3){
         zoomIn();
-        return;
+        
     }
     if (command==4)
     {
         zoomOut();
-        return;
+        
     }
     if(command == 5){
         clear();
-        return;
+       
     }
     if(command == 6) {
         nlPrint();
@@ -72,17 +76,14 @@ void chekCommand(){
         nlPrint();
         }while (buffer != '1' && buffer != '2');
         play(buffer);
-        return;
     }
     if(command == 7){
-        syscall(1);
-        return;
+        syscall(1);  
     }
     if(command == 8){
         nlPrint();
         print("closing shell...", 16);
         shell_is_active = 0;
-        return;
     }
     if(command == 0){
         printErr("     command: [", 15);
