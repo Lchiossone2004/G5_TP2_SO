@@ -141,19 +141,20 @@ void putRandomCircle() {
 
     do {
         syscall(15, &ran); 
-        colApple = ran % REC_X_FIL;
-        filApple = (ran / REC_X_FIL) % REC_X_COL;
+        colApple = ran % (BORDER_X / REC_ANCHO);
+        filApple = ran % (BORDER_Y / REC_LARGO);
 
         pos.pos_x = colApple * REC_ANCHO;
         pos.pos_y = filApple * REC_LARGO;
 
-    } while (isPositionOccupied(pos));  // Repite si la posición está ocupada
+    } while (isPositionOccupied(pos));  // Repite si la vibora esta ahi
 
     circle.pos_x = pos.pos_x;
     circle.pos_y = pos.pos_y;
     putCircle(circle.pos_x, circle.pos_y, 0x00FA0202);
     return;
 }
+
 
 int isPair(int pos) {
 	return pos % 2 == 0;
@@ -266,7 +267,7 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
      //falta opcion se chocan cabeza con cabeza (pierden los 2)
     return 0;
 }
-int intToStr(int num, char* str) {
+void intToStr(int num, char* str) {
     int i = 0;
     // Manejar el caso en que el número sea 0
     if (num == 0) {
@@ -289,9 +290,15 @@ int intToStr(int num, char* str) {
         str[j] = str[i - j - 1];
         str[i - j - 1] = temp;
     }
+ 
+}
+int getLen(char string[]) {
+    int i = 0;
+    while(string[i] != '\0') {
+        i++;
+    }
     return i;
 }
-
 void endGame(char players, char winner) {
     snake_is_active = 0;
     char * p1 = "PLAYER ONE SCORE: ";
@@ -299,11 +306,11 @@ void endGame(char players, char winner) {
     char *p3;
     char points1P[10];
     char points2P[10];
-    int lenpts1 = intToStr(snake1->points, points1P);
+    intToStr(snake1->points, points1P);
     clear();  // Limpia la pantalla usando una llamada al sistema
     zoomIn(); //hace zoom asi se imprime el msj mas grande
     print(p1,18);
-    print(points1P,lenpts1);
+    print(points1P,getLen(points1P));
     nlPrint();
     if(players == '2') {
         p2 = "PLAYER TWO SCORE: ";
@@ -312,8 +319,8 @@ void endGame(char players, char winner) {
         win[0] = winner;
         win[1] = '\0';
         print(p2,18);
-        int lenpts2 = intToStr(snake2->points, points2P);
-        print(points2P,lenpts2);
+        intToStr(snake2->points, points2P);
+        print(points2P,getLen(points2P));
         nlPrint();
         print(p3, 15);
         print(win,1);
@@ -344,8 +351,7 @@ void play(char players) {
         if(players == '2') {
             moveSnake(snake2);
         }
-        sleep(7);
-        count=0;
+                count=0;
         if(isSnakeinPos(circle, snake1)) {
             pointEarned(snake1);
         }
@@ -361,8 +367,7 @@ void play(char players) {
         if(players == '2' && checkCollision(snake2, snake1)) {
             endGame(players,'1');
         }
-    
-
+        sleep(7);
     }
     snake_is_active=1;
     return;
