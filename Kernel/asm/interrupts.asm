@@ -157,8 +157,9 @@ _exception0Handler:
 	exceptionHandler 0
 
 ;Wrong Op Code Exception
-_exception1Handeler:
+_exception1Handler:
 	exceptionHandler 1
+
 haltcpu:
 	cli
 	hlt

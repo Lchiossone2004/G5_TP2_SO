@@ -10,6 +10,7 @@
         "shell.h": "c",
         "stdlib.h": "c",
         "font.h": "c",
-        "snake.h": "c"
+        "snake.h": "c",
+        "sound.h": "c"
     }
 }

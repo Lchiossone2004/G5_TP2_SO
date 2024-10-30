@@ -46,7 +46,8 @@ void getKey(char * buffer, int index){
 void chekCommand(){
     int command = processCommand();
     if(command == 1){
-        help();
+        //help(); 
+        int i = 0/0;
     
     }
     if(command == 2){
