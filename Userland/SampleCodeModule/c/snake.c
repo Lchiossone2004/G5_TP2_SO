@@ -104,9 +104,9 @@ void moveSnake(Snakepos snake[]) {
     // Mueve la cabeza en la dirección actual
     snake[l].pos_x += snake->direc_x;
     snake[l].pos_y += snake->direc_y;
-    if(snake[l].pos_x < 0 || snake[l].pos_x >= BORDER_X) {
-        return;
-    }
+    //if(snake[l].pos_x < 0 || snake[l].pos_x >= BORDER_X) {
+     //   return;
+   // }
     putSnake(snake); // Dibuja la snake después de mover
     return;
 }
@@ -283,19 +283,25 @@ void intToStr(int num, char* str) {
         str[i - j - 1] = temp;
     }
 }
-
+int getLen(char string[]) {
+    int i = 0;
+    while(string[i] != '\0') {
+        i++;
+    }
+    return i;
+}
 void endGame(char players, char winner) {
     snake_is_active = 0;
     char * p1 = "PLAYER ONE SCORE: ";
     char *p2;
     char *p3;
-    char * points1P = "0";
-    char * points2P = "0";
+    char points1P[10];
+    char points2P[10];
     intToStr(snake1->points, points1P);
     clear();  // Limpia la pantalla usando una llamada al sistema
     zoomIn(); //hace zoom asi se imprime el msj mas grande
     print(p1,18);
-    print(points1P,1);
+    print(points1P,getLen(points1P));
     nlPrint();
     if(players == '2') {
         p2 = "PLAYER TWO SCORE: ";
@@ -305,7 +311,7 @@ void endGame(char players, char winner) {
         win[1] = '\0';
         print(p2,18);
         intToStr(snake2->points, points2P);
-        print(points2P,1);
+        print(points2P,getLen(points2P));
         nlPrint();
         print(p3, 15);
         print(win,1);
