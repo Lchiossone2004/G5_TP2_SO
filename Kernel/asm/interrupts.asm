@@ -15,6 +15,7 @@ GLOBAL _irq05Handler
 GLOBAL _irq08Handler
 
 GLOBAL _exception0Handler
+GLOBAL _exception1Handler
 GLOBAL activateSti
 
 EXTERN irqDispatcher
@@ -155,7 +156,9 @@ _irq08Handler:
 _exception0Handler:
 	exceptionHandler 0
 
-
+;Wrong Op Code Exception
+_exception1Handeler:
+	exceptionHandler 1
 haltcpu:
 	cli
 	hlt
