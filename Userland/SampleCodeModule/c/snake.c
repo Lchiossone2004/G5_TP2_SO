@@ -1,5 +1,3 @@
-
-
 #include "../include/snake.h" 
 #include <stdint.h>
 #include <libc.h>
@@ -12,6 +10,7 @@ typedef struct {
     int direc_y;
     int points;
     int len;
+    int extraLen; // Agregado para gestionar el incremento en la siguiente unidad de tiempo
     uint32_t color;
 } Snakepos;
 
@@ -39,6 +38,7 @@ void iniSnake1() {
     snake1->direc_x = REC_ANCHO;
     snake1->direc_y = 0;
     snake1->len = 4;
+    snake1->extraLen = 0;
     snake1->color = 0x0042f557;
     for (int i = 0; i < snake1->len; i++) { 
         snake1[i].pos_y = 0;
@@ -51,6 +51,7 @@ void iniSnake2() {
     snake2->direc_x = 0;
     snake2->direc_y = -REC_LARGO;
     snake2->len = 4;
+    snake2->extraLen = 0;
     snake2->color = 0x00f54290;
     for(int i = 0; i < snake2->len; i++) {
         snake2[i].pos_x = (BORDER_X / 2 / REC_ANCHO) * 2 * REC_ANCHO;
@@ -92,21 +93,30 @@ void putSnake(Snakepos snake[]) {
 }
 void moveSnake(Snakepos snake[]) {
     int l = snake->len - 1;
-
-    delete(snake[0].pos_x, snake[0].pos_y); // Limpia la cola
-
-    // Mueve los segmentos de la snake
-    for (int i = 0; i < l; i++) {
-        snake[i].pos_x = snake[i + 1].pos_x;
-        snake[i].pos_y = snake[i + 1].pos_y;
+    if (snake->extraLen) {
+        snake->len++; // Incrementa la longitud de la serpiente
+        l++;
+        delete(snake[0].pos_x, snake[0].pos_y);
+        // Mueve la cabeza hacia adelante en la dirección actual
+        snake[l].pos_x += snake[l-1].pos_x+snake->direc_x;
+        snake[l].pos_y += snake[l-1].pos_y+snake->direc_y;
+        for (int i = 0; i < l-1; i++){
+            snake[i].pos_x = snake[i + 1].pos_x+snake[i + 1].direc_x;
+            snake[i].pos_y = snake[i + 1].pos_y+snake[i + 1].direc_y;
+        }       
+        snake->extraLen--; // Decrementa el contador de longitud extra
+    } else {
+            delete(snake[0].pos_x, snake[0].pos_y);
+        // Mueve los segmentos de la snake
+        for (int i = 0; i < l; i++) {
+            snake[i].pos_x = snake[i + 1].pos_x;
+            snake[i].pos_y = snake[i + 1].pos_y;
+        }
+        // Mueve la cabeza en la dirección actual
+        snake[l].pos_x += snake->direc_x;
+        snake[l].pos_y += snake->direc_y;
     }
-
-    // Mueve la cabeza en la dirección actual
-    snake[l].pos_x += snake->direc_x;
-    snake[l].pos_y += snake->direc_y;
-    //if(snake[l].pos_x < 0 || snake[l].pos_x >= BORDER_X) {
-     //   return;
-   // }
+    // Limpia la cola
     putSnake(snake); // Dibuja la snake después de mover
     return;
 }
@@ -179,24 +189,15 @@ int isSnakeinPos(Snakepos pos, Snakepos snake[]) {
     return snake[l].pos_x == pos.pos_x && snake[l].pos_y == pos.pos_y;
 }
 
-void pointEarned(Snakepos snake[]){  
+void pointEarned(Snakepos snake[]) {
     syscall(11, 0);
+    // Marcar que se ha ganado un punto
     if (snake->len < MAX_SNAKE) {
-        snake->len++;
-        //mueve todo a la posicion del "anterior" (uno mas atras)
-        for (int i = snake->len - 1; i > 0; i--) {
-            snake[i].pos_x = snake[i - 1].pos_x;
-            snake[i].pos_y = snake[i - 1].pos_y;
-        }
-        //agranda hacia atras
-        snake[0].pos_x = snake[1].pos_x - snake->direc_x;
-        snake[0].pos_y = snake[1].pos_y - snake->direc_y;
-        
-        putSnake(snake);
+        snake->extraLen++; // Incrementar el contador de longitud extra
     }
     snake->points++;
     deleteCircle();
-    putRandomCircle(); 
+    putRandomCircle();
     return;
 }
 void direcSnake(char cantPlayers) {
@@ -350,20 +351,21 @@ void play(char players) {
     while(snake_is_active){ 
         syscall(14, &exitPressed);
         syscall(14, keysPressed+(count++));
+        sleep(6);
         direcSnake(players);
-        moveSnake(snake1);
-        if(players == '2') {
-            moveSnake(snake2);
-        }
-        sleep(7);
-        count=0;
         if(isSnakeinPos(circle, snake1)) {
             pointEarned(snake1);
         }
         if(players == '2' && isSnakeinPos(circle, snake2)) {
             pointEarned(snake2);
         }
-        if(0x2D == exitPressed || checkCollision(snake1,snake2) == 2) {
+        moveSnake(snake1);
+        if(players == '2') {
+            moveSnake(snake2);
+        }
+        sleep(7);
+        count=0;
+        if(0x2D == exitPressed) {
             endGame(players, '0');
         }
         if(checkCollision(snake1, snake2) == 1) {
