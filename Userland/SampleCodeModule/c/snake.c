@@ -266,7 +266,7 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
      //falta opcion se chocan cabeza con cabeza (pierden los 2)
     return 0;
 }
-int intToStr(int num, char* str) {
+void intToStr(int num, char* str) {
     int i = 0;
     // Manejar el caso en que el número sea 0
     if (num == 0) {
@@ -289,9 +289,15 @@ int intToStr(int num, char* str) {
         str[j] = str[i - j - 1];
         str[i - j - 1] = temp;
     }
+ 
+}
+int getLen(char string[]) {
+    int i = 0;
+    while(string[i] != '\0') {
+        i++;
+    }
     return i;
 }
-
 void endGame(char players, char winner) {
     snake_is_active = 0;
     char * p1 = "PLAYER ONE SCORE: ";
@@ -299,11 +305,11 @@ void endGame(char players, char winner) {
     char *p3;
     char points1P[10];
     char points2P[10];
-    int lenpts1 = intToStr(snake1->points, points1P);
+    intToStr(snake1->points, points1P);
     clear();  // Limpia la pantalla usando una llamada al sistema
     zoomIn(); //hace zoom asi se imprime el msj mas grande
     print(p1,18);
-    print(points1P,lenpts1);
+    print(points1P,getLen(points1P));
     nlPrint();
     if(players == '2') {
         p2 = "PLAYER TWO SCORE: ";
@@ -312,8 +318,8 @@ void endGame(char players, char winner) {
         win[0] = winner;
         win[1] = '\0';
         print(p2,18);
-        int lenpts2 = intToStr(snake2->points, points2P);
-        print(points2P,lenpts2);
+        intToStr(snake2->points, points2P);
+        print(points2P,getLen(points2P));
         nlPrint();
         print(p3, 15);
         print(win,1);
