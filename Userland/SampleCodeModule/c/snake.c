@@ -289,8 +289,8 @@ void endGame(char players, char winner) {
     char * p1 = "PLAYER ONE SCORE: ";
     char *p2;
     char *p3;
-    char *points1P;
-    char *points2P;
+    char * points1P = "0";
+    char * points2P = "0";
     intToStr(snake1->points, points1P);
     clear();  // Limpia la pantalla usando una llamada al sistema
     zoomIn(); //hace zoom asi se imprime el msj mas grande
