@@ -19,6 +19,9 @@ int specialKey(int key) {
 }
 void loadBuffer(int key){
     updateKeyboardStatus(key);
+    if(curr == 12) {
+        curr = 0;
+    }
     if(!specialKey(key)){
         buffer[curr++] = toLetter(key);
     }
