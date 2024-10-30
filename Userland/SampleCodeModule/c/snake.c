@@ -243,6 +243,7 @@ void changeDir(int newX, int newY, Snakepos snake[]) {
 }
 int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
     int len = snake->len;
+    int otherlen = othersnake->len;
    
     // choca con un borde
     if (snake[len - 1].pos_x < 0 || snake[len - 1].pos_x >= BORDER_X ||snake[len - 1].pos_y < 0 || snake[len - 1].pos_y >= BORDER_Y) {
@@ -256,15 +257,19 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
              return 1;
          }
      }
+     //falta opcion se chocan cabeza con cabeza (pierden los 2)
+     if(snake[len-1].pos_x == othersnake[otherlen-1].pos_x && snake[len-1].pos_y == othersnake[otherlen-1].pos_y) {
+        return 2;
+     }
      //se choca con la otra
-     for(int i = 0; i < othersnake->len; i++) {
+     for(int i = 0; i < otherlen; i++) {
         if(othersnake[i].pos_x == snake[len-1].pos_x && othersnake[i].pos_y == snake[len-1].pos_y) {
            // putRectangle(snake[len-1].pos_x, snake[len-1].pos_y, othersnake->color);
             syscall(11,1);
             return 1;
         }
      }
-     //falta opcion se chocan cabeza con cabeza (pierden los 2)
+     
     return 0;
 }
 void intToStr(int num, char* str) {
@@ -322,8 +327,13 @@ void endGame(char players, char winner) {
         intToStr(snake2->points, points2P);
         print(points2P,getLen(points2P));
         nlPrint();
+        if(winner == '0') {
+            p3 = "NO WINNER";
+            print(p3,9);
+        } else {
         print(p3, 15);
         print(win,1);
+        }
     }
     sleep(25);
     clear();
@@ -359,15 +369,16 @@ void play(char players) {
         if(players == '2' && isSnakeinPos(circle, snake2)) {
             pointEarned(snake2);
         }
-        if(0x2D == exitPressed) {
+        if(0x2D == exitPressed || checkCollision(snake1,snake2) == 2) {
             endGame(players, '0');
         }
-        if(checkCollision(snake1, snake2)) {
+        if(checkCollision(snake1, snake2) == 1) {
             endGame(players, '2');
-        }
-        if(players == '2' && checkCollision(snake2, snake1)) {
+        } else 
+        if(players == '2' && checkCollision(snake2, snake1) ==1) {
             endGame(players,'1');
         }
+        
     }
     snake_is_active=1;
     return;
