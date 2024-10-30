@@ -351,8 +351,7 @@ void play(char players) {
         if(players == '2') {
             moveSnake(snake2);
         }
-        sleep(7);
-        count=0;
+                count=0;
         if(isSnakeinPos(circle, snake1)) {
             pointEarned(snake1);
         }
@@ -368,7 +367,7 @@ void play(char players) {
         if(players == '2' && checkCollision(snake2, snake1)) {
             endGame(players,'1');
         }
-
+        sleep(7);
     }
     snake_is_active=1;
     return;
