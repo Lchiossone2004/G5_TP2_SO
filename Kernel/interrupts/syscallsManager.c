@@ -78,9 +78,9 @@ void sys_newLine(){
     nlVideo();
 }
 
-void sys_sleep(int seconds){
+void sys_sleep(int ticks){
     _sti();
-    int max = ticks_elapsed() + seconds;
+    int max = ticks_elapsed() + ticks;
     while(max > ticks_elapsed());
 }
 

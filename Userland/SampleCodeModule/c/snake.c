@@ -2,6 +2,7 @@
 
 #include "../include/snake.h" 
 #include <stdint.h>
+#include <libc.h>
 extern uint64_t syscall(uint64_t rdi, ...);
 
 typedef struct {
@@ -39,7 +40,7 @@ void iniSnake1() {
     snake1->direc_y = 0;
     snake1->len = 4;
     snake1->color = 0x0042f557;
-    for (int i = 0; i < snake1->len; i++) {
+    for (int i = 0; i < snake1->len; i++) { 
         snake1[i].pos_y = 0;
         snake1[i].pos_x = (1 + i) * REC_ANCHO; 
     }
@@ -204,16 +205,14 @@ void direcSnake(char cantPlayers) {
             case 0x1F: newX1 = 0; newY1 = REC_LARGO; break;  // S
             case 0x1E: newX1 = -REC_ANCHO; newY1 = 0; break; // A
             case 0x20: newX1 = REC_ANCHO; newY1 = 0; break;  // D
-            default: break;
         }
-
+    
         if (cantPlayers == '2') {
             switch (keysPressed[i]) {
                 case 0x17: newX2 = 0; newY2 = -REC_LARGO; break; // I
                 case 0x25: newX2 = 0; newY2 = REC_LARGO; break;  // K
                 case 0x24: newX2 = -REC_ANCHO; newY2 = 0; break; // J
                 case 0x26: newX2 = REC_ANCHO; newY2 = 0; break;  // L
-                default: break;
             }
         }
         keysPressed[i] = 0;
@@ -290,27 +289,27 @@ void endGame(char players, char winner) {
     char *points1P;
     char *points2P;
     intToStr(snake1->points, points1P);
-    syscall(9, 1);  // Limpia la pantalla usando una llamada al sistema
-    syscall(6,1); //hace zoom asi se imprime el msj mas grande
-    syscall(4,1,p1,18);
-    syscall(4,1,points1P,1);
-    syscall(5);
+    clear();  // Limpia la pantalla usando una llamada al sistema
+    zoomIn(); //hace zoom asi se imprime el msj mas grande
+    print(p1,18);
+    print(points1P,1);
+    nlPrint();
     if(players == '2') {
         p2 = "PLAYER TWO SCORE: ";
         p3 = "WINNER: PLAYER ";
         char win[2];
         win[0] = winner;
         win[1] = '\0';
-        syscall(4,1,p2,18);
+        print(p2,18);
         intToStr(snake2->points, points2P);
-        syscall(4,1,points2P,1);
-        syscall(5);
-        syscall(4,1,p3,15);
-        syscall(4,1,win,1);
+        print(points2P,1);
+        nlPrint();
+        print(p3, 15);
+        print(win,1);
     }
-    syscall(8,36);
-    syscall(7,1);
-    syscall(9,1);
+    sleep(25);
+    clear();
+    zoomOut();
     return;
 }   
 
@@ -334,7 +333,6 @@ void play(char players) {
         if(players == '2') {
             moveSnake(snake2);
         }
-        syscall(8,8);
         count=0;
         if(isSnakeinPos(circle, snake1)) {
             pointEarned(snake1);
@@ -351,6 +349,7 @@ void play(char players) {
         if(players == '2' && checkCollision(snake2, snake1)) {
             endGame(players,'1');
         }
+        sleep(7);
 
     }
     snake_is_active=1;

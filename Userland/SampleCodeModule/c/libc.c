@@ -37,6 +37,10 @@ void zoomOut(){
     syscall(7,STDOUT);
 }
 
+void sleep(int ticks){
+    syscall(8,ticks);
+    return;
+}
 // void printTime(){
 //     syscall(13,STDOUT);
 // }

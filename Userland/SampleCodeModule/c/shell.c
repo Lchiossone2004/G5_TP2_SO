@@ -13,7 +13,7 @@ static shell_is_active=1;
 void shell() { 
         print(NEW_LINE,sizeof(NEW_LINE)-1);
         while(shell_is_active){
-        if(index == WORD_BUFFER_SIZE-1){
+        if(index == WORD_BUFFER_SIZE-1 || *letra == 1){
             clearBuffer();
             chekCommand();
         }
@@ -22,10 +22,6 @@ void shell() {
             index -= 1;
             buffer[index] = 0;
         }
-        if (*letra == 1){
-            clearBuffer();
-            chekCommand();
-        }  
         if(*letra != 0 && *letra != 1){
                 if(*letra == ' '){
                 buffer[index++] = ' ';
