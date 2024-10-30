@@ -104,7 +104,9 @@ void moveSnake(Snakepos snake[]) {
     // Mueve la cabeza en la dirección actual
     snake[l].pos_x += snake->direc_x;
     snake[l].pos_y += snake->direc_y;
-
+    if(snake[l].pos_x < 0 || snake[l].pos_x >= BORDER_X) {
+        return;
+    }
     putSnake(snake); // Dibuja la snake después de mover
     return;
 }
@@ -249,6 +251,7 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
      //se choca con la otra
      for(int i = 0; i < othersnake->len; i++) {
         if(othersnake[i].pos_x == snake[len-1].pos_x && othersnake[i].pos_y == snake[len-1].pos_y) {
+           // putRectangle(snake[len-1].pos_x, snake[len-1].pos_y, othersnake->color);
             syscall(11,1);
             return 1;
         }
