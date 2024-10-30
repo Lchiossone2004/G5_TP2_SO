@@ -69,19 +69,25 @@ getSec:
 	ret
 
 getKey:
-	push rbp
-	mov rbp,rsp
+    push rbp
+    mov rbp, rsp
 
- 	in al, 60h
-	test al, 80h
-	jnz .nada
-	jmp .fin
-.nada
-	mov al, 0
-.fin
-	mov rsp, rbp 
-	pop rbp
-	ret
+    in al, 60h
+    test al, 80h ;si el bit 7 esta activo significa que la tecla es liberada
+    jnz .tecla_liberada
+
+    mov ah, 1 ; "flag" de si esta presionada o liberada
+    jmp .fin
+
+.tecla_liberada:
+    and al, 7Fh  ; limpiar el bit 7 para obtener el scancode real
+    mov ah, 0
+
+.fin:
+    mov rsp, rbp 
+    pop rbp
+    ret
+
 
 getCPURegisters:
     mov [regBuffer], qword rax

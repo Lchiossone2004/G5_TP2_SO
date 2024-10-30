@@ -25,7 +25,11 @@ void int_20() { //interrupcion del timer, cada tick llama a imprimir la hora, mi
 }
 
 void int_21(){ //interrupcion del teclado, constantemente se fija si se presiono una tecla o no
-	int key = getKey();
-	if(key != 0) //si la key es 0 significa que es una key se levanto, no se presiono
-	loadBuffer(key);
+	uint16_t key = getKey();
+    uint8_t scancode = key & 0xFF; // los primeros 8 bits son el scancode
+    uint8_t isPressed = (key >> 8) & 0x01; 
+	updateKeyboardStatus(scancode);
+	if(!isPressed || scancode == 0xAA || scancode == 0xB6) {
+	loadBuffer(scancode);
+	}
 }

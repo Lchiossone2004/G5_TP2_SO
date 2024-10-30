@@ -8,16 +8,16 @@
 static uint64_t buffer_dim = 0;
 static uint64_t shift_pressed = 0;
 static uint64_t caps_pressed = 0;
-static uint64_t ctrl_pressed = 0;
+
 
 static uint16_t buffer[BUFFER_SIZE];
 static uint64_t dim = 0; //dimension del buffer
 static uint64_t curr = 0; //posicion actual del buffer
 
-int specialKey(int key) {
-    return  (key == 0 || key == 14 || key == 75 || key == 77 || key == 28 || key == 0x1D || key == 0x3A || key == 0x2A || key == 0x36);
+int specialKey(uint8_t key) {
+    return  (key == 0 || key == 14 || key == 75 || key == 77 || key == 28 || key == 0x1D || key == 0x3A || key == 0x2A || key == 0x36 || key == 0xAA || key == 0xB6);
 }
-void loadBuffer(int key){
+void loadBuffer(uint8_t key){
     updateKeyboardStatus(key);
     if(curr == 12) {
         curr = 0;
@@ -49,24 +49,18 @@ char getBuffer(){
     return aux;
 }
 
-void updateKeyboardStatus(int scancode) {
-    switch (scancode) {
+void updateKeyboardStatus(uint8_t key) {
+    switch (key) {
         case 0x2A:  //shift izq 
         case 0x36:  //shift der
             shift_pressed = 1;
             break;
-        case 0xAA:  // shift izq
-        case 0xB6:  // shift der
+        case 0xAA:  // shift izq released
+        case 0xB6:  // shift der released
             shift_pressed = 0;
             break;
         case 0x3A:  //mayuscula presionado (on/off)
            caps_pressed = !caps_pressed;
-            break;
-        case 0x1D: //ctrl presionado
-            ctrl_pressed = 1;
-            break;
-        case 0x9D: //ctrl liberado
-            ctrl_pressed = 0; 
             break;
     }
 }
@@ -85,7 +79,7 @@ char shiftNum(char num) {
             case '0': return ')';
         }
 }
-char toLetter(int i){
+char toLetter(uint8_t i){
     char aux;
     switch (i) {
         // Números y símbolos
