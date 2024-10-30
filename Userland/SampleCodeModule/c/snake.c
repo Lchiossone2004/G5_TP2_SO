@@ -141,19 +141,20 @@ void putRandomCircle() {
 
     do {
         syscall(15, &ran); 
-        colApple = ran % REC_X_FIL;
-        filApple = (ran / REC_X_FIL) % REC_X_COL;
+        colApple = ran % (BORDER_X / REC_ANCHO);
+        filApple = ran % (BORDER_Y / REC_LARGO);
 
         pos.pos_x = colApple * REC_ANCHO;
         pos.pos_y = filApple * REC_LARGO;
 
-    } while (isPositionOccupied(pos));  // Repite si la posición está ocupada
+    } while (isPositionOccupied(pos));  // Repite si la vibora esta ahi
 
     circle.pos_x = pos.pos_x;
     circle.pos_y = pos.pos_y;
     putCircle(circle.pos_x, circle.pos_y, 0x00FA0202);
     return;
 }
+
 
 int isPair(int pos) {
 	return pos % 2 == 0;
@@ -361,7 +362,6 @@ void play(char players) {
         if(players == '2' && checkCollision(snake2, snake1)) {
             endGame(players,'1');
         }
-    
 
     }
     snake_is_active=1;
