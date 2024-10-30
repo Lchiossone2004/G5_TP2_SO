@@ -274,22 +274,16 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
 }
 void intToStr(int num, char* str) {
     int i = 0;
-    // Manejar el caso en que el número sea 0
     if (num == 0) {
         str[0] = '0';
         str[1] = '\0';
         return;
     }
-
-    // Convertir el número a string en orden inverso
     while (num != 0) {
         str[i++] = (num % 10) + '0';
         num /= 10;
     }
-    // Terminar la cadena
     str[i] = '\0';
-
-    // Invertir la cadena
     for (int j = 0; j < i / 2; j++) {
         char temp = str[j];
         str[j] = str[i - j - 1];
