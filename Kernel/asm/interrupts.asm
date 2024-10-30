@@ -18,6 +18,7 @@ GLOBAL _exception0Handler
 GLOBAL _exception1Handler
 GLOBAL activateSti
 
+EXTERN main
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN syscallsManager

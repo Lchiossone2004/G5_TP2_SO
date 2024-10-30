@@ -36,7 +36,7 @@ void sys_getChar(unsigned int fd, char * buffer, size_t count){
     _sti();
     while(isBufferEmpty());
     *buffer = getBuffer();
-    if(*buffer == 0){
+    if(*buffer == 0 && count > 0){
         deleteVideo();
     }
     if (*buffer == 1)

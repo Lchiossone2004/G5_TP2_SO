@@ -16,7 +16,8 @@ void exceptionDispatcher(int exception) {
 
 static void zero_division() {
 	// Handler para manejar excepcíon
-	imprimirVideo("hola", 5,BLANCO);
+	imprimirVideo("hola",5,BLANCO);
+	return;
 }
 
 static void wrong_op() {
