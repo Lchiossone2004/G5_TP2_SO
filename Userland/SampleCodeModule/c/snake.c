@@ -179,11 +179,18 @@ int isSnakeinPos(Snakepos pos, Snakepos snake[]) {
 }
 
 void pointEarned(Snakepos snake[]){  
-    syscall(11,0);
-    if(snake->len < MAX_SNAKE) {
+    syscall(11, 0);
+    if (snake->len < MAX_SNAKE) {
         snake->len++;
-        snake[snake->len-1].pos_x = snake[snake->len-2].pos_x + snake->direc_x;
-        snake[snake->len-1].pos_y = snake[snake->len-2].pos_y + snake->direc_y;
+        //mueve todo a la posicion del "anterior" (uno mas atras)
+        for (int i = snake->len - 1; i > 0; i--) {
+            snake[i].pos_x = snake[i - 1].pos_x;
+            snake[i].pos_y = snake[i - 1].pos_y;
+        }
+        //agranda hacia atras
+        snake[0].pos_x = snake[1].pos_x - snake->direc_x;
+        snake[0].pos_y = snake[1].pos_y - snake->direc_y;
+        
         putSnake(snake);
     }
     snake->points++;
