@@ -79,17 +79,6 @@ SECTION .text
 
 
 %macro exceptionHandler 1
-	pushState
-
-	mov rdi, %1 ; pasaje de parametro
-	call exceptionDispatcher
-
-	call getStackBase
-	mov [rsp + 8*3], rax
-	mov rax, userland
-	mov [rsp], rax
-	popState
-	iretq
 %endmacro
 
 
@@ -159,7 +148,7 @@ _irq08Handler:
 
 ;Zero Division Exception
 _exception0Handler:
-	exceptionHandler 0
+	iretq
 
 ;Wrong Op Code Exception
 _exception06Handler:
@@ -174,4 +163,4 @@ haltcpu:
 section .data
 userland equ 0x400000
 SECTION .bss
-	aux resq 1
+regBuffer resq 16

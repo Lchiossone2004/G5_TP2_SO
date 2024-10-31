@@ -9,6 +9,7 @@ static void wrong_op();
 
 void exceptionDispatcher(int exception) {
 	imprimirVideo("hola",5,BLANCO);
+	while(1);
 	if (exception == ZERO_EXCEPTION_ID)
 		zero_division();
 	if(exception == WRONG_OP_EXCEPTION_ID)

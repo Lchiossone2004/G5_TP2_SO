@@ -49,7 +49,7 @@ void chekCommand(){
     int command = processCommand();
     if(command == 1){
         //help(); 
-        int i = 0/0;    
+        div0(); 
     }
     if(command == 2){
         print(TAB,sizeof(TAB)-1);
