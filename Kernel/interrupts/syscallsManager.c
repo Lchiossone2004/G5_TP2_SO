@@ -11,6 +11,7 @@
 
 #define ROJO    0xFF0000
 #define BLANCO  0xFFFFFF
+#define TAB "     "
 
 #define PARA_ALEATORIOS_1 1664525
 #define PARA_ALEATORIOS_2 1013904223   
@@ -25,6 +26,7 @@ static char * regs[8] = {"RAX: ", "RBX: ", "RCX: ", "RDX: ", "RSI: ","RDI: ", "R
 void sys_registers_print(unsigned int fd){
     uint64_t * registers = getCPURegisters();
     for(int i = 0; i<8; i++){
+    imprimirVideo(TAB,5,BLANCO);
     imprimirVideo(regs[i],5,BLANCO);
     printHexaVideo(registers[i]);
     nlVideo();
@@ -99,8 +101,17 @@ void sys_beep(int flag) {
 }
 
 
-void sys_getTime(time * ret) {
-    ret->hours = getHours();
+void sys_getTime(time * ret, int area) {
+    int aux = getHours();
+    if(area == 1){
+    ret->hours = aux - 3;
+    if(ret->hours < 0){
+        ret->hours = aux + 21;
+    }
+    }
+    else{
+        ret->hours = aux;
+    }
     ret->mins = getMins();
     ret->sec = getSec();
 }
@@ -120,22 +131,29 @@ void sys_ranN(int* toRan){
     return;
 }
 
+void sys_clearBuffer(){
+    while(!isBufferEmpty()){
+        getBuffer();
+    }
+}
+
 uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
     switch(rdi) {
-        case 1: sys_registers_print(rsi); return;
-        case 2: sys_getChar(rsi,rdx,rcx); return;
-        case 3: sys_read(rsi, rdx, rcx); return;
-        case 4: sys_write(rsi, (const char *)rdx, rcx); return;
-        case 5: sys_newLine(rdi); return;
-        case 6: sys_zoomIn(rsi); return;
-        case 7: sys_zoomOut(rsi); return;
-        case 8: sys_sleep(rsi); return;
-        case 9: sys_clear(rsi); return;
-        case 10: sys_putPixel(rsi, rdx, rcx); return;
-        case 11: sys_beep(rsi);return;
-        case 13: sys_getTime(rsi); return;
-        case 14: sys_getKey(rsi); return;
-        case 15: sys_ranN(rsi); return;
+        case 1: sys_registers_print(rsi); break;
+        case 2: sys_getChar(rsi,rdx,rcx); break;
+        case 3: sys_read(rsi, rdx, rcx); break;
+        case 4: sys_write(rsi, (const char *)rdx, rcx); break;
+        case 5: sys_newLine(rdi); break;
+        case 6: sys_zoomIn(rsi); break;
+        case 7: sys_zoomOut(rsi); break;
+        case 8: sys_sleep(rsi); break;
+        case 9: sys_clear(rsi); break;
+        case 10: sys_putPixel(rsi, rdx, rcx); break;
+        case 11: sys_beep(rsi);break;
+        case 13: sys_getTime(rsi,rdx); break;
+        case 14: sys_getKey(rsi); break;
+        case 15: sys_ranN(rsi); break;
+        case 16: sys_clearBuffer(); break;
     }
     return;
 }
