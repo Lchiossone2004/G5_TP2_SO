@@ -23,7 +23,10 @@ void loadBuffer(uint8_t key){
         curr = 0;
     }
     if(!specialKey(key)){
-        buffer[curr++] = toLetter(key);
+        char letter = toLetter(key); 
+
+            buffer[curr++] = letter;
+
     }
     if(key == 14){
         buffer[curr++] = 0;
