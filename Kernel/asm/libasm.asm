@@ -3,6 +3,7 @@ GLOBAL getHours
 GLOBAL getMins
 GLOBAL getSec
 GLOBAL getKey
+GLOBAL saveCPURegisters
 GLOBAL getCPURegisters
 GLOBAL outb
 GLOBAL inb
@@ -89,7 +90,8 @@ getKey:
     ret
 
 
-getCPURegisters:
+saveCPURegisters:
+	mov rax, 7
     mov [regBuffer], qword rax
 	mov rax, regBuffer
 	add rax, 8
@@ -109,6 +111,9 @@ getCPURegisters:
 	mov rax, regBuffer
 	ret
 
+getCPURegisters:
+	mov rax, regBuffer
+	ret
 outb:
 	push rbp
 	mov rbp, rsp

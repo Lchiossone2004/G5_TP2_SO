@@ -17,6 +17,7 @@
 #define PARA_ALEATORIOS_2 1013904223   
 
 extern uint64_t * getCPURegisters();
+
 extern void _sti();
 
 static int seed = 0;
