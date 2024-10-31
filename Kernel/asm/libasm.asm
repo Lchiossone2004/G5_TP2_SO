@@ -91,7 +91,6 @@ getKey:
 
 
 saveCPURegisters:
-	mov rax, 7
     mov [regBuffer], qword rax
 	mov rax, regBuffer
 	add rax, 8
@@ -105,9 +104,26 @@ saveCPURegisters:
 	add rax, 8
     mov [rax], qword rdi
 	add rax, 8
-	mov [rax], qword rsp
+	mov [rax], qword rbp 
 	add rax, 8
-    mov [rax], qword rbp
+    mov [rax], qword rsp
+	add rax, 8
+	mov [rax], qword r8
+	add rax, 8
+	mov [rax], qword r9 
+	add rax, 8
+    mov [rax], qword r10
+	add rax, 8
+	mov [rax], qword r11
+	add rax, 8
+	mov [rax], qword r12
+	add rax, 8
+    mov [rax], qword r13
+	add rax, 8
+	mov [rax], qword r14
+	add rax, 8
+	mov [rax], qword r15
+	
 	mov rax, regBuffer
 	ret
 
@@ -133,4 +149,4 @@ inb:
 	ret
 
 section .bss
-	regBuffer resq 10
+	regBuffer resq 16
