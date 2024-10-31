@@ -17,6 +17,7 @@ void printTime(){
 	aux = Timepo->seconds >> 4;
 	toPrint[6] = aux + '0';
 	toPrint[7] = (Timepo->seconds&0xF) + '0';
+	print("(UTC): ",6);
     print(toPrint,8);
 }
 

@@ -15,7 +15,7 @@ static uint64_t dim = 0; //dimension del buffer
 static uint64_t curr = 0; //posicion actual del buffer
 
 int specialKey(uint8_t key) {
-    return  (key == 0 || key == 14 || key == 75 || key == 77 || key == 28 || key == 0x1D || key == 0x3A || key == 0x2A || key == 0x36 || key == 0xAA || key == 0xB6);
+    return  (key == 0 || key == 14 || key == 75 || key == 77 || key == 28 || key == 0x1D || key == 0x3A || key == 0x2A || key == 0x36 || key == 0xAA || key == 0xB6 || key == 0x0F);
 }
 void loadBuffer(uint8_t key){
     //updateKeyboardStatus(key,);
@@ -28,11 +28,18 @@ void loadBuffer(uint8_t key){
             buffer[curr++] = letter;
 
     }
-    if(key == 14){
+    if(key == 14){      //Borrado      
         buffer[curr++] = 0;
     }
-    if(key == 28){
+    if(key == 28){      //Enter
         buffer[curr++] = 1;
+    }
+    if(key == 0x0F){   //TAB
+        buffer[curr++] = ' ';
+        buffer[curr++] = ' ';
+        buffer[curr++] = ' ';
+        buffer[curr++] = ' ';
+        buffer[curr++] = ' ';
     }
 }
 

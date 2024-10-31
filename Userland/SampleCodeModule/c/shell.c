@@ -51,6 +51,7 @@ void chekCommand(){
     
     }
     if(command == 2){
+        print(TAB,sizeof(TAB));
         printTime();
       
     }
@@ -83,11 +84,13 @@ void chekCommand(){
     }
     if(command == 8){
         nlPrint();
+        print(TAB,sizeof(TAB));
         print("closing shell...", 16);
         shell_is_active = 0;
     }
     if(command == 0){
-        printErr("     command: [", 15);
+        print(TAB,sizeof(TAB));
+        printErr("command: [", 10);
         printErr(buffer, strSize(buffer));
         printErr("] not found.", 12);
     }
