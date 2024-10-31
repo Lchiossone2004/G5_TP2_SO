@@ -5,8 +5,8 @@
 syscall(uint64_t rsi, ...);
 
 static time *Timepo;
-void printTime(){
-    getTime();
+void printTime(int area){
+    getTime(area);
     char toPrint[9] = "hh:mm:ss";
 	char aux = Timepo->hours >> 4;
 	toPrint[0] = aux + '0';
@@ -17,10 +17,15 @@ void printTime(){
 	aux = Timepo->seconds >> 4;
 	toPrint[6] = aux + '0';
 	toPrint[7] = (Timepo->seconds&0xF) + '0';
-	print("(UTC): ",6);
+	if(area == 0){
+		print("(UTC): ",7);
+	}
+	else{
+		print("(ARG): ",7);
+	}
     print(toPrint,8);
 }
 
-void getTime(){
-    syscall(13,Timepo);
+void getTime(int area){
+    syscall(13,Timepo,area);
 }

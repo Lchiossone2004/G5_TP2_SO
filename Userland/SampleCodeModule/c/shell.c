@@ -7,7 +7,7 @@ static char buffer[WORD_BUFFER_SIZE] = {0};
 static char *letra;
 static int ultimaLetra;
 static int index = 0;
-static char* commands[] = {"help", "time", "zoomin", "zoomout","clear", "snake","print registers","exit"};
+static char* commands[] = {"help", "time ARG","time UTC", "zoomin", "zoomout","clear", "snake","print registers","exit"};
 static shell_is_active=1;
 
 void shell() { 
@@ -51,24 +51,28 @@ void chekCommand(){
     
     }
     if(command == 2){
-        print(TAB,sizeof(TAB));
-        printTime();
+        print(TAB,sizeof(TAB)-1);
+        printTime(1);
       
     }
-    if(command==3){
+    if(command == 3){
+        print(TAB,sizeof(TAB)-1);
+        printTime(0);
+    }
+    if(command==4){
         zoomIn();
         
     }
-    if (command==4)
+    if (command==5)
     {
         zoomOut();
         
     }
-    if(command == 5){
+    if(command == 6){
         clear();
        
     }
-    if(command == 6) {
+    if(command == 7) {
         nlPrint();
         char buffer;
         do {
@@ -78,23 +82,25 @@ void chekCommand(){
         nlPrint();
         }while (buffer != '1' && buffer != '2');
         play(buffer);
-    }
-    if(command == 7){
-        syscall(1);  
+        syscall(16);
+        syscall(9,STDIN);
     }
     if(command == 8){
+        syscall(1);  
+    }
+    if(command == 9){
         nlPrint();
-        print(TAB,sizeof(TAB));
+        print(TAB,sizeof(TAB)-1);
         print("closing shell...", 16);
-        shell_is_active = 0;
+        return;
     }
     if(command == 0){
-        print(TAB,sizeof(TAB));
+        print(TAB,sizeof(TAB)-1);
         printErr("command: [", 10);
         printErr(buffer, strSize(buffer));
         printErr("] not found.", 12);
     }
-    if(command != 5 && command != -1 && command != 3 && command != 4){
+    if(command != 6 && command != -1 && command != 4 && command != 5 && command != 7){
     nlPrint();
     }
     print(NEW_LINE,sizeof(NEW_LINE)-1);
