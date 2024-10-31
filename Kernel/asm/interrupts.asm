@@ -15,10 +15,10 @@ GLOBAL _irq05Handler
 GLOBAL _irq08Handler
 
 GLOBAL _exception0Handler
-GLOBAL _exception1Handler
+GLOBAL _exception06Handler
 GLOBAL activateSti
 
-EXTERN main
+EXTERN getStackBase
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN syscallsManager
@@ -84,6 +84,10 @@ SECTION .text
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
 
+	call getStackBase
+	mov [rsp + 8*3], rax
+	mov rax, userland
+	mov [rsp], rax
 	popState
 	iretq
 %endmacro
@@ -158,7 +162,7 @@ _exception0Handler:
 	exceptionHandler 0
 
 ;Wrong Op Code Exception
-_exception1Handler:
+_exception06Handler:
 	exceptionHandler 1
 
 haltcpu:
@@ -168,7 +172,6 @@ haltcpu:
 
 
 section .data
-mensaje db "hola"
-size equ $-mensaje
+userland equ 0x400000
 SECTION .bss
 	aux resq 1

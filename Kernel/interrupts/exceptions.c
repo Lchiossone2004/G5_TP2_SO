@@ -8,6 +8,7 @@ static void zero_division();
 static void wrong_op();
 
 void exceptionDispatcher(int exception) {
+	imprimirVideo("hola",5,BLANCO);
 	if (exception == ZERO_EXCEPTION_ID)
 		zero_division();
 	if(exception == WRONG_OP_EXCEPTION_ID)
@@ -16,7 +17,6 @@ void exceptionDispatcher(int exception) {
 
 static void zero_division() {
 	// Handler para manejar excepcíon
-	imprimirVideo("hola",5,BLANCO);
 	return;
 }
 

@@ -23,7 +23,7 @@ void _irq05Handler(void);
 void _irq08Handler(void);
 
 void _exception0Handler(void);
-void _exception1Handler(void);
+void _exception06Handler(void);
 
 void _cli(void);
 

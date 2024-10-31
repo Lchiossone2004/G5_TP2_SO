@@ -3,6 +3,8 @@
 #include "../include/snake.h"
 #include "../include/time.h"
 
+extern void syscall(__uint64_t rdi, ...);
+
 static char buffer[WORD_BUFFER_SIZE] = {0};
 static char *letra;
 static int ultimaLetra;
@@ -46,9 +48,8 @@ void getKey(char * buffer, int index){
 void chekCommand(){
     int command = processCommand();
     if(command == 1){
-        help(); 
-        //int i = 0/0;
-    
+        //help(); 
+        int i = 0/0;    
     }
     if(command == 2){
         print(TAB,sizeof(TAB)-1);

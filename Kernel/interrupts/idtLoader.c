@@ -24,7 +24,7 @@ DESCR_INT * idt = (DESCR_INT *) 0;	// IDT de 255 entradas
 
 void load_idt() {
   setup_IDT_entry (0x00, (uint64_t) &_exception0Handler);  //maneja las excepciones de division por cero 
-  setup_IDT_entry (0x06, (uint64_t) &_exception1Handler);  //maneja las excepciones de invalid op code 
+  setup_IDT_entry (0x06, (uint64_t) &_exception06Handler);  //maneja las excepciones de invalid op code 
   setup_IDT_entry (0x20, (uint64_t)&_irq00Handler); //esto para el timer 
   setup_IDT_entry (0x21, (uint64_t)&_irq01Handler); //esto es para el teclado 
   setup_IDT_entry (0x80, (uint64_t)&_irq08Handler);
@@ -32,7 +32,6 @@ void load_idt() {
 
 
 	//Solo interrupcion timer tick habilitadas
-	picMasterMask(0xFE); //supongo que para el timer
   picMasterMask(0xFC); // para el teclado  
 	picSlaveMask(0xFF);
         
