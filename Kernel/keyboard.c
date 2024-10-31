@@ -18,12 +18,15 @@ int specialKey(uint8_t key) {
     return  (key == 0 || key == 14 || key == 75 || key == 77 || key == 28 || key == 0x1D || key == 0x3A || key == 0x2A || key == 0x36 || key == 0xAA || key == 0xB6);
 }
 void loadBuffer(uint8_t key){
-    updateKeyboardStatus(key);
+    //updateKeyboardStatus(key,);
     if(curr == 12) {
         curr = 0;
     }
     if(!specialKey(key)){
-        buffer[curr++] = toLetter(key);
+        char letter = toLetter(key); 
+
+            buffer[curr++] = letter;
+
     }
     if(key == 14){
         buffer[curr++] = 0;
@@ -49,19 +52,17 @@ char getBuffer(){
     return aux;
 }
 
-void updateKeyboardStatus(uint8_t key) {
-    switch (key) {
-        case 0x2A:  //shift izq 
-        case 0x36:  //shift der
-            shift_pressed = 1;
-            break;
-        case 0xAA:  // shift izq released
-        case 0xB6:  // shift der released
-            shift_pressed = 0;
-            break;
-        case 0x3A:  //mayuscula presionado (on/off)
-           caps_pressed = !caps_pressed;
-            break;
+void updateKeyboardStatus(uint8_t scancode, uint8_t isPressed) {
+    if (scancode == 0x2A || scancode == 0x36) {  // Shift izquierdo o derecho
+        shift_pressed = isPressed;  // Cambia según esté presionado o no
+    //    if (isPressed) {
+     //       ncPrint("Shift presionado\n");
+     //   } else {
+     //       ncPrint("Shift liberado\n");
+     //   }
+    } else if (scancode == 0x3A && isPressed) {  // Caps Lock presionado (toggle)
+        caps_pressed = !caps_pressed;
+      //  ncPrint("Caps Lock toggled\n");
     }
 }
 

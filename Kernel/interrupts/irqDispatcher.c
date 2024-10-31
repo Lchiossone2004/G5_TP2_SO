@@ -28,8 +28,8 @@ void int_21(){ //interrupcion del teclado, constantemente se fija si se presiono
 	uint16_t key = getKey();
     uint8_t scancode = key & 0xFF; // los primeros 8 bits son el scancode
     uint8_t isPressed = (key >> 8) & 0x01; 
-	updateKeyboardStatus(scancode);
-	if(isPressed || scancode == 0xAA || scancode == 0xB6) {
+	updateKeyboardStatus(scancode, isPressed);
+	if(isPressed) {
 	loadBuffer(scancode);
 	}
 }
