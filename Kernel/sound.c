@@ -36,12 +36,12 @@
 
  void beep(int flag) { //si el flag esta en 1 es q perdio
     if(flag) {
-    play_sound(100);
-    timer_wait(3);
     play_sound(700);
     timer_wait(3);
     play_sound(300);
     timer_wait(3);
+    play_sound(100);
+    timer_wait(5);
     }
     else {
     play_sound(500);
