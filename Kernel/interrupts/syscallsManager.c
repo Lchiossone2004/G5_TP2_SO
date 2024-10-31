@@ -83,7 +83,9 @@ void sys_newLine(){
 void sys_sleep(int ticks){
     _sti();
     int max = ticks_elapsed() + ticks;
-    while(max > ticks_elapsed());
+    while(max > ticks_elapsed()){
+        _hlt();
+    }
 }
 
 void sys_clear(unsigned int fd){
@@ -115,9 +117,12 @@ void sys_getTime(time * ret, int area) {
     ret->mins = getMins();
     ret->sec = getSec();
 }
-void sys_getKey(int* buffer) {
+void sys_getKey(char* buffer) {
     _sti();
-    *buffer = getKey();
+    if(!isBufferEmpty()){
+        *buffer = getBuffer();
+    }
+    return;
 }
 void seed_changer() {
     seed = (getHours() * 3600 + getMins() * 60 + getSec());
