@@ -93,20 +93,20 @@ void putSnake(Snakepos snake[]) {
 }
 void moveSnake(Snakepos snake[]) {
     int l = snake->len - 1;
+    delete(snake[0].pos_x, snake[0].pos_y);
+    
     if (snake->extraLen) {
         snake->len++; // Incrementa la longitud de la serpiente
         l++;
-        delete(snake[0].pos_x, snake[0].pos_y);
-        // Mueve la cabeza hacia adelante en la dirección actual
-        snake[l].pos_x += snake[l-1].pos_x+snake->direc_x;
-        snake[l].pos_y += snake[l-1].pos_y+snake->direc_y;
+        snake->extraLen--; // Decrementa el contador de longitud extra
         for (int i = 0; i < l-1; i++){
             snake[i].pos_x = snake[i + 1].pos_x+snake[i + 1].direc_x;
             snake[i].pos_y = snake[i + 1].pos_y+snake[i + 1].direc_y;
-        }       
-        snake->extraLen--; // Decrementa el contador de longitud extra
+        }
+        // Mueve la cabecita en la direccion mandada
+        snake[l].pos_x += snake[l-1].pos_x+snake->direc_x;
+        snake[l].pos_y += snake[l-1].pos_y+snake->direc_y;
     } else {
-            delete(snake[0].pos_x, snake[0].pos_y);
         // Mueve los segmentos de la snake
         for (int i = 0; i < l; i++) {
             snake[i].pos_x = snake[i + 1].pos_x;
@@ -191,9 +191,9 @@ int isSnakeinPos(Snakepos pos, Snakepos snake[]) {
 
 void pointEarned(Snakepos snake[]) {
     syscall(11, 0);
-    // Marcar que se ha ganado un punto
+    // marca q gano un punto
     if (snake->len < MAX_SNAKE) {
-        snake->extraLen++; // Incrementar el contador de longitud extra
+        snake->extraLen++;
     }
     snake->points++;
     deleteCircle();
@@ -245,34 +245,32 @@ void changeDir(int newX, int newY, Snakepos snake[]) {
 int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
     int len = snake->len;
     int otherlen = othersnake->len;
-   
     // choca con un borde
-    if (snake[len - 1].pos_x < 0 || snake[len - 1].pos_x >= BORDER_X ||snake[len - 1].pos_y < 0 || snake[len - 1].pos_y >= BORDER_Y) {
+    if (snake[len - 1].pos_x < 0 || snake[len - 1].pos_x >= BORDER_X || snake[len - 1].pos_y < 0 || snake[len - 1].pos_y >= BORDER_Y) {
         syscall(11,1);
         return 1;
     }
-    //se choca a ella misma 
-     for(int i = 0; i < len -1; i++) {
-         if(snake[i].pos_x == snake[len-1].pos_x && snake[i].pos_y == snake[len-1].pos_y) {
-            syscall(11,1);
-             return 1;
-         }
-     }
-     //falta opcion se chocan cabeza con cabeza (pierden los 2)
-     if(snake[len-1].pos_x == othersnake[otherlen-1].pos_x && snake[len-1].pos_y == othersnake[otherlen-1].pos_y) {
-        return 2;
-     }
-     //se choca con la otra
-     for(int i = 0; i < otherlen; i++) {
-        if(othersnake[i].pos_x == snake[len-1].pos_x && othersnake[i].pos_y == snake[len-1].pos_y) {
-           // putRectangle(snake[len-1].pos_x, snake[len-1].pos_y, othersnake->color);
+    // se choca a ella misma
+    for(int i = 0; i < len - 1; i++) {
+        if(snake[i].pos_x == snake[len - 1].pos_x && snake[i].pos_y == snake[len - 1].pos_y) {
             syscall(11,1);
             return 1;
         }
-     }
-     
+    }
+    //de empate (cabeza con cabeza)
+    if(snake[len - 1].pos_x == othersnake[otherlen - 1].pos_x && snake[len - 1].pos_y == othersnake[otherlen - 1].pos_y) {
+        return 3;
+    }
+    // se choca con la otra snake
+    for(int i = 0; i < otherlen; i++) {
+        if(othersnake[i].pos_x == snake[len - 1].pos_x && othersnake[i].pos_y == snake[len - 1].pos_y) {
+            syscall(11,1);
+            return 1;
+        }
+    }
     return 0;
 }
+
 void intToStr(int num, char* str) {
     int i = 0;
     if (num == 0) {
@@ -347,11 +345,10 @@ void play(char players) {
         putSnake(snake2);
     }
     int exitPressed;
-    char count=0;
-    while(snake_is_active){ 
+    char count = 0;
+    while(snake_is_active) { 
         syscall(14, &exitPressed);
-        syscall(14, keysPressed+(count++));
-        sleep(6);
+        syscall(14, keysPressed + (count++));
         direcSnake(players);
         if(isSnakeinPos(circle, snake1)) {
             pointEarned(snake1);
@@ -363,19 +360,19 @@ void play(char players) {
         if(players == '2') {
             moveSnake(snake2);
         }
-        sleep(7);
-        count=0;
+        count = 0;
         if(0x2D == exitPressed) {
             endGame(players, '0');
         }
-        if(checkCollision(snake1, snake2) == 1) {
-            endGame(players, '2');
-        } else 
-        if(players == '2' && checkCollision(snake2, snake1) ==1) {
-            endGame(players,'1');
+        int collision1 = checkCollision(snake1, snake2);
+        int collision2 = players == '2' ? checkCollision(snake2, snake1) : 0;
+
+        if(collision1 == 1 || collision2 == 1) {
+            endGame(players, collision1 == 1 ? '2' : '1');
+        } else if(collision1 == 3 || collision2 == 3) {  // Empate
+            endGame(players, '0');
         }
-        
+        sleep(5);
     }
-    snake_is_active=1;
     return;
 }
