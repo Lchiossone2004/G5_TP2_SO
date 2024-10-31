@@ -4,6 +4,7 @@
 #include "../include/time.h"
 
 extern void syscall(__uint64_t rdi, ...);
+extern void div0();
 
 static char buffer[WORD_BUFFER_SIZE] = {0};
 static char *letra;
@@ -49,7 +50,8 @@ void chekCommand(){
     int command = processCommand();
     if(command == 1){
         //help(); 
-        div0(); 
+        //div0(); 
+        int i = 0/0;
     }
     if(command == 2){
         print(TAB,sizeof(TAB)-1);
