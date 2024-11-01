@@ -29,21 +29,11 @@ void nlPrint(){
     syscall(5,STDOUT);
 }
 
-void zoomIn(){  //estas tal vez las moveria a un archivo que sea zoom, tipo la lib.c es para que la use el usuario
-    syscall(6,STDOUT);
-}
-
-void zoomOut(){
-    syscall(7,STDOUT);
-}
 
 void sleep(int ticks){
     syscall(8,ticks);
     return;
 }
-// void printTime(){
-//     syscall(13,STDOUT);
-// }
 
 int strCompare(char *s1, char*s2){
     int flag = 1;

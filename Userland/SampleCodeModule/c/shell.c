@@ -61,13 +61,12 @@ void chekCommand(){
         printTime(0);
     }
     if(command==4){
-        zoomIn();
+        syscall(6,STDOUT);
         
     }
     if (command==5)
     {
-        zoomOut();
-        
+        syscall(7,STDOUT);
     }
     if(command == 6){
         clear();
