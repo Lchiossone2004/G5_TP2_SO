@@ -58,6 +58,15 @@ char getBuffer(){
     curr -= 1;
     return aux;
 }
+uint16_t getFromBuffer(int idx) {
+    if(idx >= BUFFER_SIZE) {
+        return '0';
+    }
+    return buffer[idx];
+}
+int getCurr() {
+    return curr;
+}
 
 void updateKeyboardStatus(uint8_t scancode, uint8_t isPressed) {
     if (scancode == 0x2A || scancode == 0x36) {  // Shift izquierdo o derecho
