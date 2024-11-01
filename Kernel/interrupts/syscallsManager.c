@@ -36,19 +36,19 @@ void sys_registers_print(unsigned int fd){
     return;
 }
 
-void sys_getChar(unsigned int fd, char * buffer, size_t count){
+void sys_getChar(unsigned int fd, char * letter, size_t count){
     _sti();
     while(isBufferEmpty());
-    *buffer = getBuffer();
-    if(*buffer == 0 && count > 0){
+    *letter = getBuffer();
+    if(*letter == 0 && count > 0){
         deleteVideo();
     }
-    if (*buffer == 1)
+    if (*letter == 1)
     {
         nlVideo();
     }
-    if(*buffer != 0 && *buffer != 1){
-    imprimirVideo(buffer,1,BLANCO);
+    if(*letter != 0 && *letter != 1){
+    imprimirVideo(letter,1,BLANCO);
     }
     return;
 }

@@ -52,7 +52,7 @@ int isBufferEmpty(){
 
 char getBuffer(){
     char aux = buffer[0];
-    for(int i = 0; i<= curr; i++){
+    for(int i = 0; i< curr-1; i++){
         buffer[i] = buffer[i+1];
     }
     curr -= 1;
