@@ -1,18 +1,14 @@
 
 GLOBAL syscall
-GLOBAL div0
+GLOBAL invalidOp
 section .text
 
 syscall:
     int 80h
     ret
 
-div0:
-    lock nop
-    mov rax, [num1]     ; Cargamos el dividendo en RAX
-    xor rdx, rdx      ; Limpiamos RDX para evitar residuos previos
-    mov rbx, [num2]     ; Cargamos el divisor en RBX
-    div rbx  
+invalidOp:
+    lock nop 
     ret
 
 section .data

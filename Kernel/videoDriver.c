@@ -162,9 +162,9 @@ void deleteVideo(){ //Borra caracteres
 }
 
 void printHexaVideo(uint64_t value){
-	char buffer[20];
+	char buffer[16] = {0};
 	uint32_t digits=uintToBase(value, buffer, 16);
-	imprimirVideo(buffer, digits,BLANCO);
+	imprimirVideo(buffer, 16,BLANCO);
 }
 
 void rePrint(){ // 1 if is zoomIN 0 if zoomOUT
