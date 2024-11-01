@@ -8,7 +8,7 @@ syscall:
     ret
 
 invalidOp:
-    lock nop 
+    mov cs, eax
     ret
 
 section .data
