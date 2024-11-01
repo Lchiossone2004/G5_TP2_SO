@@ -1,5 +1,12 @@
 #include <stdint.h>
+#include <videoDriver.h>
 
+#define BLANCO  0xFFFFFF
+#define VERDE   0x00FF00
+#define TAB "     "
+static char * regs[16] = {"RAX: ", "RBX: ", "RCX: ", "RDX: ", "RSI: ","RDI: ", "RBP: ","RSP: ","RIP: ","R8: ", "R9: ","R10: ", "R11: ","R12: ","R13: ", "R14: ","R15: "};
+
+extern uint64_t * getCPURegisters();
 
 void * memset(void * destination, int32_t c, uint64_t length)
 {
@@ -58,4 +65,14 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 	}
 
 	return destination;
+}
+
+void printRegisters(){
+	uint64_t * registers = getCPURegisters();
+    for(int i = 0; i<17; i++){
+    imprimirVideo(TAB,5,BLANCO);
+    imprimirVideo(regs[i],5,VERDE);
+    printHexaVideo(registers[i]);
+    nlVideo();
+    }
 }

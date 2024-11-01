@@ -16,13 +16,13 @@ GLOBAL _irq08Handler
 
 GLOBAL _exception0Handler
 GLOBAL _exception06Handler
-GLOBAL activateSti
-
+GLOBAL getCPURegisters
+GLOBAL saveCPURegisters
 EXTERN getStackBase
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN syscallsManager
-EXTERN imprimirVideo
+
 
 SECTION .text
 
@@ -62,9 +62,48 @@ SECTION .text
 	pop rax
 %endmacro
 
+%macro saveRegisters 0
+	mov [regBuffer], qword rax
+	mov rax, regBuffer
+	add rax, 8
+    mov [rax], qword rbx
+	add rax,8
+    mov [rax], qword rcx
+	add rax, 8
+    mov [rax], qword rdx
+	add rax, 8
+	mov [rax], qword rsi
+	add rax, 8
+    mov [rax], qword rdi
+	add rax, 8
+	mov [rax], qword rbp 
+	add rax, 8
+    mov [rax], qword rsp
+	add rax, 8
+	push rdi
+	mov rdi, [rsp]
+	mov [rax], rdi
+	pop rdi
+	add rax, 8
+	mov [rax], qword r8
+	add rax, 8
+	mov [rax], qword r9 
+	add rax, 8
+    mov [rax], qword r10
+	add rax, 8
+	mov [rax], qword r11
+	add rax, 8
+	mov [rax], qword r12
+	add rax, 8
+    mov [rax], qword r13
+	add rax, 8
+	mov [rax], qword r14
+	add rax, 8
+	mov [rax], qword r15
+%endmacro
+
 %macro irqHandlerMaster 1
 	pushState
-
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
 
@@ -76,11 +115,23 @@ SECTION .text
 	iretq
 %endmacro
 
-
-
 %macro exceptionHandler 1
+	saveRegisters
+	pushState
+	mov rdi, %1
+	call exceptionDispatcher
+
+	popState
+	jmp userland
+	iretq
 %endmacro
 
+saveCPURegisters:
+	saveRegisters
+	ret
+getCPURegisters:
+	mov rax, regBuffer
+	ret
 
 _hlt:
 	sti
@@ -148,7 +199,7 @@ _irq08Handler:
 
 ;Zero Division Exception
 _exception0Handler:
-	iretq
+	exceptionHandler 0
 
 ;Wrong Op Code Exception
 _exception06Handler:
@@ -163,4 +214,4 @@ haltcpu:
 section .data
 userland equ 0x400000
 SECTION .bss
-regBuffer resq 16
+regBuffer resq 17

@@ -17,22 +17,12 @@
 #define PARA_ALEATORIOS_1 1664525
 #define PARA_ALEATORIOS_2 1013904223   
 
-extern uint64_t * getCPURegisters();
-
 extern void _sti();
 
 static int seed = 0;
 
-static char * regs[16] = {"RAX: ", "RBX: ", "RCX: ", "RDX: ", "RSI: ","RDI: ", "RBP: ","RSP: ","R8: ", "R9: ","R10: ", "R11: ","R12: ","R13: ", "R14: ","R15: "};
-
 void sys_registers_print(unsigned int fd){
-    uint64_t * registers = getCPURegisters();
-    for(int i = 0; i<16; i++){
-    imprimirVideo(TAB,5,BLANCO);
-    imprimirVideo(regs[i],5,VERDE);
-    printHexaVideo(registers[i]);
-    nlVideo();
-    }
+    printRegisters();
     return;
 }
 
