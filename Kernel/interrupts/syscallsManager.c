@@ -45,6 +45,9 @@ void sys_getChar(unsigned int fd, char * letter, size_t count){
 
 
 void sys_read(unsigned int fd, char * buffer, size_t count) {
+    if(isBufferEmpty()) {
+        return;
+    }
     int current = getCurr();
    for(int i = 0; i < count && i <= current ; i++) {
     buffer[i] = getFromBuffer(i);
