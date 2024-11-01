@@ -13,7 +13,6 @@ static char* commands[] = {"help", "time ARG","time UTC", "zoomin", "zoomout","c
 static shell_is_active=1;
 
 void shell() { 
-        clear();
         print(NEW_LINE,sizeof(NEW_LINE)-1);
         while(1){
         if(index == WORD_BUFFER_SIZE-1){

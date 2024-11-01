@@ -18,12 +18,13 @@ GLOBAL _exception0Handler
 GLOBAL _exception06Handler
 GLOBAL getCPURegisters
 GLOBAL saveCPURegisters
+
+
 EXTERN getStackBase
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN syscallsManager
-
-
+EXTERN getStackBase
 SECTION .text
 
 %macro pushState 0
@@ -81,7 +82,7 @@ SECTION .text
     mov [rax], qword rsp
 	add rax, 8
 	push rdi
-	mov rdi, [rsp]
+	mov rdi, [auxRIP]
 	mov [rax], rdi
 	pop rdi
 	add rax, 8
@@ -103,6 +104,10 @@ SECTION .text
 %endmacro
 
 %macro irqHandlerMaster 1
+	push rax
+	mov rax, [rsp + 8]
+	mov [auxRIP], rax
+	pop rax
 	pushState
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
@@ -116,13 +121,19 @@ SECTION .text
 %endmacro
 
 %macro exceptionHandler 1
+	push rax
+	mov rax, [rsp + 8]
+	mov [auxRIP], rax
+	pop rax
 	saveRegisters
 	pushState
 	mov rdi, %1
 	call exceptionDispatcher
-
 	popState
-	jmp userland
+	call getStackBase
+	mov [rsp+8*3], rax
+	mov rax, userland
+	mov [rsp], rax
 	iretq
 %endmacro
 
@@ -211,7 +222,8 @@ haltcpu:
 	ret
 
 
-section .data
+section .rodata
 userland equ 0x400000
 SECTION .bss
 regBuffer resq 17
+auxRIP resq 1

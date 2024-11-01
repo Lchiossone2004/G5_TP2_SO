@@ -16,6 +16,7 @@ void exceptionDispatcher(int exception) {
 		zero_division();
 	if(exception == WRONG_OP_EXCEPTION_ID)
 		wrong_op();
+	return;
 }
 
 static void zero_division() {
@@ -31,4 +32,5 @@ static void wrong_op() {
 	imprimirVideo("Error: invalid op code",23,ROJO);
 	nlVideo();
 	printRegisters();
+	return; 
 }
