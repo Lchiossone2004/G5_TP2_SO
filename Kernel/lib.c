@@ -4,7 +4,7 @@
 #define BLANCO  0xFFFFFF
 #define VERDE   0x00FF00
 #define TAB "     "
-static char * regs[17] = {"RAX: ", "RBX: ", "RCX: ", "RDX: ", "RSI: ","RDI: ", "RBP: ","RSP: ","RIP: ","R8: ", "R9: ","R10: ", "R11: ","R12: ","R13: ", "R14: ","R15: "};
+static char * regs[17] = {"RAX:", "RBX:", "RCX:", "RDX:", "RSI:","RDI:", "RBP:","RSP:","RIP:","R8:", "R9:","R10:", "R11:","R12:","R13:", "R14:","R15:"};
 
 extern uint64_t * getCPURegisters();
 
@@ -71,9 +71,13 @@ void printRegisters(){
 	uint64_t * registers = getCPURegisters();
     for(int i = 0; i<17; i++){
     imprimirVideo(TAB,5,BLANCO);
-    imprimirVideo(regs[i],5,VERDE);
+    imprimirVideo(regs[i],4,VERDE);
+	imprimirVideo("0x",2,BLANCO);
     printHexaVideo(registers[i]);
-	nlVideo();
+	if(i%2 == 1){
+		nlVideo();
 	}
+	}
+	nlVideo();
 	return;
 }

@@ -130,6 +130,7 @@ SECTION .text
 	mov rdi, %1
 	call exceptionDispatcher
 	popState
+	call clearRegs
 	call getStackBase
 	mov [rsp+8*3], rax
 	mov rax, userland
@@ -221,7 +222,25 @@ haltcpu:
 	hlt
 	ret
 
-
+clearRegs:
+	push rcx
+	push rax
+	push rdi
+	mov rdi, regBuffer
+	mov rax, 0
+	mov rcx, 0
+.ciclo:
+	cmp rcx, 17
+	je .fin
+	mov [rdi], rax
+	add rdi, 8
+	inc rcx
+	jmp .ciclo
+.fin:
+	pop rdi
+	pop rax
+	pop rcx
+	ret
 section .rodata
 userland equ 0x400000
 SECTION .bss

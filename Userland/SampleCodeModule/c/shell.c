@@ -4,12 +4,13 @@
 #include "../include/time.h"
 
 extern void syscall(__uint64_t rdi, ...);
+extern void invalidOp();
 
 static char buffer[WORD_BUFFER_SIZE] = {0};
 static char letra[1] = {0};
 static int ultimaLetra;
 static int index = 0;
-static char* commands[] = {"help", "time ARG","time UTC", "zoomin", "zoomout","clear", "snake","print registers","exit"};
+static char* commands[] = {"help", "time ARG","time UTC", "zoomin", "zoomout","clear", "snake","print registers","div cero","invalid op","exit"};
 static shell_is_active=1;
 
 void shell() { 
@@ -48,9 +49,7 @@ void getKey(char * buffer, int index){
 void chekCommand(){
     int command = processCommand();
     if(command == 1){
-        //help(); 
-        //div0(); 
-        int i = 0/0;
+        help(); 
     }
     if(command == 2){
         print(TAB,sizeof(TAB)-1);
@@ -91,6 +90,12 @@ void chekCommand(){
         syscall(1);  
     }
     if(command == 9){
+        int i = 0/0;
+    }
+    if(command == 10){
+        invalidOp();
+    }
+    if(command == 11){
         nlPrint();
         print(TAB,sizeof(TAB)-1);
         print("closing shell...", 16);
@@ -102,7 +107,7 @@ void chekCommand(){
         printErr(buffer, strSize(buffer));
         printErr("] not found.", 12);
     }
-    if(command != 6 && command != -1 && command != 4 && command != 5 && command != 7){
+    if(command != 6 && command != -1 && command != 4 && command != 5 && command != 7 && command != 8){
     nlPrint();
     }
     print(NEW_LINE,sizeof(NEW_LINE)-1);
