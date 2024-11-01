@@ -13,8 +13,9 @@ static char* commands[] = {"help", "time ARG","time UTC", "zoomin", "zoomout","c
 static shell_is_active=1;
 
 void shell() { 
+        clear();
         print(NEW_LINE,sizeof(NEW_LINE)-1);
-        while(shell_is_active){
+        while(1){
         if(index == WORD_BUFFER_SIZE-1){
             clearBuffer();
             chekCommand();
@@ -49,8 +50,8 @@ void chekCommand(){
     int command = processCommand();
     if(command == 1){
         //help(); 
-        div0(); 
-        //int i = 0/0;
+        //div0(); 
+        int i = 0/0;
     }
     if(command == 2){
         print(TAB,sizeof(TAB)-1);

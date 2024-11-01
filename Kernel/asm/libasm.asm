@@ -88,48 +88,6 @@ getKey:
     mov rsp, rbp 
     pop rbp
     ret
-
-
-saveCPURegisters:
-    mov [regBuffer], qword rax
-	mov rax, regBuffer
-	add rax, 8
-    mov [rax], qword rbx
-	add rax,8
-    mov [rax], qword rcx
-	add rax, 8
-    mov [rax], qword rdx
-	add rax, 8
-	mov [rax], qword rsi
-	add rax, 8
-    mov [rax], qword rdi
-	add rax, 8
-	mov [rax], qword rbp 
-	add rax, 8
-    mov [rax], qword rsp
-	add rax, 8
-	mov [rax], qword r8
-	add rax, 8
-	mov [rax], qword r9 
-	add rax, 8
-    mov [rax], qword r10
-	add rax, 8
-	mov [rax], qword r11
-	add rax, 8
-	mov [rax], qword r12
-	add rax, 8
-    mov [rax], qword r13
-	add rax, 8
-	mov [rax], qword r14
-	add rax, 8
-	mov [rax], qword r15
-	
-	mov rax, regBuffer
-	ret
-
-getCPURegisters:
-	mov rax, regBuffer
-	ret
 outb:
 	push rbp
 	mov rbp, rsp
