@@ -24,7 +24,6 @@ typedef struct {
 #define REC_X_COL BORDER_Y / REC_LARGO
 #define MAX_SNAKE 120
 
-static char snake_is_active=1;
 Snakepos snake1[MAX_SNAKE]; 
 Snakepos snake2[MAX_SNAKE];
 Snakepos circle;
@@ -35,6 +34,44 @@ char isValidKey1(char key){
     return 0;
 }
 
+void resetGameState() {
+    // Reinicia todos los elementos de la serpiente 1
+    for (int i = 0; i < MAX_SNAKE; i++) {
+        snake1[i].pos_x = 0;
+        snake1[i].pos_y = 0;
+        snake1[i].direc_x = 0;
+        snake1[i].direc_y = 0;
+        snake1[i].points = 0;
+        snake1[i].len = 0;
+        snake1[i].extraLen = 0;
+        snake1[i].color = 0x0042f557; // Color inicial de snake1
+    }
+
+    // Reinicia todos los elementos de la serpiente 2
+    for (int i = 0; i < MAX_SNAKE; i++) {
+        snake2[i].pos_x = 0;
+        snake2[i].pos_y = 0;
+        snake2[i].direc_x = 0;
+        snake2[i].direc_y = 0;
+        snake2[i].points = 0;
+        snake2[i].len = 0;
+        snake2[i].extraLen = 0;
+        snake2[i].color = 0x00f54290; // Color inicial de snake2
+    }
+
+    // Reinicia el círculo
+    circle.pos_x = 0;
+    circle.pos_y = 0;
+    circle.direc_x = 0;
+    circle.direc_y = 0;
+    circle.points = 0;
+    circle.len = 0;
+    circle.extraLen = 0;
+    circle.color = 0x00FA0202; // Color inicial del círculo
+
+    // Limpia la pantalla o cualquier otro estado gráfico
+    clear();
+}
 char isValidKey2(char key){
     if(key=='i'|| key=='k'|| key=='j'|| key=='l'){
         return 1;
@@ -107,7 +144,7 @@ void moveSnake(Snakepos snake[]) {
     if (snake->extraLen) {
         snake->len++; // Incrementa la longitud de la serpiente
         l++;
-        snake->extraLen--; // Decrementa el contador de longitud extra
+        snake->extraLen=0; // Decrementa el contador de longitud extra
         for (int i = 0; i < l-1; i++){
             snake[i].pos_x = snake[i + 1].pos_x+snake[i + 1].direc_x;
             snake[i].pos_y = snake[i + 1].pos_y+snake[i + 1].direc_y;
@@ -129,7 +166,17 @@ void moveSnake(Snakepos snake[]) {
     putSnake(snake); // Dibuja la snake después de mover
     return;
 }
-
+void cleanSnake(Snakepos snake[]){
+    for (int i = 0; i < snake1->len+1; i++){
+        snake->pos_x = 0;
+        snake->pos_y = 0;
+        snake->direc_x=0;
+        snake->direc_y=0;
+        snake->points=0;
+        snake->len=0;
+    }
+    return;
+}
 
 void putCircle(int posx, int posy, uint32_t color) {
     int centerX = posx + REC_ANCHO / 2;  
@@ -202,7 +249,7 @@ void pointEarned(Snakepos snake[]) {
     syscall(11, 0);
     // marca q gano un punto
     if (snake->len < MAX_SNAKE) {
-        snake->extraLen++;
+        snake->extraLen=1;
     }
     snake->points++;
     deleteCircle();
@@ -293,7 +340,7 @@ void intToStr(int num, char* str) {
         str[j] = str[i - j - 1];
         str[i - j - 1] = temp;
     }
- 
+    return;
 }
 int getLen(char string[]) {
     int i = 0;
@@ -303,7 +350,6 @@ int getLen(char string[]) {
     return i;
 }
 void endGame(char players, char winner) {
-    snake_is_active = 0;
     char * p1 = "PLAYER ONE SCORE: ";
     char *p2;
     char *p3;
@@ -334,25 +380,32 @@ void endGame(char players, char winner) {
         }
     }
     sleep(25);
+    cleanSnake(snake1);
+    if(players='2'){
+        cleanSnake(snake2);
+    }
     clear();
     zoomOut();
     return;
 }   
 
 void play(char players) {
-    snake_is_active = 1;
+    cleanSnake(snake1);
+    resetGameState();
+    char snake_is_active = 1;
     snakeCanvas();
     iniSnake1();
     putSnake(snake1);
     putRandomCircle();
     char keyPressed;
-    if(players == '2') {
+    if(players == '2') {    
+        cleanSnake(snake2);
         iniSnake2();
         putSnake(snake2);
     }
     int exitPressed;
+    char newKey;
     while(snake_is_active) { 
-        char newKey;
         syscall(14, &newKey);
         if (isValidKey1(newKey) || isValidKey2(newKey)) {
             keyPressed = newKey;
@@ -371,17 +424,21 @@ void play(char players) {
         }
         if('x' == exitPressed) {
             endGame(players, '0');
+            return;
         }
         int collision1 = checkCollision(snake1, snake2);
         int collision2 = players == '2' ? checkCollision(snake2, snake1) : 0;
 
         if(collision1 == 1 || collision2 == 1) {
             endGame(players, collision1 == 1 ? '2' : '1');
+            return;
         } else if(collision1 == 3 || collision2 == 3) {  // Empate
             endGame(players, '0');
+            return;
         }
         sleep(4);
     }
+    newKey=0;
     return;
 }
 
