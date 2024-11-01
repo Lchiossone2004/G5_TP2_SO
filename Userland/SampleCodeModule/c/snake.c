@@ -340,7 +340,7 @@ void endGame(char players, char winner) {
     char points2P[10];
     intToStr(snake1->points, points1P);
     clear(); // Limpia la pantalla usando la llamada al sistema
-    zoomIn(); //hace zoom asi se imprime el msj mas grande
+    syscall(6); //hace zoom asi se imprime el msj mas grande
     print(p1,18);
     print(points1P,getLen(points1P));
     nlPrint();
@@ -364,7 +364,7 @@ void endGame(char players, char winner) {
     }
     sleep(25);
     clear();
-    zoomOut();
+    syscall(7);
     return;
 }   
 
