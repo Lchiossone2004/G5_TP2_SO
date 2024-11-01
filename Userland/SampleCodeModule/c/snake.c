@@ -311,6 +311,7 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
     }
     //de empate (cabeza con cabeza)
     if(snake[len - 1].pos_x == othersnake[otherlen - 1].pos_x && snake[len - 1].pos_y == othersnake[otherlen - 1].pos_y) {
+       
         return 3;
     }
     // se choca con la otra snake
@@ -432,7 +433,8 @@ void play(char players) {
         if(collision1 == 1 || collision2 == 1) {
             endGame(players, collision1 == 1 ? '2' : '1');
             return;
-        } else if(collision1 == 3 || collision2 == 3) {  // Empate
+        } else if(collision1 == 3) {  // Empate, creo no hace falta chequear las 2 xq si una es 3 la otra tmb
+            syscall(11,1);
             endGame(players, '0');
             return;
         }
