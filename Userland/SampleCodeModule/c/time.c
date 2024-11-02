@@ -27,5 +27,5 @@ void printTime(int area){
 }
 
 void getTime(int area){
-    syscall(13,Timepo,area);
+    syscall(12,Timepo,area);
 }

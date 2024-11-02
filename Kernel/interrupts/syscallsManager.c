@@ -153,7 +153,7 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 9: sys_clear(rsi); break;
         case 10: sys_putPixel(rsi, rdx, rcx); break;
         case 11: sys_beep(rsi);break;
-        case 13: sys_getTime(rsi,rdx); break;
+        case 12: sys_getTime(rsi,rdx); break;
         case 14: sys_getKey(rsi); break;
         case 15: sys_ranN(rsi); break;
         case 16: sys_clearBuffer(); break;
