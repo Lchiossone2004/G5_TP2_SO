@@ -168,7 +168,15 @@ void putCircle(int posx, int posy, uint32_t color) {
     }
     return;
 }
-
+int isSnakeinPos(Snakepos pos, Snakepos snake[]) {
+    int l = snake->len;
+    for (int i = 0; i < l; i++){
+        if(snake[i].pos_x == pos.pos_x && snake[i].pos_y == pos.pos_y){
+            return 1;
+        }
+    }
+    return 0;
+}
 int isPositionOccupied(Snakepos pos) {
     if(isSnakeinPos(pos,snake1) || isSnakeinPos(pos,snake2)) {
         return 1;
@@ -209,11 +217,6 @@ void delete(int pos_x, int pos_y) {
 		putRectangle(pos_x,pos_y, COLOR_2);
 	}
     return;
-}
-
-int isSnakeinPos(Snakepos pos, Snakepos snake[]) {
-    int l = snake->len-1;
-    return snake[l].pos_x == pos.pos_x && snake[l].pos_y == pos.pos_y;
 }
 
 void pointEarned(Snakepos snake[]) {
