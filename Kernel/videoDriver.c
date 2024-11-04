@@ -88,14 +88,14 @@ void imprimirVideo(char * palabra, int size, uint32_t color){
 			vol.num = palabra[i];
 			vol.color = color;
 			matrix[(y/zoom)/MOV_Y][(x/zoom)/MOV_X] = vol;
-			charVideo(palabra[i],1,color); //Che ojo que el 1 ese es importante para cunado se termina la oracion, no lo cambien por el parametro zoom
+			charVideo(palabra[i],1,color); 
 		}
 }
 void charVideo(char num, char isEndLine, uint32_t color){
 	if(x<=BORDER_X && y < BORDER_Y){
 	int set;
 	char *bitmap;
-	bitmap = font[num];//aca habria que cambiarlo por new_font y adaptar todo porque ahora cada letra ocupa 2 *zoom
+	bitmap = font[num];
 	for(int i = 0; i <8; i++){
 		for(int j = 0; j<8; j++){
 			set = bitmap[i] & 1 << j;
@@ -167,7 +167,7 @@ void printHexaVideo(uint64_t value){
 	imprimirVideo(buffer, 16,BLANCO);
 }
 
-void rePrint(){ // 1 if is zoomIN 0 if zoomOUT
+void rePrint(){ // 1 zoomIN, 0 zoomOUT
 	clearScrenn();
 	for(int i = 0; i<(BORDER_Y/MOV_Y)/zoom; i++){
 		for(int j= 0; j<(BORDER_X/MOV_X)/zoom; j++){
@@ -216,66 +216,4 @@ void zoomOUT() {
 	}else{
 		return;
 	}
-}
-
-//Funciones para el snake
-
-void putRectangle(int posx, int posy, uint32_t color) {
-	for(int i = posx; i < posx+REC_ANCHO; i++) {
-		for(int j = posy; j < posy+REC_LARGO; j++) {
-			putPixel(color, i, j);
-		}
-	}
-}
-
-void snakeCanvas() {
-	int flag = 0;
-	for(int i = 0; i < BORDER_X + 1; i += REC_ANCHO) {
-		flag = !flag;
-		for(int j = 0; j < BORDER_Y; j += REC_LARGO) {
-			if(flag) {
-				putRectangle(i, j, COLOR_1);
-			} else {
-				putRectangle(i,j,COLOR_2);
-			}
-			flag = !flag;
-		}
-	}
-}
-void putCircle(int posx, int posy, uint32_t color) {
-    int centerX = posx + REC_ANCHO / 2;  
-    int centerY = posy + REC_LARGO / 2;  
-    int radius = (REC_ANCHO < REC_LARGO ? REC_ANCHO : REC_LARGO) / 4;  
-    for (int i = posx; i < posx + REC_ANCHO; i++) {
-        for (int j = posy; j < posy + REC_LARGO; j++) {
-            int dx = i - centerX;  
-            int dy = j - centerY;  
-            if (dx * dx + dy * dy <= radius * radius) {  
-                putPixel(color, i, j);
-            }
-        }
-    }
-}
-//imprime un circulo en una pos random (seria la manzana) y guarda la posición
-void putRandomCircle() {
-    int min = getMins(); 
-    int sec = getSec(); 
-
-    int area = REC_X_FIL * REC_X_COL;
-    int idx = (min * 60 + sec) % area;
-    int col = idx % REC_X_COL;          
-    pos_circle_x = col * REC_ANCHO; 
-    pos_circle_y = col * REC_LARGO;
-	putCircle(pos_circle_x, pos_circle_y, BLANCO);
-}
-
-void deleteCircle() {
-	if((isPair(pos_circle_x) && isPair(pos_circle_y))||(!isPair(pos_circle_x) && !isPair(pos_circle_y))) {
-		putRectangle(pos_circle_x, pos_circle_y, COLOR_1);
-	} else {
-		putRectangle(pos_circle_x, pos_circle_y, COLOR_2);
-	}
-}
-int isPair(int pos) {
-	return pos % 2 == 0;
 }
