@@ -2,7 +2,6 @@
 #include "../include/shell.h"
 #include "../include/snake.h"
 #include "../include/time.h"
-
 extern void syscall(__uint64_t rdi, ...);
 extern void invalidOp();
 
@@ -11,7 +10,6 @@ static char letra[1] = {0};
 static int ultimaLetra;
 static int index = 0;
 static char* commands[] = {"help", "time ARG","time UTC", "zoomin", "zoomout","clear", "snake","print registers","div cero","invalid op","exit"};
-static shell_is_active=1;
 
 void shell() { 
         print(NEW_LINE,sizeof(NEW_LINE)-1);
@@ -30,14 +28,14 @@ void shell() {
             chekCommand();
         }  
         if(*letra != 0 && *letra != 1){
-                if(*letra == ' '){
+            if(*letra == ' '){
                 buffer[index++] = ' ';
-                }
-                else{
+            }
+            else{
                 buffer[index++] = *letra;
                 ultimaLetra = index;
-                }
-                buffer[index] = 0;
+            }
+            buffer[index] = 0;
         }
     }
 }

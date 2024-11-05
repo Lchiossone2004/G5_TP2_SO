@@ -7,7 +7,7 @@
 #define STDERR 2
 
 
-syscall(uint64_t rsi, ...);
+void syscall(uint64_t rsi, ...);
 
 static time *Timepo;
 void printTime(int area){

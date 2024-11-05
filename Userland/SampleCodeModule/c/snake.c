@@ -65,7 +65,7 @@ void resetGameState() {
     circle.extraLen = 0;
     circle.color = 0x00FA0202;
     // Limpia pantalla
-    clear();
+    syscall(9, STDOUT);
 }
 
 //inicializa la snake desde el principio del con dirección hacia la derecha
@@ -117,7 +117,6 @@ void putMap(int pos_x, int pos_y) {
     return;
 }
 void snakeCanvas() {
-	int flag = 0;
 	for(int i = BORDER_X_INI; i < BORDER_X_FIN + 1; i += REC_ANCHO) {
 		for(int j = BORDER_Y_INI; j < BORDER_Y_FIN; j += REC_LARGO) {
 			putMap(i,j);
@@ -238,6 +237,13 @@ void printPoints() {
     intToStr(snake2->points, pointsStr2);
     print(pointsStr2, (snake2->points/10)+1);
 }
+void changeDir(int newX, int newY, Snakepos snake[]) {
+    if ((newX != -(snake->direc_x)) && (newY != -(snake->direc_y))) {
+        snake->direc_x = newX;
+        snake->direc_y = newY;
+    }
+    return;
+}
 
 
 void direcSnake(char cantPlayers, char keyPressed) {
@@ -279,13 +285,6 @@ void direcSnake(char cantPlayers, char keyPressed) {
     return;
 }
 
-void changeDir(int newX, int newY, Snakepos snake[]) {
-    if ((newX != -(snake->direc_x)) && (newY != -(snake->direc_y))) {
-        snake->direc_x = newX;
-        snake->direc_y = newY;
-    }
-    return;
-}
 
 int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
     int len = snake->len;
@@ -351,7 +350,7 @@ void endGame(char players, char winner) {
     char points1P[10];
     char points2P[10];
     intToStr(snake1->points, points1P);
-    clear(); // Limpia la pantalla usando la llamada al sistema
+    syscall(9, STDOUT); // Limpia la pantalla usando la llamada al sistema
     print(p1,18);
     print(points1P,getLen(points1P));
     nlPrint();
@@ -374,7 +373,7 @@ void endGame(char players, char winner) {
         }
     }
     sleep(25);
-    clear();
+    syscall(9, STDOUT);
     syscall(7, STDOUT);
     return;
 }   
@@ -405,6 +404,7 @@ void play(char players){
         iniSnake2();
         putSnake(snake2);
     }
+    printPoints();
     char newKey;
     while(1){ 
         syscall(14,STDIN,&newKey);
