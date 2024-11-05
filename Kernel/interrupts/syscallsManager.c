@@ -157,6 +157,12 @@ void sys_clearBuffer(){
         getBuffer();
     }
 }
+void sys_delete_video(unsigned int cant){
+    for(int i=0; i < cant;i++){
+        deleteVideo();
+    }
+}
+
 
 uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
     switch(rdi) {
@@ -175,6 +181,7 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 14: sys_getKey(rsi,rdx); break;
         case 15: sys_ranN(rsi); break;
         case 16: sys_clearBuffer(); break;
+        case 17: sys_delete_video(rsi); break;
     }
     return;
 }
