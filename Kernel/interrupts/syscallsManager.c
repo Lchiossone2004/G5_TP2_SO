@@ -126,7 +126,7 @@ void sys_getTime(unsigned int fd, time * ret, int area) {
     if(fd == STDIN){
     int aux = getHours();
     if(area == 1){
-    ret->hours = aux - 3;
+    ret->hours = aux - 0x09;
     if(ret->hours < 0){
         ret->hours = aux + 0x21;
     }
