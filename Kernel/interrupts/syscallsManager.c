@@ -75,14 +75,19 @@ void sys_write(unsigned int fd, const char *buffer, size_t count) {
     return;
 }
 
-void sys_zoomIn(){
-    zoomIN();
-    rePrint();
+void sys_zoomIn(unsigned int fd){ 
+    if(fd == STDOUT) {
+        zoomIN();
+        rePrint();
+    }
 }
+  
 
-void sys_zoomOut(){
+void sys_zoomOut(unsigned int fd){
+    if(fd == STDOUT) {
     zoomOUT();
     rePrint();
+    }
 }
 
 void sys_newLine(unsigned int fd){
@@ -171,8 +176,8 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 3: sys_read(rsi, rdx, rcx); break;
         case 4: sys_write(rsi, rdx, rcx); break;
         case 5: sys_newLine(rsi); break;
-        case 6: sys_zoomIn(); break;
-        case 7: sys_zoomOut(); break;
+        case 6: sys_zoomIn(rsi); break;
+        case 7: sys_zoomOut(rsi); break;
         case 8: sys_sleep(rsi); break;
         case 9: sys_clear(rsi); break;
         case 10: sys_putPixel(rsi, rdx, rcx); break;
