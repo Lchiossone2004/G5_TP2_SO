@@ -10,7 +10,7 @@ typedef struct{
 }time;
 
 typedef struct {
-    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rdi, rbp, rdx, rcx, rbx, rax;
+    uint64_t rdi, rsi, rdx, rcx, r8, r9;
 } Reg;
 void sys_registers_print(unsigned int fd);
 void sys_getChar(unsigned int fd, char * buffer, size_t count);

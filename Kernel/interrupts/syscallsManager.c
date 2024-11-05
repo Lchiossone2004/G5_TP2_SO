@@ -111,8 +111,10 @@ void sys_clear(unsigned int fd){
     }
 }
 
-void sys_putPixel(int posx, int posy, uint32_t hexColor) {
+void sys_putPixel( int posx, int posy, uint32_t hexColor, unsigned int fd) {
+    if(fd == STDOUT) {
     putPixel(hexColor, posx, posy);
+    }
 }
 void sys_beep(int flag) {
     _sti();
@@ -169,7 +171,7 @@ void sys_delete_video(unsigned int cant){
 }
 
 
-uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx) {
+uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8) {
     switch(rdi) {
         case 1: sys_registers_print(rsi); break;
         case 2: sys_getChar(rsi,rdx,rcx); break;
@@ -180,7 +182,7 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 7: sys_zoomOut(rsi); break;
         case 8: sys_sleep(rsi); break;
         case 9: sys_clear(rsi); break;
-        case 10: sys_putPixel(rsi, rdx, rcx); break;
+        case 10: sys_putPixel(rsi, rdx, rcx, r8); break;
         case 11: sys_beep(rsi);break;
         case 12: sys_getTime(rsi,rdx,rcx); break;
         case 14: sys_getKey(rsi,rdx); break;
