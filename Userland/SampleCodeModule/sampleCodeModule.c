@@ -4,10 +4,7 @@
 
 char * v = (char*)0xB8000 + 79 * 2;
 
-static int var1 = 0;
-static int var2 = 0;
-
-extern uint64_t syscall(uint64_t rax, ...);
+extern uint64_t syscall(uint64_t rdi, ...);
 
 int main() {
 	shell();
