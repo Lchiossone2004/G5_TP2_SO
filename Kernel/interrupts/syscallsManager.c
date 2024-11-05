@@ -158,7 +158,7 @@ void sys_clearBuffer(){
     }
 }
 void sys_delete_video(unsigned int cant){
-    for(int i=0; i < cant;i++){
+    for(int i=0; i < cant-1;i++){
         deleteVideo();
     }
 }
