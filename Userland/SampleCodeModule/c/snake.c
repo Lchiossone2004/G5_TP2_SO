@@ -7,10 +7,12 @@ extern uint64_t syscall(uint64_t rdi, ...);
 #define COLOR_2 0x009de0f5
 #define REC_ANCHO 32
 #define REC_LARGO 32
-#define BORDER_X 1016
-#define BORDER_Y 768
-#define REC_X_FIL BORDER_X / REC_ANCHO
-#define REC_X_COL BORDER_Y / REC_LARGO
+#define BORDER_X_INI 0
+#define BORDER_Y_INI 96
+#define BORDER_X_FIN 1016
+#define BORDER_Y_FIN 768
+#define REC_X_FIL BORDER_X_FIN / REC_ANCHO
+#define REC_X_COL BORDER_Y_FIN / REC_LARGO
 #define MAX_SNAKE REC_X_FIL*REC_X_COL
 
 typedef struct {
@@ -66,6 +68,7 @@ void resetGameState() {
 
 //inicializa la snake desde el principio del con dirección hacia la derecha
 void iniSnake1() {
+    print("Player 1:", 9);
     snake1->points = 0;
     snake1->direc_x = REC_ANCHO;
     snake1->direc_y = 0;
@@ -73,13 +76,15 @@ void iniSnake1() {
     snake1->extraLen = 0;
     snake1->color = 0x0042f557;
     for (int i = 0; i < snake1->len; i++) { 
-        snake1[i].pos_y = 0;
+        snake1[i].pos_y = BORDER_Y_INI;
         snake1[i].pos_x = (1 + i) * REC_ANCHO; 
     }
     return;
 }
 
 void iniSnake2() {
+    nlPrint();
+    print("Player 2:", 9);
     snake2->points = 0;
     snake2->direc_x = 0;
     snake2->direc_y = -REC_LARGO;
@@ -87,8 +92,8 @@ void iniSnake2() {
     snake2->extraLen = 0;
     snake2->color = 0x00f54290;
     for(int i = 0; i < snake2->len; i++) {
-        snake2[i].pos_x = (BORDER_X / 2 / REC_ANCHO) * 2 * REC_ANCHO;
-        snake2[i].pos_y = BORDER_Y - (3+i) * REC_LARGO;
+        snake2[i].pos_x = (BORDER_X_FIN / 2 / REC_ANCHO) * 2 * REC_ANCHO;
+        snake2[i].pos_y = BORDER_Y_FIN - (3+i) * REC_LARGO;
     }
     return;
 }
@@ -104,9 +109,9 @@ void putRectangle(int posx, int posy, uint32_t color) {
 
 void snakeCanvas() {
 	int flag = 0;
-	for(int i = 0; i < BORDER_X + 1; i += REC_ANCHO) {
+	for(int i = BORDER_X_INI; i < BORDER_X_FIN + 1; i += REC_ANCHO) {
 		flag = !flag;
-		for(int j = 0; j < BORDER_Y; j += REC_LARGO) {
+		for(int j = BORDER_Y_INI; j < BORDER_Y_FIN; j += REC_LARGO) {
 			if(flag) {
 				putRectangle(i, j, COLOR_1);
 			} else {
@@ -190,10 +195,10 @@ void putRandomCircle() {
     Snakepos pos;
     do {
         syscall(15, &ran); 
-        colApple = ran % (BORDER_X / REC_ANCHO);
-        filApple = ran % (BORDER_Y / REC_LARGO);
+        colApple = ran % (BORDER_X_FIN / REC_ANCHO);
+        filApple = ran % ((BORDER_Y_FIN-BORDER_Y_INI )/ REC_LARGO);
         pos.pos_x = colApple * REC_ANCHO;
-        pos.pos_y = filApple * REC_LARGO;
+        pos.pos_y = filApple * REC_LARGO + BORDER_Y_INI;
     } while (isPositionOccupied(pos));  // Repite si la vibora esta ahi
     circle.pos_x = pos.pos_x;
     circle.pos_y = pos.pos_y;
@@ -219,13 +224,18 @@ void delete(int pos_x, int pos_y) {
     return;
 }
 
-void pointEarned(Snakepos snake[]) {
+void pointEarned(Snakepos snake[], char player) {
     syscall(11, 0);//beep
     // marca q gano un punto
     if (snake->len < MAX_SNAKE) {
         snake->extraLen=1;
     }
     snake->points++;
+    char * points;
+    intToStr(snake->points, points);
+    if(points==1){
+        
+    }
     deleteCircle();
     putRandomCircle();
     return;
@@ -282,7 +292,7 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
     int len = snake->len;
     int otherlen = othersnake->len;
     // choca con un borde
-    if (snake[len - 1].pos_x < 0 || snake[len - 1].pos_x >= BORDER_X || snake[len - 1].pos_y < 0 || snake[len - 1].pos_y >= BORDER_Y) {
+    if (snake[len - 1].pos_x < BORDER_X_INI || snake[len - 1].pos_x >= BORDER_X_FIN || snake[len - 1].pos_y <BORDER_Y_INI || snake[len - 1].pos_y >= BORDER_Y_FIN) {
         syscall(11,1);
         return 1;
     }
@@ -343,7 +353,6 @@ void endGame(char players, char winner) {
     char points2P[10];
     intToStr(snake1->points, points1P);
     clear(); // Limpia la pantalla usando la llamada al sistema
-    syscall(6); //hace zoom asi se imprime el msj mas grande
     print(p1,18);
     print(points1P,getLen(points1P));
     nlPrint();
@@ -386,6 +395,7 @@ char isValidKey2(char key){
 }
 
 void play(char players){
+    syscall(6);
     resetGameState();
     snakeCanvas();
     iniSnake1();
@@ -408,10 +418,10 @@ void play(char players){
         }
         direcSnake(players, keyPressed);
         if(isSnakeinPos(circle, snake1)){
-            pointEarned(snake1);
+            pointEarned(snake1, 1);
         }
         if(players == '2' && isSnakeinPos(circle, snake2)){
-            pointEarned(snake2);
+            pointEarned(snake2, 2);
         }
         moveSnake(snake1);
         if(players == '2') {
