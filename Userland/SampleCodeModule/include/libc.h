@@ -1,5 +1,5 @@
 void print(char * buffer, int size);
-void read(char * buffer);
+void read(char * buffer,int size);
 void printRegisters();
 void nlPrint();
 void printErr();

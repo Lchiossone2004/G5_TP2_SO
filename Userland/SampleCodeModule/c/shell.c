@@ -86,7 +86,7 @@ void chekCommand(){
         syscall(9,STDOUT);
     }
     if(command == 8){
-        syscall(1);  
+        syscall(1,STDOUT);  
     }
     if(command == 9){
         int i = 0/0;

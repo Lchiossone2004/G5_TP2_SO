@@ -17,8 +17,8 @@ void print(char * word, int size){
     syscall(4,STDOUT,word,size);
 }
 
-void read(char * buffer){
-    syscall(3,STDOUT, buffer);
+void read(char * buffer,int size){
+    syscall(3,STDOUT, buffer, size);
     return;
 }
 

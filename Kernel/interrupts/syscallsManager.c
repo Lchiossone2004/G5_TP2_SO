@@ -27,7 +27,9 @@ extern void _sti();
 static int seed = 0;
 
 void sys_registers_print(unsigned int fd){
+    if(fd == STDOUT){
     printRegisters();
+    }
     return;
 }
 
@@ -83,8 +85,11 @@ void sys_zoomOut(){
     rePrint();
 }
 
-void sys_newLine(){
+void sys_newLine(unsigned int fd){
+    if(fd == STDOUT){
     nlVideo();
+    }
+    return;
 }
 
 void sys_sleep(int ticks){
@@ -159,7 +164,7 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 2: sys_getChar(rsi,rdx,rcx); break;
         case 3: sys_read(rsi, rdx, rcx); break;
         case 4: sys_write(rsi, rdx, rcx); break;
-        case 5: sys_newLine(rdi); break;
+        case 5: sys_newLine(rsi); break;
         case 6: sys_zoomIn(); break;
         case 7: sys_zoomOut(); break;
         case 8: sys_sleep(rsi); break;

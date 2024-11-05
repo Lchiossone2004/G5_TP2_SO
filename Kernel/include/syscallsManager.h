@@ -16,7 +16,7 @@ void sys_registers_print(unsigned int fd);
 void sys_getChar(unsigned int fd, char * buffer, size_t count);
 void sys_read(unsigned int fd, char * buffer, size_t count);
 void sys_write(unsigned int fd, const char *buffer, size_t count);
-void sys_newLine();
+void sys_newLine(unsigned int fd);
 void sysCallManager(Reg * registers);
 void sys_zoomIn();
 void sys_zoomOut();
