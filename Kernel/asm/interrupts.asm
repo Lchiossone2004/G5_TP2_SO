@@ -104,10 +104,6 @@ SECTION .text
 %endmacro
 
 %macro irqHandlerMaster 1
-	push rax
-	mov rax, [rsp + 8]
-	mov [auxRIP], rax
-	pop rax
 	pushState
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
@@ -182,6 +178,10 @@ _irq00Handler:
 
 ;Keyboard
 _irq01Handler:
+	push rax
+	mov rax, [rsp + 8]
+	mov [auxRIP], rax
+	pop rax
 	irqHandlerMaster 1
 
 ;Cascade pic never called
