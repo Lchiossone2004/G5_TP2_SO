@@ -69,8 +69,6 @@ static int zoom = 1; //zoom inicial
 static int x = 0;
 static int y = 0;
 static int aux = 0;
-static int pos_circle_x;
-static int pos_circle_y;
 static word matrix[BORDER_Y/MOV_Y][BORDER_X/MOV_X] = {0};
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
@@ -166,9 +164,18 @@ void printHexaVideo(uint64_t value){
 	uint32_t digits=uintToBase(value, buffer, 16);
 	imprimirVideo(buffer, 16,BLANCO);
 }
-
+void clearScreen(){
+	for(int i = 0; i<BORDER_Y; i++){
+		for(int j = 0; j<BORDER_X;j++){
+			putPixel(0x0, j, i);
+		}
+	}
+	x = 0;
+	y = 0;
+	aux = 0;
+}
 void rePrint(){ // 1 zoomIN, 0 zoomOUT
-	clearScrenn();
+	clearScreen();
 	for(int i = 0; i<(BORDER_Y/MOV_Y)/zoom; i++){
 		for(int j= 0; j<(BORDER_X/MOV_X)/zoom; j++){
 				charVideo(matrix[i][j].num,1, matrix[i][j].color);
@@ -180,8 +187,9 @@ void rePrint(){ // 1 zoomIN, 0 zoomOUT
 	return;
 }
 
+
 void videoClear(){ //funcion que devuelve la pantalla a su estado "incial"
-	clearScrenn();
+	clearScreen();
 	for(int i = 0; i<(BORDER_Y/MOV_Y); i++){
 		for(int j= 0; j<(BORDER_X/MOV_X ); j++){
 			matrix[i][j].num = 0;
@@ -192,16 +200,6 @@ void videoClear(){ //funcion que devuelve la pantalla a su estado "incial"
 	aux = 0;
 }
 
-void clearScrenn(){
-	for(int i = 0; i<BORDER_Y; i++){
-		for(int j = 0; j<BORDER_X;j++){
-			putPixel(0x0, j, i);
-		}
-	}
-	x = 0;
-	y = 0;
-	aux = 0;
-}
 
 void  zoomIN() {
 	if(zoom <2){

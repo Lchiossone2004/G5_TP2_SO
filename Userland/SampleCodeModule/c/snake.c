@@ -227,6 +227,26 @@ void pointEarned(Snakepos snake[]) {
     return;
 }
 
+void intToStr(int num, char* str) {
+    int i = 0;
+    if (num == 0) {
+        str[0] = '0';
+        str[1] = '\0';
+        return;
+    }
+    while (num != 0) {
+        str[i++] = (num % 10) + '0';
+        num /= 10;
+    }
+    str[i] = '\0';
+    for (int j = 0; j < i / 2; j++) {
+        char temp = str[j];
+        str[j] = str[i - j - 1];
+        str[i - j - 1] = temp;
+    }
+    return;
+}
+
 void printPoints() {
     syscall(17,124);
     print("Player 1:", 9);
@@ -313,26 +333,6 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
         }
     }
     return 0;
-}
-
-void intToStr(int num, char* str) {
-    int i = 0;
-    if (num == 0) {
-        str[0] = '0';
-        str[1] = '\0';
-        return;
-    }
-    while (num != 0) {
-        str[i++] = (num % 10) + '0';
-        num /= 10;
-    }
-    str[i] = '\0';
-    for (int j = 0; j < i / 2; j++) {
-        char temp = str[j];
-        str[j] = str[i - j - 1];
-        str[i - j - 1] = temp;
-    }
-    return;
 }
 
 int getLen(char string[]) {

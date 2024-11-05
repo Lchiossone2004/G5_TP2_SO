@@ -2,4 +2,4 @@
 #define STDOUT 1
 #define STDERR 2
 
-void playSnake();
+void play(char players);

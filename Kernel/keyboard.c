@@ -5,13 +5,11 @@
 #include <videoDriver.h>
 #include <lib.h>
 
-static uint64_t buffer_dim = 0;
 static uint64_t shift_pressed = 0;
 static uint64_t caps_pressed = 0;
 
 
 static uint16_t buffer[BUFFER_SIZE];
-static uint64_t dim = 0; //dimension del buffer
 static uint64_t curr = 0; //posicion actual del buffer
 
 int specialKey(uint8_t key) {
@@ -71,14 +69,8 @@ int getCurr() {
 void updateKeyboardStatus(uint8_t scancode, uint8_t isPressed) {
     if (scancode == 0x2A || scancode == 0x36) {  // Shift izquierdo o derecho
         shift_pressed = isPressed;  // Cambia según esté presionado o no
-    //    if (isPressed) {
-     //       ncPrint("Shift presionado\n");
-     //   } else {
-     //       ncPrint("Shift liberado\n");
-     //   }
     } else if (scancode == 0x3A && isPressed) {  // Caps Lock presionado (toggle)
         caps_pressed = !caps_pressed;
-      //  ncPrint("Caps Lock toggled\n");
     }
 }
 
@@ -95,6 +87,7 @@ char shiftNum(char num) {
             case '9': return '(';
             case '0': return ')';
         }
+        return '0'; //nunca va  a llegar acá
 }
 char toLetter(uint8_t i){
     char aux;
