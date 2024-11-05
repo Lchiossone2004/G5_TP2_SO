@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#define STDOUT 0
-#define STDIN 1
+#define STDIN 0
+#define STDOUT 1
 #define STDERR 2
+
 
 extern uint64_t syscall(uint64_t rdi, ...);
 
@@ -13,7 +14,7 @@ void printRegisters(){
 }
 
 void print(char * word, int size){
-    syscall(4,STDIN,word,size);
+    syscall(4,STDOUT,word,size);
 }
 
 void read(char * buffer){

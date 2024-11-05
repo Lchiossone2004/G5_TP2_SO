@@ -6,9 +6,10 @@
 #define TAB "     "
 #define WORD_BUFFER_SIZE 1024
 #define NUMBER_OF_COMMANDS 11
-#define STDOUT 0
-#define STDIN 1
+#define STDIN 0
+#define STDOUT 1
 #define STDERR 2
+
 
 void shell();
 void getKey(char * buffer, int index);

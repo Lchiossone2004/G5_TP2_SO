@@ -43,7 +43,7 @@ void shell() {
 }
 
 void getKey(char * buffer, int index){
-    syscall(2,STDOUT,buffer,index);
+    syscall(2,STDIN,buffer,index);
 }
 
 void chekCommand(){
@@ -78,12 +78,12 @@ void chekCommand(){
         do {
         print("type '1' for one player, '2' for two players",44);
         nlPrint();
-        syscall(2,1,&buffer,1);
+        syscall(2,STDIN,&buffer,1);
         nlPrint();
         }while (buffer != '1' && buffer != '2');
         play(buffer);
         syscall(16);
-        syscall(9,STDIN);
+        syscall(9,STDOUT);
     }
     if(command == 8){
         syscall(1);  
@@ -146,7 +146,7 @@ int processCommand(){
 }
 
 void clear(){
-    syscall(9,STDIN);
+    syscall(9,STDOUT);
 }
 
 void help(){

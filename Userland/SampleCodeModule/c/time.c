@@ -2,6 +2,11 @@
 #include "../include/libc.h"
 #include <stdint.h>
 
+#define STDIN 0
+#define STDOUT 1
+#define STDERR 2
+
+
 syscall(uint64_t rsi, ...);
 
 static time *Timepo;
@@ -27,5 +32,5 @@ void printTime(int area){
 }
 
 void getTime(int area){
-    syscall(12,Timepo,area);
+    syscall(12,STDIN,Timepo,area);
 }

@@ -398,7 +398,7 @@ void play(char players){
     }
     char newKey;
     while(1){ 
-        syscall(14, &newKey);
+        syscall(14,STDIN,&newKey);
         if (isValidKey1(newKey) || isValidKey2(newKey)){
             keyPressed = newKey;
         }

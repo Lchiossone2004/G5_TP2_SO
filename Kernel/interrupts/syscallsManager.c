@@ -14,6 +14,11 @@
 #define VERDE   0x00FF00
 #define TAB "     "
 
+#define STDIN 0
+#define STDOUT 1
+#define STDERR 2
+
+
 #define PARA_ALEATORIOS_1 1664525
 #define PARA_ALEATORIOS_2 1013904223   
 
@@ -28,6 +33,7 @@ void sys_registers_print(unsigned int fd){
 
 void sys_getChar(unsigned int fd, char * letter, size_t count){
     _sti();
+    if(fd == STDIN){
     while(isBufferEmpty());
     *letter = getBuffer();
     if(*letter == 0 && count > 0){
@@ -40,25 +46,28 @@ void sys_getChar(unsigned int fd, char * letter, size_t count){
     if(*letter != 0 && *letter != 1){
     imprimirVideo(letter,1,BLANCO);
     }
+    }
     return;
 }
 
 
 void sys_read(unsigned int fd, char * buffer, size_t count) {
+    if(fd == STDIN){
     if(isBufferEmpty()) {
         return;
     }
     int current = getCurr();
-   for(int i = 0; i < count && i <= current ; i++) {
-    buffer[i] = getFromBuffer(i);
-   }
+    for(int i = 0; i < count && i <= current ; i++) {
+        buffer[i] = getFromBuffer(i);
+    }
+    }
 }
 
 void sys_write(unsigned int fd, const char *buffer, size_t count) {
-    if(fd == 1){
+    if(fd == STDOUT){
     imprimirVideo(buffer,count,BLANCO);
     }
-    if(fd == 2){
+    if(fd == STDERR){
     imprimirVideo(buffer,count,ROJO);
     }
     return;
@@ -87,7 +96,7 @@ void sys_sleep(int ticks){
 }
 
 void sys_clear(unsigned int fd){
-    if(fd == 1){
+    if(fd == STDOUT){
         videoClear();
     }
 }
@@ -101,12 +110,13 @@ void sys_beep(int flag) {
 }
 
 
-void sys_getTime(time * ret, int area) {
+void sys_getTime(unsigned int fd, time * ret, int area) {
+    if(fd == STDIN){
     int aux = getHours();
     if(area == 1){
     ret->hours = aux - 3;
     if(ret->hours < 0){
-        ret->hours = aux + 21;
+        ret->hours = aux + 0x21;
     }
     }
     else{
@@ -114,11 +124,14 @@ void sys_getTime(time * ret, int area) {
     }
     ret->mins = getMins();
     ret->sec = getSec();
+    }
 }
-void sys_getKey(char* buffer) {
+void sys_getKey(unsigned int fd, char* buffer) {
     _sti();
+    if(fd == STDIN){
     if(!isBufferEmpty()){
         *buffer = getBuffer();
+    }
     }
     return;
 }
@@ -145,7 +158,7 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 1: sys_registers_print(rsi); break;
         case 2: sys_getChar(rsi,rdx,rcx); break;
         case 3: sys_read(rsi, rdx, rcx); break;
-        case 4: sys_write(rsi, (const char *)rdx, rcx); break;
+        case 4: sys_write(rsi, rdx, rcx); break;
         case 5: sys_newLine(rdi); break;
         case 6: sys_zoomIn(); break;
         case 7: sys_zoomOut(); break;
@@ -153,8 +166,8 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
         case 9: sys_clear(rsi); break;
         case 10: sys_putPixel(rsi, rdx, rcx); break;
         case 11: sys_beep(rsi);break;
-        case 12: sys_getTime(rsi,rdx); break;
-        case 14: sys_getKey(rsi); break;
+        case 12: sys_getTime(rsi,rdx,rcx); break;
+        case 14: sys_getKey(rsi,rdx); break;
         case 15: sys_ranN(rsi); break;
         case 16: sys_clearBuffer(); break;
     }
