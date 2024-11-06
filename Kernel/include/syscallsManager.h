@@ -24,7 +24,7 @@ void videoClear();
 void sys_sleep(int seconds);
 void sys_getSecs(uint64_t buffer);
 void sys_getMins(uint64_t buffer);
-void sys_getTime(unsigned int fd, time * ret, int area);
+void sys_getTime(unsigned int fd, time * ret);
 void sys_getKey(unsigned int fd, char* buffer);
 void sys_ranN(int* toRan);
 void sys_clearBuffer();

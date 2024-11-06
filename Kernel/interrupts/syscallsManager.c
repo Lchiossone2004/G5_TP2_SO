@@ -122,18 +122,10 @@ void sys_beep(int flag) {
 }
 
 
-void sys_getTime(unsigned int fd, time * ret, int area) {
+void sys_getTime(unsigned int fd, time * ret) {
     if(fd == STDIN){
     int aux = getHours();
-    if(area == 1){
-    ret->hours = aux - 0x09;
-    if(ret->hours < 0){
-        ret->hours = aux + 0x21;
-    }
-    }
-    else{
-        ret->hours = aux;
-    }
+    ret->hours = aux;
     ret->mins = getMins();
     ret->sec = getSec();
     }
@@ -184,7 +176,7 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx,
         case 9: sys_clear(rsi); break;
         case 10: sys_putPixel(rsi, rdx, rcx, r8); break;
         case 11: sys_beep(rsi);break;
-        case 12: sys_getTime(rsi,rdx,rcx); break;
+        case 12: sys_getTime(rsi,rdx); break;
         case 14: sys_getKey(rsi,rdx); break;
         case 15: sys_ranN(rsi); break;
         case 16: sys_clearBuffer(); break;

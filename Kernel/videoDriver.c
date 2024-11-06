@@ -161,6 +161,7 @@ void deleteVideo(){ //Borra caracteres
 
 void printHexaVideo(uint64_t value){
 	char buffer[16] = {0};
+	uintToBase(value,buffer,16);
 	imprimirVideo(buffer, 16,BLANCO);
 }
 void clearScreen(){

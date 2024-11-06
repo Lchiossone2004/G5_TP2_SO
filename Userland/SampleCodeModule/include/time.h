@@ -5,5 +5,5 @@ typedef struct {
     char seconds;
 }time;
 
-void getTime(int area);
+void getTime();
 void printTime(int area);
