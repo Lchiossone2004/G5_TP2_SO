@@ -9,8 +9,12 @@ extern uint64_t syscall(uint64_t rdi, ...);
 #define REC_LARGO 32
 #define BORDER_X_INI 0
 #define BORDER_Y_INI 96
-#define BORDER_X_FIN 1016
-#define BORDER_Y_FIN 768
+#define BORDER_X_FIN 1016 
+#define BORDER_Y_FIN 768 
+#define START_CANVAS_X BORDER_X_INI + REC_ANCHO
+#define START_CANVAS_Y BORDER_Y_INI + REC_LARGO
+#define END_CANVAS_X BORDER_X_FIN - REC_ANCHO
+#define END_CANVAS_Y BORDER_Y_FIN - REC_LARGO
 #define REC_X_FIL BORDER_X_FIN / REC_ANCHO
 #define REC_X_COL BORDER_Y_FIN / REC_LARGO
 #define MAX_SNAKE REC_X_FIL*REC_X_COL
@@ -68,7 +72,7 @@ void resetGameState() {
     syscall(9, STDOUT);
 }
 
-//inicializa la snake desde el principio del con dirección hacia la derecha
+//inicializa la snake desde el principio del canvas con dirección hacia la derecha
 void iniSnake1() {
     snake1->points = 0;
     snake1->direc_x = REC_ANCHO;
@@ -77,7 +81,7 @@ void iniSnake1() {
     snake1->extraLen = 0;
     snake1->color = 0x0042f557;
     for (int i = 0; i < snake1->len; i++) { 
-        snake1[i].pos_y = BORDER_Y_INI;
+        snake1[i].pos_y = START_CANVAS_Y;
         snake1[i].pos_x = (1 + i) * REC_ANCHO; 
     }
     return;
@@ -98,13 +102,13 @@ void iniSnake2() {
 }
 
 void putRectangle(int posx, int posy, uint32_t color) {
-	for(int i = posx; i < posx+REC_ANCHO; i++) {
-		for(int j = posy; j < posy+REC_LARGO; j++) {
-			syscall(10,i, j, color, STDOUT);
-		}
-	}
-    return;
+    for (int i = posx; i < posx + REC_ANCHO; i++) {
+        for (int j = posy; j < posy + REC_LARGO; j++) {
+            syscall(10, i, j, color, STDOUT);
+        }
+    }
 }
+
 int isPair(int pos) {
 	return pos % 2 == 0;
 }
@@ -117,11 +121,11 @@ void putMap(int pos_x, int pos_y) {
     return;
 }
 void snakeCanvas() {
-	for(int i = BORDER_X_INI; i < BORDER_X_FIN + 1; i += REC_ANCHO) {
-		for(int j = BORDER_Y_INI; j < BORDER_Y_FIN; j += REC_LARGO) {
-			putMap(i,j);
-		}
-	}
+	 for (int i = BORDER_X_INI; i < BORDER_X_FIN; i += REC_ANCHO) {
+        for (int j = BORDER_Y_INI; j < BORDER_Y_FIN; j += REC_LARGO) {
+            putMap(i, j);
+        }
+    }
     return;
 }
 
@@ -310,7 +314,7 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
     int len = snake->len;
     int otherlen = othersnake->len;
     // choca con un borde
-    if (snake[len - 1].pos_x < BORDER_X_INI || snake[len - 1].pos_x >= BORDER_X_FIN || snake[len - 1].pos_y <BORDER_Y_INI || snake[len - 1].pos_y >= BORDER_Y_FIN) {
+    if (snake[len - 1].pos_x < START_CANVAS_X || snake[len - 1].pos_x >= END_CANVAS_X  || snake[len - 1].pos_y < START_CANVAS_Y || snake[len - 1].pos_y >= END_CANVAS_Y ) {
         syscall(11,1, STDOUT);
         return 1;
     }
@@ -322,7 +326,7 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
         }
     }
     //de empate (cabeza con cabeza)
-    if(snake[len - 1].pos_x == othersnake[otherlen - 1].pos_x && snake[len - 1].pos_y == othersnake[otherlen - 1].pos_y) {
+    if(snake[len - 1].pos_x == othersnake[otherlen - 1].pos_x && snake[len - 1].pos_y == othersnake[otherlen - 1].pos_y && (snake->direc_x== -othersnake->direc_x ||snake->direc_y== -othersnake->direc_y ) ) {
         return 3;
     }
     // se choca con la otra snake
