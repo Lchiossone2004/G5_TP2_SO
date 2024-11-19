@@ -9,7 +9,7 @@
 
 void syscall(uint64_t rsi, ...);
 
-static char Timepo[4];
+static char Timepo[3];
 void printTime(int area){
     getTime();
     char toPrint[9] = "hh:mm:ss";
