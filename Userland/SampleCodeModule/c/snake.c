@@ -162,6 +162,7 @@ void moveSnake(Snakepos snake[]) {
         snake[l].pos_y += snake->direc_y;
     }
     if(snake[l].pos_x < START_CANVAS_X ||snake[l].pos_x >= END_CANVAS_X ||snake[l].pos_y < START_CANVAS_Y ||snake[l].pos_y >= END_CANVAS_Y ) {
+       
         return;
     }
     putSnake(snake); // Dibuja la snake después de mover
@@ -318,7 +319,7 @@ void direcSnake(char cantPlayers, char keyPressed) {
 int checkSelfCollision(Snakepos snake[]) {
   int len = snake->len;
     // choca con un borde
-    if (snake[len - 1].pos_x < BORDER_X_INI || snake[len - 1].pos_x >= BORDER_X_FIN || snake[len - 1].pos_y < BORDER_Y_INI || snake[len - 1].pos_y >= BORDER_Y_FIN  ) {
+    if (snake[len - 1].pos_x < BORDER_X_INI + REC_ANCHO|| snake[len - 1].pos_x >= BORDER_X_FIN - REC_ANCHO|| snake[len - 1].pos_y < BORDER_Y_INI + REC_LARGO || snake[len - 1].pos_y >= BORDER_Y_FIN -REC_LARGO  ) {
         return 1;
     }
     // se choca a ella misma
