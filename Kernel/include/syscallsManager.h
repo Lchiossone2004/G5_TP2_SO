@@ -1,14 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-
-typedef struct{
-    char aux;
-    char hours;
-    char mins;
-    char sec;
-}time;
-
 typedef struct {
     uint64_t rdi, rsi, rdx, rcx, r8, r9;
 } Reg;
@@ -24,7 +16,7 @@ void videoClear();
 void sys_sleep(int seconds);
 void sys_getSecs(uint64_t buffer);
 void sys_getMins(uint64_t buffer);
-void sys_getTime(unsigned int fd, time * ret);
+void sys_getTime(unsigned int fd, char * ret);
 void sys_getKey(unsigned int fd, char* buffer);
 void sys_ranN(int* toRan);
 void sys_clearBuffer();

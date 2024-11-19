@@ -122,12 +122,11 @@ void sys_beep(int flag) {
 }
 
 
-void sys_getTime(unsigned int fd, time * ret) {
+void sys_getTime(unsigned int fd, char * ret) {
     if(fd == STDIN){
-    int aux = getHours();
-    ret->hours = aux;
-    ret->mins = getMins();
-    ret->sec = getSec();
+    ret[0] = getHours();
+    ret[1] = getMins();
+    ret[2] = getSec();
     }
 }
 void sys_getKey(unsigned int fd, char* buffer) {
