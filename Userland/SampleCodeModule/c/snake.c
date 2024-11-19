@@ -257,16 +257,24 @@ void intToStr(int num, char* str) {
     }
     return;
 }
+int digitCount(int number) {
+    int count = 0;
+    do {
+        count++;
+        number /= 10;
+    } while (number != 0);
+    return count;
+}
 
 void printPoints() {
     syscall(17,124);
     print("Player 1:", 9);
     intToStr(snake1->points, pointsStr1);
-    print(pointsStr1, (snake1->points/10)+1);
+    print(pointsStr1, digitCount(snake1->points));
     nlPrint();
     print("Player 2:", 9);
     intToStr(snake2->points, pointsStr2);
-    print(pointsStr2, (snake2->points/10)+1);
+    print(pointsStr2, digitCount(snake2->points));
 }
 void changeDir(int newX, int newY, Snakepos snake[]) {
     if ((newX != -(snake->direc_x)) && (newY != -(snake->direc_y))) {
