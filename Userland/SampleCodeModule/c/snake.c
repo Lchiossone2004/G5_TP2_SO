@@ -19,8 +19,8 @@ extern uint64_t syscall(uint64_t rdi, ...);
 #define REC_X_COL BORDER_Y_FIN / REC_LARGO
 #define MAX_SNAKE REC_X_FIL*REC_X_COL
 
-static char pointsStr1[4]; //como la maxima cantidad de puntos posible es 1024 (por el espacio) no hace falta mas de 4 chars para guardar todos los puntos 
-static char pointsStr2[4];
+static char pointsStr1[5]; //como la maxima cantidad de puntos posible es 1024 (por el espacio) no hace falta mas de 4 chars para guardar todos los puntos, el 5 es el /0
+static char pointsStr2[5];
 typedef struct {
 	int pos_x;
 	int pos_y;
