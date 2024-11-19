@@ -121,8 +121,8 @@ void putMap(int pos_x, int pos_y) {
     return;
 }
 void snakeCanvas() {
-	 for (int i = BORDER_X_INI; i < BORDER_X_FIN; i += REC_ANCHO) {
-        for (int j = BORDER_Y_INI; j < BORDER_Y_FIN; j += REC_LARGO) {
+	 for (int i = START_CANVAS_X; i < END_CANVAS_X; i += REC_ANCHO) {
+        for (int j = START_CANVAS_Y; j < END_CANVAS_Y; j += REC_LARGO) {
             putMap(i, j);
         }
     }
@@ -133,6 +133,7 @@ void putSnake(Snakepos snake[]) {
     for(int i = 0; i < snake->len; i++) {
         putRectangle(snake[i].pos_x, snake[i].pos_y, snake->color);
     }
+    
     return;
 }
 
@@ -159,6 +160,9 @@ void moveSnake(Snakepos snake[]) {
         // Mueve la cabeza en la dirección actual
         snake[l].pos_x += snake->direc_x;
         snake[l].pos_y += snake->direc_y;
+    }
+    if(snake[l].pos_x < START_CANVAS_X ||snake[l].pos_x >= END_CANVAS_X ||snake[l].pos_y < START_CANVAS_Y ||snake[l].pos_y >= END_CANVAS_Y ) {
+        return;
     }
     putSnake(snake); // Dibuja la snake después de mover
     return;
@@ -194,7 +198,9 @@ int isPositionOccupied(Snakepos pos) {
     }
     return 0;
 }
-
+int posOutOfBounds(Snakepos pos) {
+    return pos.pos_x >= END_CANVAS_X || pos.pos_x < START_CANVAS_X || pos.pos_y >= END_CANVAS_Y || pos.pos_y < START_CANVAS_Y;
+}
 void putRandomCircle() {
     int ran;
     int colApple, filApple;
@@ -205,7 +211,7 @@ void putRandomCircle() {
         filApple = ran % ((BORDER_Y_FIN-BORDER_Y_INI )/ REC_LARGO);
         pos.pos_x = colApple * REC_ANCHO;
         pos.pos_y = filApple * REC_LARGO + BORDER_Y_INI;
-    } while (isPositionOccupied(pos));  // Repite si la vibora esta ahi
+    } while (isPositionOccupied(pos)|| posOutOfBounds(pos) );  // Repite si la vibora esta ahi
     circle.pos_x = pos.pos_x;
     circle.pos_y = pos.pos_y;
     putCircle(circle.pos_x, circle.pos_y, 0x00FA0202);//coloca efectivamente la manzana
@@ -314,7 +320,7 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
     int len = snake->len;
     int otherlen = othersnake->len;
     // choca con un borde
-    if (snake[len - 1].pos_x < START_CANVAS_X || snake[len - 1].pos_x >= END_CANVAS_X  || snake[len - 1].pos_y < START_CANVAS_Y || snake[len - 1].pos_y >= END_CANVAS_Y ) {
+    if (snake[len - 1].pos_x < BORDER_X_INI || snake[len - 1].pos_x >= BORDER_X_FIN || snake[len - 1].pos_y < BORDER_Y_INI || snake[len - 1].pos_y >= BORDER_Y_FIN  ) {
         syscall(11,1, STDOUT);
         return 1;
     }
