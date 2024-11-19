@@ -316,21 +316,20 @@ void direcSnake(char cantPlayers, char keyPressed) {
 }
 
 
-int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
+int checkCollision(Snakepos snake[], Snakepos othersnake[], char players) {
     int len = snake->len;
-    int otherlen = othersnake->len;
     // choca con un borde
     if (snake[len - 1].pos_x < BORDER_X_INI || snake[len - 1].pos_x >= BORDER_X_FIN || snake[len - 1].pos_y < BORDER_Y_INI || snake[len - 1].pos_y >= BORDER_Y_FIN  ) {
-        syscall(11,1, STDOUT);
         return 1;
     }
     // se choca a ella misma
     for(int i = 0; i < len - 1; i++) {
         if(snake[i].pos_x == snake[len - 1].pos_x && snake[i].pos_y == snake[len - 1].pos_y) {
-            syscall(11,1, STDOUT);
             return 1;
         }
     }
+    if(players == '2'){
+    int otherlen = othersnake->len; 
     //de empate (cabeza con cabeza)
     if(snake[len - 1].pos_x == othersnake[otherlen - 1].pos_x && snake[len - 1].pos_y == othersnake[otherlen - 1].pos_y && (snake->direc_x== -othersnake->direc_x ||snake->direc_y== -othersnake->direc_y ) ) {
         return 3;
@@ -338,9 +337,10 @@ int checkCollision(Snakepos snake[], Snakepos othersnake[]) {
     // se choca con la otra snake
     for(int i = 0; i < otherlen; i++) {
         if(othersnake[i].pos_x == snake[len - 1].pos_x && othersnake[i].pos_y == snake[len - 1].pos_y) {
-            syscall(11,1, STDOUT);
+        
             return 1;
         }
+    }
     }
     return 0;
 }
@@ -438,9 +438,10 @@ void play(char players){
         if(players == '2') {
             moveSnake(snake2);
         }
-        int collision1 = checkCollision(snake1, snake2);
-        int collision2 = players == '2' ? checkCollision(snake2, snake1) : 0;
+        int collision1 = checkCollision(snake1, snake2, players);
+        int collision2 = players == '2' ? checkCollision(snake2, snake1, players) : 0;
         if(collision1 == 1 || collision2 == 1) {
+            syscall(11,1, STDOUT);
             endGame(players, collision1 == 1 ? '2' : '1');
             return;
         } else if(collision1 == 3){
