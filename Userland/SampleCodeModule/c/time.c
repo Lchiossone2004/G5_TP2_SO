@@ -18,7 +18,7 @@ void printTime(int area){
 	if(aux2 >= 0x03 && area){
 		aux2 =aux2-0x3;
 	}
-	else if(aux == 0x01 && area){
+	else if(aux >= 0x01 && area){
 		aux = aux -0x01;
 		aux2 =  aux2 + 0x07; 
 	}
