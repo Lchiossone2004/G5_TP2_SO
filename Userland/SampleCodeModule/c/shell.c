@@ -149,10 +149,9 @@ void clear(){
 
 void help(){
     print("     Here is a list of the commands:",36);
-    nlPrint();
-    for(int i = 0; i<NUMBER_OF_COMMANDS; i++){
+    for(int i = 0; i<NUMBER_OF_COMMANDS-1; i++){
+        nlPrint();
         print("     #) ",7);
         print(commands[i],strSize(commands[i]));
-        nlPrint();
     }
 }
