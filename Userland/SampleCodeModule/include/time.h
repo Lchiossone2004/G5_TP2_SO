@@ -1,0 +1,2 @@
+void getTime();
+void printTime();
