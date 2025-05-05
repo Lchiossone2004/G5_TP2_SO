@@ -14,4 +14,4 @@ clean:
 	cd SampleCodeModule; make clean
 	rm -rf *.bin
 
-.PHONY: sampleCodeModule sampleDataModule all clean
+.PHONY: sampleCodeModule all clean
