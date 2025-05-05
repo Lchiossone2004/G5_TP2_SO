@@ -7,6 +7,8 @@
 *.exe
 *.out
 *.bin
+*.elf
+
 
 # (Opcional) Imágenes de disco que generas con QEMU/VM
 *.img
@@ -14,3 +16,5 @@
 *.qcow2
 
 *.sys
+*.gdbinit
+.gdb_history
