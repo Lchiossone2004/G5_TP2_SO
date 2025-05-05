@@ -1,0 +1,16 @@
+# Ignorar todos los archivos objeto
+*.o
+*.lo
+*.obj
+
+# Ignorar ejecutables y binarios
+*.exe
+*.out
+*.bin
+
+# (Opcional) Imágenes de disco que generas con QEMU/VM
+*.img
+*.vmdk
+*.qcow2
+
+*.sys
