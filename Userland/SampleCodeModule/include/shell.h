@@ -1,4 +1,3 @@
-#include "../include/libc.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -10,9 +9,8 @@
 #define STDOUT 1
 #define STDERR 2
 
-
 void shell();
-void getKey(char * buffer, int index);
+void getKey(char *buffer, int index);
 void chekCommand();
 void clearBuffer();
 int processCommand();
