@@ -1,5 +1,4 @@
 #include <shell.h>
-#include <snake.h>
 #include <time.h>
 #include <c-lib.h>
 #include <string-lib.h>
@@ -11,7 +10,7 @@ static char buffer[WORD_BUFFER_SIZE] = {0};
 static char letra[1] = {0};
 static int ultimaLetra;
 static int index = 0;
-static char *commands[] = {"help", "time ARG", "time UTC", "zoomin", "zoomout", "clear", "snake", "print registers", "div cero", "invalid op", "testmm", "exit"};
+static char *commands[] = {"help", "time ARG", "time UTC", "zoomin", "zoomout", "clear", "print registers", "div cero", "invalid op", "testmm", "exit"};
 
 void shell()
 {
@@ -86,32 +85,17 @@ void chekCommand()
     }
     if (command == 7)
     {
-        nlPrint();
-        char buffer;
-        do
-        {
-            print("type '1' for one player, '2' for two players");
-            nlPrint();
-            syscall(2, STDIN, &buffer, 1);
-            nlPrint();
-        } while (buffer != '1' && buffer != '2');
-        play(buffer);
-        syscall(16);
-        syscall(9, STDOUT);
+        syscall(1, STDOUT);
     }
     if (command == 8)
     {
-        syscall(1, STDOUT);
+        int i = 0 / 0;
     }
     if (command == 9)
     {
-        int i = 0 / 0;
-    }
-    if (command == 10)
-    {
         invalidOp();
     }
-    if (command == 11)
+    if (command == 10)
     {
         // Ejecutar test de memoria
         print(TAB);
@@ -121,7 +105,7 @@ void chekCommand()
         print("Test de memoria completado.\n");
         return;
     }
-    if (command == 12)
+    if (command == 11)
     {
         nlPrint();
         print(TAB);
