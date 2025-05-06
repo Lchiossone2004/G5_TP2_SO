@@ -84,7 +84,7 @@ void test_mm()
         total = 0;
         sys_write(STDOUT, "empieza el malloc\n", 20);
         // Request as many blocks as we can
-        while (rq < MAX_BLOCKS && total < MAX_MEMORY)
+        while (rq < MAX_BLOCKS && total < MAX_MEMORY - 2)
         {
             mm_rqs[rq].size = GetUniform(MAX_MEMORY - total - 1) + 1;
             mm_rqs[rq].address = sys_malloc(mm_rqs[rq].size);

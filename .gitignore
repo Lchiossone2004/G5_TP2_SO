@@ -18,3 +18,4 @@
 *.sys
 *.gdbinit
 .gdb_history
+.bash_history
