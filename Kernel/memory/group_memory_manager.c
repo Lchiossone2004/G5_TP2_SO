@@ -1,5 +1,4 @@
 #include "group_memory_manager.h"
-#include "memory_syscalls.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>

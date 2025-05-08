@@ -1,10 +1,9 @@
-#ifndef _MEMORY_SYSCALLS_H
-#define _MEMORY_SYSCALLS_H
+#ifndef MEMORY_LIB
+#define MEMORY_LIB 
 
 #include <stdint.h>
-#include <stddef.h>
+#include <stdlib.h>
 
-// Estructura para información de memoria
 typedef struct {
     size_t total_memory;
     size_t used_memory;
@@ -17,9 +16,8 @@ typedef struct {
     int memory_leak;
 } memory_info_t;
 
-// Syscalls de memoria
-void* sys_malloc(size_t size);
-void sys_free(void* ptr);
-void sys_get_memory_info(memory_info_t* info);
+void *usr_malloc(int size);
+void usr_free(void* ptr);
+void print_usr_mem_info();
 
-#endif // _MEMORY_SYSCALLS_H 
+#endif

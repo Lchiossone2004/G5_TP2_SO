@@ -2,6 +2,7 @@
 #include <time.h>
 #include <c-lib.h>
 #include <string-lib.h>
+#include <memory-lib.h>
 
 extern void syscall(__uint64_t rdi, ...);
 extern void invalidOp();
@@ -99,11 +100,12 @@ void chekCommand()
     {
         // Ejecutar test de memoria
         print(TAB);
-        print("Ejecutando test de memoria...\n");
-        char *argv[] = {"1048576"}; // 1MB para el test
-        syscall(18, argv);
-        print("Test de memoria completado.\n");
-        return;
+        print("testendo\n");
+        int* algo = usr_malloc(10);
+        int* algomas = usr_malloc(10);
+        usr_free(algomas);
+        int* algomasmas = usr_malloc(10);
+        print_usr_mem_info();
     }
     if (command == 11)
     {

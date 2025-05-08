@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
+#include "../memory/memory_manager.h"
 
 typedef struct {
     uint64_t rdi, rsi, rdx, rcx, r8, r9;
@@ -20,3 +21,6 @@ void sys_getTime(unsigned int fd, char * ret);
 void sys_getKey(unsigned int fd, char* buffer);
 void sys_ranN(int* toRan);
 void sys_clearBuffer();
+void sys_malloc(void **ptr,size_t size);
+void sys_free(void *ptr);
+void sys_get_memory_info(memory_info_t *info);

@@ -3,7 +3,19 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "memory_syscalls.h"
+
+// Estructura para información de memoria
+typedef struct {
+    size_t total_memory;
+    size_t used_memory;
+    size_t free_memory;
+    size_t block_count;
+    size_t free_block_count;
+    size_t total_allocated;
+    size_t total_freed;
+    size_t current_blocks;
+    int memory_leak;
+} memory_info_t;
 
 typedef struct {
     void* (*init)(void* start, size_t size);

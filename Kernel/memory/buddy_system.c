@@ -1,5 +1,4 @@
 #include "buddy_system.h"
-#include "memory_syscalls.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>

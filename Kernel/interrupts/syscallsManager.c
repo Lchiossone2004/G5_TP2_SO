@@ -1,13 +1,13 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <keyboard.h>
-#include <syscallsManager.h>
 #include <videoDriver.h>
 #include <naiveConsole.h>
 #include <lib.h>
 #include <time.h>
 #include <interrupts.h>
 #include <sound.h>
+#include <syscallsManager.h>
 
 #define ROJO    0xFF0000
 #define BLANCO  0xFFFFFF
@@ -21,6 +21,10 @@
 
 #define PARA_ALEATORIOS_1 1664525
 #define PARA_ALEATORIOS_2 1013904223   
+
+static size_t total_allocated = 0;
+static size_t total_freed = 0;
+static size_t current_blocks = 0;
 
 extern void _sti();
 
@@ -162,7 +166,43 @@ void sys_delete_video(unsigned int cant){
 }
 
 void sys_test_mm(unsigned int fd, char * buffer){
-    test_mm(buffer);
+}
+
+void sys_malloc(void **ptr,size_t size)
+{
+    if (size == 0)
+    {
+        return NULL;
+    }
+    *ptr = mm_malloc(size);
+    if (ptr != NULL)
+    {
+        total_allocated += size;
+        current_blocks++;
+    }
+}
+
+void sys_free(void *ptr)
+{
+    if (ptr == NULL)
+    {
+        return;
+    }
+    mm_free(ptr);
+    current_blocks--;
+}
+
+void sys_get_memory_info(memory_info_t *info)
+{
+    if (info == NULL)
+    {
+        return;
+    }
+    mm_get_info(info);
+    info->total_allocated = total_allocated;
+    info->total_freed = total_freed;
+    info->current_blocks = current_blocks;
+    info->memory_leak = (total_allocated > total_freed);
 }
 
 uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8) {
@@ -184,6 +224,9 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx,
         case 16: sys_clearBuffer(); break;
         case 17: sys_delete_video(rsi); break;
         case 18: sys_test_mm(rsi,rdx); break;
+        case 19: sys_malloc(rsi,rdx); break;
+        case 20: sys_free(rsi); break;
+        case 21: sys_get_memory_info(rsi); break;
     }
     return;
 }

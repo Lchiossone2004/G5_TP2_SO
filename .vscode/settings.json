@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "libc.h": "c"
+        "libc.h": "c",
+        "string-lib.h": "c",
+        "memory_manager.h": "c"
     }
 }
