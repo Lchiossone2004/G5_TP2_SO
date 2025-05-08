@@ -100,7 +100,7 @@ void chekCommand()
     {
         // Ejecutar test de memoria
         print(TAB);
-        print("testendo\n");
+        print("testeando\n");
         int* algo = usr_malloc(10);
         int* algomas = usr_malloc(10);
         usr_free(algomas);

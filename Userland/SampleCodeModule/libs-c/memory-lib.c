@@ -38,12 +38,12 @@ void print_usr_mem_info(){
     nlPrint();
 
     size_t_to_str(info->free_memory, buffer);
-    print("Free Memmoy: ");
+    print("Free Memory: ");
     print(buffer);
     nlPrint();
 
     size_t_to_str(info->total_allocated, buffer);
-    print("Totall Allocated: ");
+    print("Total Allocated: ");
     print(buffer);
     nlPrint();
 }
