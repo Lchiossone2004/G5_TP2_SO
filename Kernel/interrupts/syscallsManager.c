@@ -172,7 +172,7 @@ void sys_malloc(void **ptr,size_t size)
 {
     if (size == 0)
     {
-        return NULL;
+        return;
     }
     *ptr = mm_malloc(size);
     if (ptr != NULL)
@@ -180,6 +180,7 @@ void sys_malloc(void **ptr,size_t size)
         total_allocated += size;
         current_blocks++;
     }
+    return;
 }
 
 void sys_free(void *ptr)
@@ -188,8 +189,11 @@ void sys_free(void *ptr)
     {
         return;
     }
-    mm_free(ptr);
+    size_t freed_size = mm_free(ptr);
+    total_allocated -= freed_size;
+    total_freed += freed_size;
     current_blocks--;
+    return;
 }
 
 void sys_get_memory_info(memory_info_t *info)
@@ -203,6 +207,7 @@ void sys_get_memory_info(memory_info_t *info)
     info->total_freed = total_freed;
     info->current_blocks = current_blocks;
     info->memory_leak = (total_allocated > total_freed);
+    return;
 }
 
 uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8) {

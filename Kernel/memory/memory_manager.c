@@ -32,13 +32,13 @@ void *mm_malloc(size_t size)
     return current_manager->malloc(size);
 }
 
-void mm_free(void *ptr)
+size_t mm_free(void *ptr)
 {
     if (!current_manager || !current_manager->free || ptr == NULL)
     {
-        return;
+        return 0;
     }
-    current_manager->free(ptr);
+    return current_manager->free(ptr);
 }
 
 void mm_dump(void)

@@ -85,11 +85,12 @@ static void* buddy_malloc(size_t size) {
     return (void*)((char*)block + sizeof(block_header_t));
 }
 
-static void buddy_free(void* ptr) {
-    if (ptr == NULL) return;
+static size_t buddy_free(void* ptr) {
+    if (ptr == NULL) return 0;
     
     block_header_t* block = (block_header_t*)((char*)ptr - sizeof(block_header_t));
     block->is_free = true;
+    size_t block_size = block->size;
     current_blocks--;
     
     size_t order = get_order(block->size);
@@ -125,6 +126,7 @@ static void buddy_free(void* ptr) {
     // Agregar el bloque a la lista de libres
     block->next = free_blocks[order];
     free_blocks[order] = block;
+    return block_size;
 }
 
 static void buddy_dump(void) {

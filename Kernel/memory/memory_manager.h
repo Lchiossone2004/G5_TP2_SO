@@ -20,14 +20,14 @@ typedef struct {
 typedef struct {
     void* (*init)(void* start, size_t size);
     void* (*malloc)(size_t size);
-    void (*free)(void* ptr);
+    size_t (*free)(void* ptr);
     void (*dump)(void);
     void (*get_info)(memory_info_t* info);
 } memory_manager_t;
 
 void init_memory_manager(void* start, size_t size);
 void* mm_malloc(size_t size);
-void mm_free(void* ptr);
+size_t mm_free(void* ptr);
 void mm_dump(void);
 void mm_get_info(memory_info_t* info);
 

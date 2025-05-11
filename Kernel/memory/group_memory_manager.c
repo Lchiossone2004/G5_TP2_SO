@@ -64,13 +64,14 @@ static void *group_malloc(size_t size)
     return NULL;
 }
 
-static void group_free(void *ptr)
+static size_t group_free(void *ptr)
 {
     if (ptr == NULL)
-        return;
+        return 0;
 
     block_header_t *block = (block_header_t *)((char *)ptr - sizeof(block_header_t));
     block->is_free = true;
+    size_t block_size = block->size;
     current_blocks--;
     if (block->next && block->next->is_free)
     {
@@ -91,6 +92,7 @@ static void group_free(void *ptr)
             block->next->prev = block->prev;
         }
     }
+    return block_size;
 }
 
 static void group_dump(void)
