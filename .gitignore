@@ -19,3 +19,4 @@
 *.gdbinit
 .gdb_history
 .bash_history
+.wget-hsts

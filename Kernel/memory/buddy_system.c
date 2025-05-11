@@ -153,11 +153,11 @@ static void buddy_get_info(memory_info_t* info) {
     if (info == NULL) return;
     
     info->total_memory = total_size;
-    info->block_count = current_blocks;
+    info->current_blocks = current_blocks;  // Currently allocated blocks
     info->free_block_count = 0;
     info->free_memory = 0;
     
-    // Contar bloques libres y memoria libre
+    // Count free blocks and memory
     for (int i = 0; i <= MAX_ORDER; i++) {
         block_header_t* current = free_blocks[i];
         while (current != NULL) {
@@ -168,6 +168,7 @@ static void buddy_get_info(memory_info_t* info) {
     }
     
     info->used_memory = total_size - info->free_memory;
+    info->block_count = info->free_block_count + info->current_blocks;  // Total blocks = free + allocated
 }
 
 static memory_manager_t buddy_manager = {

@@ -120,10 +120,6 @@ void sys_putPixel( int posx, int posy, uint32_t hexColor, unsigned int fd) {
     putPixel(hexColor, posx, posy);
     }
 }
-void sys_beep(int flag) {
-    _sti();
-    beep(flag);
-}
 
 
 void sys_getTime(unsigned int fd, char * ret) {
@@ -222,7 +218,6 @@ uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx,
         case 8: sys_sleep(rsi); break;
         case 9: sys_clear(rsi); break;
         case 10: sys_putPixel(rsi, rdx, rcx, r8); break;
-        case 11: sys_beep(rsi);break;
         case 12: sys_getTime(rsi,rdx); break;
         case 14: sys_getKey(rsi,rdx); break;
         case 15: sys_ranN(rsi); break;

@@ -100,11 +100,12 @@ void chekCommand()
     {
         // Ejecutar test de memoria
         print(TAB);
-        print("testendo\n");
-        int* algo = usr_malloc(10);
-        int* algomas = usr_malloc(10);
-        usr_free(algomas);
-        int* algomasmas = usr_malloc(10);
+        print("testeando\n");
+        int* block1 = usr_malloc(10);
+        int* block2 = usr_malloc(10);
+        int* block3 = usr_malloc(10);
+        usr_free(block1);  // Free first block
+        usr_free(block3);  // Free last block, leaving middle block allocated
         print_usr_mem_info();
     }
     if (command == 11)
