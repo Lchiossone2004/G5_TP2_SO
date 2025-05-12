@@ -15,6 +15,8 @@ static block_header_t *free_list = NULL;
 static void *memory_start;
 static size_t total_size;
 static size_t current_blocks = 0;
+static size_t total_allocated = 0;
+static size_t total_freed = 0;
 
 static void *group_init(void *start, size_t size)
 {
@@ -32,7 +34,7 @@ static void *group_init(void *start, size_t size)
 
 static void *group_malloc(size_t size)
 {
-    if (size == 0)
+    if (size == 0 || current_blocks >= MAX_BLOCKS)
         return NULL;
     block_header_t *current = free_list;
     while (current != NULL)
@@ -56,6 +58,7 @@ static void *group_malloc(size_t size)
 
             current->is_free = false;
             current_blocks++;
+            total_allocated += current->size;
             return (void *)((char *)current + sizeof(block_header_t));
         }
         current = current->next;
@@ -72,7 +75,7 @@ static size_t group_free(void *ptr)
     block_header_t *block = (block_header_t *)((char *)ptr - sizeof(block_header_t));
     block->is_free = true;
     size_t block_size = block->size;
-    current_blocks--;
+    total_freed += block_size;
     if (block->next && block->next->is_free)
     {
         block->size += sizeof(block_header_t) + block->next->size;
@@ -91,28 +94,12 @@ static size_t group_free(void *ptr)
         {
             block->next->prev = block->prev;
         }
+
+        block = block->prev;
     }
+
+    current_blocks--;
     return block_size;
-}
-
-static void group_dump(void)
-{
-    memory_info_t info = {0};
-    info.total_memory = total_size;
-
-    block_header_t *current = free_list;
-    while (current != NULL)
-    {
-        if (current->is_free)
-        {
-            info.free_memory += current->size;
-            info.free_block_count++;
-        }
-        current = current->next;
-    }
-
-    info.used_memory = total_size - info.free_memory;
-    info.block_count = info.free_block_count + current_blocks;
 }
 
 static void group_get_info(memory_info_t *info)
@@ -121,11 +108,13 @@ static void group_get_info(memory_info_t *info)
         return;
 
     info->total_memory = total_size;
-    info->current_blocks = current_blocks;  // Currently allocated blocks
+    info->current_blocks = current_blocks;
     info->free_block_count = 0;
     info->free_memory = 0;
+    info->total_allocated = total_allocated;
+    info->total_freed = total_freed;
+    info->memory_leak = (total_allocated != total_freed);
 
-    // Count free blocks and memory
     block_header_t *current = free_list;
     while (current != NULL)
     {
@@ -138,14 +127,13 @@ static void group_get_info(memory_info_t *info)
     }
 
     info->used_memory = total_size - info->free_memory;
-    info->block_count = info->free_block_count + info->current_blocks;  // Total blocks = free + allocated
+    info->block_count = info->free_block_count + info->current_blocks;
 }
 
 static memory_manager_t group_manager = {
     .init = group_init,
     .malloc = group_malloc,
     .free = group_free,
-    .dump = group_dump,
     .get_info = group_get_info};
 
 memory_manager_t *get_group_memory_manager(void)
