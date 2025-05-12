@@ -2,6 +2,7 @@
     "files.associations": {
         "libc.h": "c",
         "string-lib.h": "c",
-        "memory_manager.h": "c"
+        "memory_manager.h": "c",
+        "group_memory_manager.h": "c"
     }
 }

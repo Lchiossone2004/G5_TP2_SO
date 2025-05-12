@@ -41,14 +41,6 @@ size_t mm_free(void *ptr)
     return current_manager->free(ptr);
 }
 
-void mm_dump(void)
-{
-    if (!current_manager || !current_manager->dump)
-    {
-        return;
-    }
-    current_manager->dump();
-}
 
 void mm_get_info(memory_info_t *info)
 {
