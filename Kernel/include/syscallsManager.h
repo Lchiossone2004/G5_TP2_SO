@@ -1,3 +1,6 @@
+#ifndef SYSCALLS_H
+#define SYSCALLS_H
+
 #include <stdint.h>
 #include <stdlib.h>
 #include "../memory/memory_manager.h"
@@ -5,22 +8,29 @@
 typedef struct {
     uint64_t rdi, rsi, rdx, rcx, r8, r9;
 } Reg;
-void sys_registers_print(unsigned int fd);
-void sys_getChar(unsigned int fd, char * buffer, size_t count);
-void sys_read(unsigned int fd, char * buffer, size_t count);
-void sys_write(unsigned int fd, const char *buffer, size_t count);
-void sys_newLine(unsigned int fd);
-void sysCallManager(Reg * registers);
-void sys_zoomIn();
-void sys_zoomOut();
-void videoClear();
-void sys_sleep(int seconds);
-void sys_getSecs(uint64_t buffer);
-void sys_getMins(uint64_t buffer);
-void sys_getTime(unsigned int fd, char * ret);
-void sys_getKey(unsigned int fd, char* buffer);
-void sys_ranN(int* toRan);
-void sys_clearBuffer();
-void sys_malloc(void **ptr,size_t size);
-void sys_free(void *ptr);
-void sys_get_memory_info(memory_info_t *info);
+
+// Syscall main entry
+uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+
+// Todas las funciones con firma unificada
+void sys_registers_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_newLine(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_zoomOut(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_sleep(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_clear(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_putPixel(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_getTime(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_getKey(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_ranN(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_clearBuffer(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_delete_video(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_test_mm(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_malloc(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_free(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+void sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8);
+
+#endif // SYSCALLS_H
