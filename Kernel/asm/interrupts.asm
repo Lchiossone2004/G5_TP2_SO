@@ -120,7 +120,7 @@ SECTION .text
 %macro irqHandlerMaster 0
 	pushState
 	mov rdi, rsp
-	call scheduler
+	;call scheduler
 	mov rsp,rax
 
 	mov al, 20h
@@ -128,6 +128,7 @@ SECTION .text
 
 	popState
 	iretq
+%endmacro
 
 
 %macro exceptionHandler 1
