@@ -8,6 +8,7 @@
 #include <interrupts.h>
 #include <sound.h>
 #include <syscallsManager.h>
+#include "../include/process.h"
 
 #define ROJO    0xFF0000
 #define BLANCO  0xFFFFFF
@@ -125,12 +126,21 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8) {
     return 0;
 }
 
+static void counter(){
+    int i = 0;
+    while(1){
+        i++;
+    }
+}
+
+
 uint64_t sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8){ 
     unsigned int fd = (unsigned int) rsi;
     if(fd == STDOUT) {
         zoomIN();
         rePrint();
     }
+    create_process(counter);
     return 0;
 }
 
@@ -275,4 +285,9 @@ uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
     info->current_blocks = current_blocks;
     info->memory_leak = (total_allocated > total_freed);
     return 0;
+}
+
+uint64_t sys_create(){
+    return 0;
+    //create_process(sys_clear);
 }

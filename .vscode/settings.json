@@ -3,6 +3,10 @@
         "libc.h": "c",
         "string-lib.h": "c",
         "memory_manager.h": "c",
-        "group_memory_manager.h": "c"
+        "group_memory_manager.h": "c",
+        "compare": "c",
+        "cstdint": "c",
+        "process.h": "c",
+        "pcb.h": "c"
     }
 }
