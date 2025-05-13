@@ -24,6 +24,7 @@ EXTERN getStackBase
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN syscallsManager
+EXTERN scheduler
 EXTERN getStackBase
 SECTION .text
 
@@ -115,6 +116,19 @@ SECTION .text
 	popState
 	iretq
 %endmacro
+
+%macro irqHandlerMaster 0
+	pushState
+	mov rdi, rsp
+	call scheduler
+	mov rsp,rax
+
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
+
 
 %macro exceptionHandler 1
 	push rax
