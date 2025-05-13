@@ -64,6 +64,40 @@ SECTION .text
 	pop rax
 %endmacro
 
+%macro pushStateNoRax 0
+	push rbx
+	push rcx
+	push rdx
+	push rbp
+	push rdi
+	push rsi
+	push r8
+	push r9
+	push r10
+	push r11
+	push r12
+	push r13
+	push r14
+	push r15
+%endmacro
+
+%macro popStateNoRax 0
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop r11
+	pop r10
+	pop r9
+	pop r8
+	pop rsi
+	pop rdi
+	pop rbp
+	pop rdx
+	pop rcx
+	pop rbx
+%endmacro
+
 %macro saveRegisters 0
 	mov [regBuffer], qword rax
 	mov rax, regBuffer
@@ -105,7 +139,7 @@ SECTION .text
 %endmacro
 
 %macro irqHandlerMaster 1
-	pushState
+	pushStateNoRax
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
 
@@ -113,7 +147,7 @@ SECTION .text
 	mov al, 20h
 	out 20h, al
 
-	popState
+	popStateNoRax
 	iretq
 %endmacro
 
@@ -219,7 +253,7 @@ _irq08Handler:
 	pushState
 	call syscallsManager
 	popState
-	iretq			;no se por que con ret no funciona pero con iretq si
+	iretq		
 
 ;activa el sti (para poder recibir interrupciones dentro del getChar)
 
