@@ -126,7 +126,7 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8) {
     return 0;
 }
 
-static void counter(){
+ void counter(uint8_t argc, char** argv){
     int i = 0;
     while(1){
         i++;
@@ -140,7 +140,8 @@ uint64_t sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8){
         zoomIN();
         rePrint();
     }
-    create_process(counter);
+    char * args[] = {"hola", "buenas"};
+    createProcess(counter,2,args);
     return 0;
 }
 

@@ -153,10 +153,15 @@ SECTION .text
 
 %macro irqHandlerMaster 0
 	pushState
-	mov rdi, rsp
-	call scheduler
-	mov rsp,rax
 
+	mov rdi, 0
+	call irqDispatcher
+
+	mov rdi, rsp
+	call schedule
+	mov rsp, rax
+
+	; signal pic EOI (End of Interrupt)
 	mov al, 20h
 	out 20h, al
 
