@@ -10,7 +10,7 @@
 // extern void* setup_process_stack(void (*fn)(uint8_t, char**), uint8_t argc, char** argv, void* stack_top);
 
 
-uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name) {
+uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority) {
 
     void* stack_top = mm_malloc(STACK_SIZE) ;
     void* stack_base = stack_top + STACK_SIZE;
@@ -27,6 +27,8 @@ uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[],
     new_process->stack_base = stack_base;
     new_process->stack_pointer = new_stack;
     new_process->state = READY;
+    new_process->priority = priority; 
+
 
     new_stack->rbp = stack_base;
     new_stack->rsp = stack_base;

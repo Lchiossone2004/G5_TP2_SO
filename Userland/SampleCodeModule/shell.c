@@ -15,7 +15,7 @@ static char *commands[] = {"help", "time ARG", "time UTC", "zoomin", "zoomout", 
 
 void startShell(){
     char* args[] = {"hola", "bunas"};
-    syscall(22,(void*)shell,2,args, "shell");
+    syscall(22,(void*)shell,2,args, "shell", 5);//prueba con prioridad dummy alta
 }
 void shell()
 {

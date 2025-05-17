@@ -26,7 +26,8 @@ static size_t total_allocated = 0;
 static size_t total_freed = 0;
 static size_t current_blocks = 0;
 
-typedef uint64_t (*syscall_fn)(uint64_t, uint64_t, uint64_t, uint64_t);
+typedef uint64_t (*syscall_fn)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
+
 
 extern void _sti();
 
@@ -59,10 +60,11 @@ static syscall_fn syscall_table[] = {
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
 
-uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8) {
+uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     if (rdi < SYSCALL_TABLE_SIZE && syscall_table[rdi]) {
-        syscall_table[rdi](rsi, rdx, rcx, r8);
-    }
+    return syscall_table[rdi](rsi, rdx, rcx, r8, r9); 
+}
+
     return 0;
 }
 
@@ -287,7 +289,6 @@ uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
     }
 }
 
-uint64_t sys_create(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8){
-    createProcess((void (*)(uint8_t, char**))rsi, (uint8_t)rdx, (char**)rcx, (char*)r8);
-    return 0;
+uint64_t sys_create(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return createProcess((void (*)(uint8_t, char**))rsi, (uint8_t)rdx, (char**)rcx, (char*)r8, (int)r9);
 }

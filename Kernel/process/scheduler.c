@@ -10,35 +10,29 @@ ReadyNode* ready_list = NULL;
 ReadyNode* current_node = NULL;
 p_info* current_process = NULL;
 
-void* scheduler(void* current_sp){
-    // if (current_process) {
-    //     // Guardar contexto del proceso actual
-    //     current_process->stack_pointer = current_sp;
-    //     if (current_process->state == RUNNING)
-    //         current_process->state = READY;
-    // }
+void* scheduler(void* current_sp) {
+    if (!ready_list)
+        return current_sp;  // no hay procesos listos
 
-    // // Si es la primera vez, elegimos el primer proceso listo (bootstrap)
-    // if (!current_node)
-    //     current_node = ready_list;
+    // Guardar contexto del proceso actual
+    if (current_process && current_process->state == RUNNING) {
+        current_process->stack_pointer = current_sp;
+        current_process->state = READY;
+    }
 
-    // if (!current_node)
-    //     return current_sp; // No hay ningún proceso cargado aún
+    // Rotar hasta encontrar uno READY
+    ReadyNode* start = current_node;
+    do {
+        current_node = current_node->next;
+        if (current_node->process_info->state == READY) {
+            current_process = current_node->process_info;
+            current_process->state = RUNNING;
+            return current_process->stack_pointer;
+        }
+    } while (current_node != start);
 
-    // ReadyNode* start = current_node;
-    // do {
-    //     current_node = current_node->next;
-    //     if (current_node->process_info->state == READY) {
-    //         p_info* next = current_node->process_info;
-    //         next->state = RUNNING;
-    //         current_process = next;
-    //         return next->stack_pointer;
-    //     }
-    // } while (current_node != start);
-    if(n_processes == 0 || shellCorriendo > 0)
+    // Si no hay ninguno en READY, volvemos al actual
     return current_sp;
-    shellCorriendo = 1;
-    return processes_list[0]->stack_pointer;
 }
 
 

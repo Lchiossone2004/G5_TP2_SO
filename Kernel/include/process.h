@@ -28,7 +28,7 @@ typedef struct {
     void* ss;
 } p_stack;
 
-uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name);
+uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority);
 void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv) ;
 
 #endif
