@@ -3,32 +3,36 @@
 #define MAX_PROCESSES 10
 
 p_info* processes_list[MAX_PROCESSES];
+int n_processes = 0;
 
 ReadyNode* ready_list = NULL;
 ReadyNode* current_node = NULL;
+p_info* current_process = NULL;
 
 uint64_t scheduler(uint64_t current_sp){
-    p_info* current_process = find_process_by_stack((void*)current_sp);
-    if (!current_process) return current_sp; // fallback si no se encuentra
+    current_process = find_process_by_stack((void*)current_sp);
+    // if (!current_process) return current_sp; // fallback si no se encuentra
 
-    // 2. Guardar su contexto
-    current_process->stack_pointer = (void*)current_sp;
-    if (current_process->state == RUNNING)
-        current_process->state = READY;
+    // // 2. Guardar su contexto
+    // current_process->stack_pointer = (void*)current_sp;
+    // if (current_process->state == RUNNING)
+    //     current_process->state = READY;
 
-    // 3. Buscar el siguiente proceso listo
-    ReadyNode* start = current_node;
-    do {
-        current_node = current_node->next;
-        if (current_node->process_info->state == READY) {
-            p_info* next = current_node->process_info;
-            next->state = RUNNING;
-            return (uint64_t)next->stack_pointer; // 4. Devolver el SP del próximo proceso
-        }
-    } while (current_node != start);
+    // // 3. Buscar el siguiente proceso listo
+    // ReadyNode* start = current_node;
+    // do {
+    //     current_node = current_node->next;
+    //     if (current_node->process_info->state == READY) {
+    //         p_info* next = current_node->process_info;
+    //         next->state = RUNNING;
+    //         return (uint64_t)next->stack_pointer; // 4. Devolver el SP del próximo proceso
+    //     }
+    // } while (current_node != start);
 
-    // Si nadie está listo, seguir con el mismo
+    // // Si nadie está listo, seguir con el mismo
+    if(!n_processes)
     return current_sp;
+    return processes_list[0]->stack_pointer;
 }
 
 void add_to_ready_list(p_info* process) {
@@ -91,10 +95,22 @@ void unblock_process(p_info* process) {
     add_to_ready_list(process);
 }
 
+void add_to_process_list(p_info* process){
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (processes_list[i] == NULL) {
+            processes_list[i] = process;
+            break;
+        }
+    }
+    n_processes++;
+}
 p_info* find_process_by_stack(void* sp) {
     for (int i = 0; i < MAX_PROCESSES; i++) {
         if (processes_list[i] && processes_list[i]->stack_pointer == sp)
             return processes_list[i];
     }
     return NULL;
+}
+p_info* get_current_process(){
+    return current_process;
 }

@@ -53,7 +53,8 @@ static syscall_fn syscall_table[] = {
     [18] = sys_test_mm,
     [19] = sys_malloc,
     [20] = sys_free,
-    [21] = sys_get_memory_info
+    [21] = sys_get_memory_info,
+    [22] = sys_create
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -129,7 +130,7 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8) {
  void counter(uint8_t argc, char** argv){
     int i = 0;
     while(1){
-        i++;
+        imprimirVideo("counter", 8, ROJO);
     }
 }
 
@@ -288,7 +289,7 @@ uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
     return 0;
 }
 
-uint64_t sys_create(){
+uint64_t sys_create(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8){
+    createProcess((void (*)(uint8_t, char**))rsi, (uint8_t)rdx, (char**)rcx);
     return 0;
-    //create_process(sys_clear);
 }

@@ -7,38 +7,46 @@
 #define STACK_SIZE 4096
 #define MAX_PROCESSES 10
 
+extern void* setup_process_stack(void (*fn)(uint8_t, char**), uint8_t argc, char** argv, void* stack_top);
+
+
 uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[]) {
     void* stack_base = mm_malloc(STACK_SIZE);
     if (!stack_base) return -1;
 
-    p_stack* stack_frame = (p_stack*)(stack_base + STACK_SIZE - sizeof(p_stack));
-    memset(stack_frame, 0, sizeof(p_stack));
-
-    stack_frame->rip = fn;
-    stack_frame->rdi = (void*)(uint64_t)argc;
-    stack_frame->rsi = argv;
-    stack_frame->cs = (void*)0x08;
-    stack_frame->rflags = (void*)0x202;
-    stack_frame->ss = (void*)0x10;
-    stack_frame->rsp = stack_frame;
+    void* new_stack_top = stack_base + STACK_SIZE;
+    void* new_rsp = setup_process_stack(fn, argc, argv, new_stack_top);
 
     p_info* proc = mm_malloc(sizeof(p_info));
-    //proc->pid = generate_pid();
     proc->pid = 3;
     proc->stack_base = stack_base;
-    proc->stack_pointer = stack_frame;
+    proc->stack_pointer = new_rsp;  // este es el stack que usará el proceso
     proc->argv = argv;
-    proc->priority = 1;
+    proc->priority = 10;
     proc->state = READY;
 
-    // for (int i = 0; i < MAX_PROCESSES; i++) {
-    //     if (processes_list[i] == NULL) {
-    //         processes_list[i] = proc;
-    //         break;
-    //     }
-    // }
-
-    //add_to_ready_list(proc);
+    add_to_process_list(proc);
+    add_to_ready_list(proc);
 
     return proc->pid;
+}
+
+void exit_process();  // Deberías implementar esto
+
+void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv) {
+    fn(argc, argv);
+    exit_process();
+}
+
+void exit_process() {
+    p_info* current = get_current_process();  // asumimos que esto existe
+
+    current->state = TERMINATED;
+
+    // Liberar recursos si corresponde
+    mm_free(current->stack_base);
+    mm_free(current);  // si usás malloc para los procesos
+
+    remove_from_ready_list(current);  // o remove_from_process_list
+    while (1);  // por seguridad
 }
