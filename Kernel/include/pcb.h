@@ -8,6 +8,7 @@ typedef enum STATUS {RUNNING,READY, BLOCKED, TERMINATED} STATUS;
 
 typedef struct{
     uint16_t pid;
+    char* name;
     void* stack_base;
     void* stack_pointer;
     char ** argv;

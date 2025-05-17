@@ -127,13 +127,6 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8) {
     return 0;
 }
 
- void counter(uint8_t argc, char** argv){
-    int i = 0;
-    while(1){
-        imprimirVideo("counter", 8, ROJO);
-    }
-}
-
 
 uint64_t sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8){ 
     unsigned int fd = (unsigned int) rsi;
@@ -141,8 +134,6 @@ uint64_t sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8){
         zoomIN();
         rePrint();
     }
-    char * args[] = {"hola", "buenas"};
-    createProcess(counter,2,args);
     return 0;
 }
 
@@ -289,7 +280,14 @@ uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
     return 0;
 }
 
+void counter(uint8_t argc, char** argv){
+    int i = 0;
+    while(1){
+        imprimirVideo("counter", 8, ROJO);
+    }
+}
+
 uint64_t sys_create(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8){
-    createProcess((void (*)(uint8_t, char**))rsi, (uint8_t)rdx, (char**)rcx);
+    createProcess((void *)counter, (uint8_t)rdx, (char**)rcx, (char*)r8);
     return 0;
 }

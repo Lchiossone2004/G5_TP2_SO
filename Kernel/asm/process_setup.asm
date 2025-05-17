@@ -18,8 +18,7 @@ setup_process_stack:
     
     ; Cambiamos al nuevo stack
     mov rsp, rcx
-    mov rbp, rsp
-
+    push 0x00
     push 0x00
     push 0x8
     push 0x202

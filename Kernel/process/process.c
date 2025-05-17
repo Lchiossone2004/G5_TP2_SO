@@ -7,28 +7,39 @@
 #define STACK_SIZE 4096
 #define MAX_PROCESSES 10
 
-extern void* setup_process_stack(void (*fn)(uint8_t, char**), uint8_t argc, char** argv, void* stack_top);
+// extern void* setup_process_stack(void (*fn)(uint8_t, char**), uint8_t argc, char** argv, void* stack_top);
 
 
-uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[]) {
+uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name) {
     void* stack_base = mm_malloc(STACK_SIZE);
     if (!stack_base) return -1;
+    p_info* new_process = mm_malloc(sizeof(p_info));
+    if (!new_process) return -1;
+    new_process->pid = 0;
+    new_process->name = mm_malloc(strSize(name) + 1);
+    memcpy(new_process->name, name, strSize(name));
 
     void* new_stack_top = stack_base + STACK_SIZE;
-    void* new_rsp = setup_process_stack(fn, argc, argv, new_stack_top);
+    new_process->stack_base = new_stack_top;
+    new_process->state = READY;
 
-    p_info* proc = mm_malloc(sizeof(p_info));
-    proc->pid = 3;
-    proc->stack_base = stack_base;
-    proc->stack_pointer = new_rsp;  // este es el stack que usará el proceso
-    proc->argv = argv;
-    proc->priority = 10;
-    proc->state = READY;
+    p_stack* new_stack = new_stack_top -sizeof(p_stack);
 
-    add_to_process_list(proc);
-    add_to_ready_list(proc);
+    new_stack->rbp = new_stack_top;
+    new_stack->rsp = new_stack_top;
+    new_stack->cs = (void*)0x8;
+    new_stack->rflags = (void*)0x202;
+    new_stack->ss = 0x0;
+    new_stack->rip = entry_point_wrapper;
+    new_process->stack_pointer = new_stack;
+    new_stack->rdi = fn;
+    new_stack->rsi = (void*)argc;
+    new_stack->rdx = argv;
 
-    return proc->pid;
+    add_to_process_list(new_process);
+    add_to_ready_list(new_process);
+
+    return new_process->pid;
 }
 
 void exit_process();  // Deberías implementar esto
@@ -42,11 +53,9 @@ void exit_process() {
     p_info* current = get_current_process();  // asumimos que esto existe
 
     current->state = TERMINATED;
-
+    remove_from_ready_list(current);  // o remove_from_process_list
     // Liberar recursos si corresponde
     mm_free(current->stack_base);
     mm_free(current);  // si usás malloc para los procesos
-
-    remove_from_ready_list(current);  // o remove_from_process_list
     while (1);  // por seguridad
 }

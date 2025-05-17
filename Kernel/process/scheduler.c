@@ -9,12 +9,12 @@ ReadyNode* ready_list = NULL;
 ReadyNode* current_node = NULL;
 p_info* current_process = NULL;
 
-uint64_t scheduler(uint64_t current_sp){
-    current_process = find_process_by_stack((void*)current_sp);
+void* scheduler(void* current_sp){
+    // current_process = find_process_by_stack((void*)current_sp);
     // if (!current_process) return current_sp; // fallback si no se encuentra
 
     // // 2. Guardar su contexto
-    // current_process->stack_pointer = (void*)current_sp;
+    // current_process->stack_pointer = current_sp;
     // if (current_process->state == RUNNING)
     //     current_process->state = READY;
 
@@ -25,7 +25,7 @@ uint64_t scheduler(uint64_t current_sp){
     //     if (current_node->process_info->state == READY) {
     //         p_info* next = current_node->process_info;
     //         next->state = RUNNING;
-    //         return (uint64_t)next->stack_pointer; // 4. Devolver el SP del próximo proceso
+    //         return next->stack_pointer; // 4. Devolver el SP del próximo proceso
     //     }
     // } while (current_node != start);
 

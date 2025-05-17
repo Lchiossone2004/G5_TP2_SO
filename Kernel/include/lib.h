@@ -15,5 +15,6 @@ uint16_t getKey();
 void outb(uint8_t dest, uint8_t org);
 uint8_t inb(uint8_t dest);
 void printRegisters();
+int strSize(char *word);
 
 #endif

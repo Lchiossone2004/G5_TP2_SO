@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "./pcb.h"
 
-uint64_t scheduler(uint64_t current_sp);
+void* scheduler(void* current_sp);
 void add_to_ready_list(p_info* process);
 void remove_from_ready_list(p_info* process);
 void block_process(p_info* process);
