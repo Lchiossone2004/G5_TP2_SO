@@ -11,27 +11,29 @@
 
 
 uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name) {
-    void* stack_base = mm_malloc(STACK_SIZE);
-    if (!stack_base) return -1;
+
+    void* stack_top = mm_malloc(STACK_SIZE) ;
+    void* stack_base = stack_top + STACK_SIZE;
+    if (!stack_top) return -1;
+
     p_info* new_process = mm_malloc(sizeof(p_info));
     if (!new_process) return -1;
+
+    p_stack* new_stack = stack_base - sizeof(p_stack);
+
     new_process->pid = 0;
     new_process->name = mm_malloc(strSize(name) + 1);
     memcpy(new_process->name, name, strSize(name));
-
-    void* new_stack_top = stack_base + STACK_SIZE;
-    new_process->stack_base = new_stack_top;
+    new_process->stack_base = stack_base;
+    new_process->stack_pointer = new_stack;
     new_process->state = READY;
 
-    p_stack* new_stack = new_stack_top -sizeof(p_stack);
-
-    new_stack->rbp = new_stack_top;
-    new_stack->rsp = new_stack_top;
+    new_stack->rbp = stack_base;
+    new_stack->rsp = stack_base;
     new_stack->cs = (void*)0x8;
     new_stack->rflags = (void*)0x202;
     new_stack->ss = 0x0;
     new_stack->rip = entry_point_wrapper;
-    new_process->stack_pointer = new_stack;
     new_stack->rdi = fn;
     new_stack->rsi = (void*)argc;
     new_stack->rdx = argv;
