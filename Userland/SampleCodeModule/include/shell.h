@@ -10,7 +10,8 @@
 #define STDOUT 1
 #define STDERR 2
 
-void shell(uint8_t argc, char* argv[]);
+void startShell();
+void shell();
 void getKey(char *buffer, int index);
 void chekCommand();
 void clearBuffer();

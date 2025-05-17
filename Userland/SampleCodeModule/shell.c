@@ -13,7 +13,11 @@ static int ultimaLetra;
 static int index = 0;
 static char *commands[] = {"help", "time ARG", "time UTC", "zoomin", "zoomout", "clear", "print registers", "div cero", "invalid op", "testmm", "exit"};
 
-void shell(uint8_t argc, char* argv[])
+void startShell(){
+    char* args[] = {"hola", "bunas"};
+    syscall(22,(void*)shell,2,args, "shell");
+}
+void shell()
 {
     print(NEW_LINE);
     while (1)
