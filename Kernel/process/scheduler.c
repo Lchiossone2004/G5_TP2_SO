@@ -116,3 +116,26 @@ p_info* find_process_by_stack(void* sp) {
 p_info* get_current_process(){
     return current_process;
 }
+int kill_process(uint64_t pid) {
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (processes_list[i] && processes_list[i]->pid == pid) {
+            p_info* p = processes_list[i];
+            p->state = TERMINATED;
+            remove_from_ready_list(p);
+
+            mm_free(p->stack_base);
+            mm_free(p->name);
+            mm_free(p);
+
+            processes_list[i] = NULL;
+            n_processes--;
+
+            if (p == current_process) {
+                current_process = NULL;
+            }
+
+            return 1;  
+        }
+    }
+    return 0;  // no se encontró
+}
