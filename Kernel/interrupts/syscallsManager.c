@@ -9,7 +9,7 @@
 #include <sound.h>
 #include <syscallsManager.h>
 #include "../include/process.h"
-
+#include "../include/scheduler.h"
 #define ROJO    0xFF0000
 #define BLANCO  0xFFFFFF
 #define VERDE   0x00FF00
@@ -55,7 +55,8 @@ static syscall_fn syscall_table[] = {
     [19] = sys_malloc,
     [20] = sys_free,
     [21] = sys_get_memory_info,
-    [22] = sys_create
+    [22] = sys_create,
+    [23] = sys_kill
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -291,4 +292,7 @@ uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
 
 uint64_t sys_create(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     return createProcess((void (*)(uint8_t, char**))rsi, (uint8_t)rdx, (char**)rcx, (char*)r8, (int)r9);
+}
+uint64_t sys_kill(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return kill_process(rsi);
 }
