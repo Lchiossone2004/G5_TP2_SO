@@ -1,6 +1,7 @@
 /* sampleCodeModule.c */
 #include "./include/shell.h"
 #include <stdint.h>
+#include "./include/c-lib.h"
 #define VERDE 0x00FF00
 
 char * v = (char*)0xB8000 + 79 * 2;
@@ -17,9 +18,9 @@ void inactive(){}
 int main() {
 	//void* functionPointer2 = (void*)inactive;
 	//startShell();
-	char* args[] = {};
-	uint64_t pidA = syscall(22, (void*)sayA, 0, args, "A", 2);
-uint64_t pidB = syscall(22, (void*)sayB, 0, args, "B", 2);
+	char* args[] = {"hola"};
+	uint64_t pidA = syscall(22, (void*)sayA, 1, args, "A", 2);
+uint64_t pidB = syscall(22, (void*)sayB, 1, args, "B", 2);
 
 char bufA[10], bufB[10];
 uintToBase(pidA, bufA, 10);
@@ -42,12 +43,11 @@ syscall(23, pidA, 0, 0, 0, 0);  // matar a A
 
 	return 0xDEADBEEF;
 }
+
 void sayA(uint8_t argc, char** argv) {
     char letra = 'A';
     while (1) {
-        for (int i = 0; i < 3; i++) {
-            syscall(4, STDOUT, &letra, 1);
-        }
+        print(argv[0]);
         syscall(8, 1);
     }
 }

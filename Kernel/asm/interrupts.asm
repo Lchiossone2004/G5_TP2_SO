@@ -263,9 +263,9 @@ _irq05Handler:
 	irqHandlerMaster 5
 
 _irq08Handler:
-	pushState
+	pushStateNoRax
 	call syscallsManager
-	popState
+	popStateNoRax
 	iretq		
 
 ;activa el sti (para poder recibir interrupciones dentro del getChar)
