@@ -87,14 +87,26 @@ void remove_from_ready_list(p_info* process) {
     } while (curr != ready_list);
 }
 
-void block_process(p_info* process) {
-    process->state = BLOCKED;
-    remove_from_ready_list(process);
+int block_process(uint16_t pid) {
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+    if (processes_list[i] && processes_list[i]->pid == pid && processes_list[i]->state == RUNNING) {
+        processes_list[i]->state = BLOCKED;
+        return 1;
+        //remove_from_ready_list(processes_list[i]);
+}
+    }
+    return 0;
 }
 
-void unblock_process(p_info* process) {
-    process->state = READY;
-    add_to_ready_list(process);
+int unblock_process(uint16_t pid) {
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+    if (processes_list[i] && processes_list[i]->pid == pid) {
+        processes_list[i]->state = READY;
+        add_to_ready_list(processes_list[i]);
+        return 1;
+}
+    }
+    return 0;
 }
 
 void add_to_process_list(p_info* process){

@@ -312,10 +312,8 @@ uint64_t sys_modifyPriority(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r
     return modify_priority((uint16_t)rsi, (int)rdx);
 }
 uint64_t sys_block(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    block_process((p_info*)rsi);
-    return 0;
+    return block_process((uint16_t)rsi);
 }
 uint64_t sys_unblock(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    unblock_process((p_info*)rsi);
-    return 0;
+    return unblock_process((uint16_t)rsi);
 }
