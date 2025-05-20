@@ -30,5 +30,6 @@ typedef struct {
 
 uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority);
 void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv) ;
-
+void exit_process();  
+uint16_t get_pid();
 #endif

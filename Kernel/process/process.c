@@ -46,7 +46,7 @@ uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[],
     return new_process->pid;
 }
 
-void exit_process();  // Deberías implementar esto
+
 
 void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv) {
     fn(argc, argv);
@@ -62,4 +62,9 @@ void exit_process() {
     mm_free(current->stack_base);
     mm_free(current);  // si usás malloc para los procesos
     while (1);  // por seguridad
+}
+
+uint16_t get_pid() {
+    p_info* current = get_current_process();
+    return current->pid;
 }

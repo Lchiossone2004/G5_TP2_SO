@@ -139,3 +139,13 @@ int kill_process(uint64_t pid) {
     }
     return 0;  // no se encontró
 }
+
+int modify_priority(uint16_t pid, int newPriority) {
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (processes_list[i] && processes_list[i]->pid == pid) {
+            processes_list[i]->priority = newPriority;
+            return 1;
+        }
+    }
+    return 0; //process not found
+}
