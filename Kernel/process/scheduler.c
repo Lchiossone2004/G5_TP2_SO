@@ -100,7 +100,7 @@ int block_process(uint16_t pid) {
 
 int unblock_process(uint16_t pid) {
     for (int i = 0; i < MAX_PROCESSES; i++) {
-    if (processes_list[i] && processes_list[i]->pid == pid) {
+    if (processes_list[i] && processes_list[i]->pid == pid && processes_list[i] == BLOCKED) {
         processes_list[i]->state = READY;
         add_to_ready_list(processes_list[i]);
         return 1;
