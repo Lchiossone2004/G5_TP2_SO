@@ -15,4 +15,7 @@ p_info* get_current_process();
 int kill_process(uint64_t pid);
 int modify_priority(uint16_t pid, int newPriority);
 int foundprocess(uint16_t pid);
+void get_processes();
+void printFixed(const char* str);
+
 #endif

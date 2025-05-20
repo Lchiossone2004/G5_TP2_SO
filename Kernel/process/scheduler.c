@@ -1,6 +1,9 @@
 #include "../include/scheduler.h"
 #include "../memory/memory_manager.h"
+#include "../include/videoDriver.h"
 #define MAX_PROCESSES 10
+#define BLANCO  0xFFFFFF
+#define COL_WIDTH 18
 
 p_info* processes_list[MAX_PROCESSES];
 int n_processes = 0;
@@ -169,3 +172,63 @@ int foundprocess(uint16_t pid) {
      }
      return -1; //not found
 }
+
+
+ 
+
+void printFixed(const char* str) {
+    int len = strSize(str);
+    imprimirVideo((char*)str, len, BLANCO);
+    // Relleno de espacios para alinear columnas
+    for (int i = len; i < COL_WIDTH; i++) {
+        imprimirVideo(" ", 1, BLANCO);
+    }
+}
+
+void get_processes() {
+    char buffer[32];
+
+    // Encabezado
+    printFixed("PID");
+    printFixed("Nombre");
+    printFixed("Prioridad");
+    printFixed("Stack Base");
+    printFixed("Stack Pointer");
+    printFixed("Estado");
+    nlVideo();
+
+
+
+    // Datos de procesos
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (!processes_list[i]) continue;
+
+        uintToBase(processes_list[i]->pid, buffer, 10);
+        printFixed(buffer);
+
+        printFixed(processes_list[i]->name);
+
+        uintToBase(processes_list[i]->priority, buffer, 10);
+        printFixed(buffer);
+
+        uintToBase((uint64_t)processes_list[i]->stack_base, buffer, 16);
+        printFixed(buffer);
+
+        uintToBase((uint64_t)processes_list[i]->stack_pointer, buffer, 16);
+        printFixed(buffer);
+
+    
+        const char *estado;
+        switch (processes_list[i]->state) {
+            case READY: estado = "READY"; break;
+            case RUNNING: estado = "RUNNING"; break;
+            case BLOCKED: estado = "BLOCKED"; break;
+            case TERMINATED: estado = "TERMINATED"; break;
+            default: estado = "UNKNOWN"; break;
+        }
+        printFixed(estado);
+
+        nlVideo();
+    }
+}
+
