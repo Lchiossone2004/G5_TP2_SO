@@ -88,25 +88,22 @@ void remove_from_ready_list(p_info* process) {
 }
 
 int block_process(uint16_t pid) {
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-    if (processes_list[i] && processes_list[i]->pid == pid && processes_list[i]->state == RUNNING) {
-        processes_list[i]->state = BLOCKED;
-        return 1;
-        //remove_from_ready_list(processes_list[i]);
-}
-    }
-    return 0;
+    int idx = foundprocess(pid);
+      if(idx != -1 && processes_list[idx]->state == RUNNING) {
+            processes_list[idx]->state = BLOCKED;
+            return 1;
+        }
+        return 0;
 }
 
 int unblock_process(uint16_t pid) {
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-    if (processes_list[i] && processes_list[i]->pid == pid && processes_list[i] == BLOCKED) {
-        processes_list[i]->state = READY;
-        add_to_ready_list(processes_list[i]);
+    int idx = foundprocess(pid);
+    if(idx != -1 && processes_list[idx]->state == BLOCKED) {
+        processes_list[idx]->state = READY;
+        add_to_ready_list(processes_list[idx]);
         return 1;
-}
     }
-    return 0;
+        return 0;
 }
 
 void add_to_process_list(p_info* process){
@@ -125,13 +122,17 @@ p_info* find_process_by_stack(void* sp) {
     }
     return NULL;
 }
+
 p_info* get_current_process(){
     return current_process;
 }
+
 int kill_process(uint64_t pid) {
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-        if (processes_list[i] && processes_list[i]->pid == pid) {
-            p_info* p = processes_list[i];
+        int idx = foundprocess(pid);
+        if (idx == -1) {
+        return 0; //process not found
+        }
+            p_info* p = processes_list[idx];
             p->state = TERMINATED;
             remove_from_ready_list(p);
 
@@ -139,7 +140,7 @@ int kill_process(uint64_t pid) {
             mm_free(p->name);
             mm_free(p);
 
-            processes_list[i] = NULL;
+            processes_list[idx] = NULL;
             n_processes--;
 
             if (p == current_process) {
@@ -148,16 +149,23 @@ int kill_process(uint64_t pid) {
 
             return 1;  
         }
-    }
-    return 0;  // no se encontró
-}
+ 
 
 int modify_priority(uint16_t pid, int newPriority) {
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-        if (processes_list[i] && processes_list[i]->pid == pid) {
-            processes_list[i]->priority = newPriority;
-            return 1;
-        }
+    int idx = foundprocess(pid);
+    if (idx == -1) {
+        return 0; //process not found
     }
-    return 0; //process not found
+    processes_list[idx]->priority = newPriority;
+    return 1;
+    
+    }
+
+int foundprocess(uint16_t pid) {
+     for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (processes_list[i] && processes_list[i]->pid == pid) {
+            return i;
+        }
+     }
+     return -1; //not found
 }

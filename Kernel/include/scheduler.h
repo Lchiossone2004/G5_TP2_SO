@@ -14,4 +14,5 @@ p_info* find_process_by_stack(void* sp);
 p_info* get_current_process();
 int kill_process(uint64_t pid);
 int modify_priority(uint16_t pid, int newPriority);
+int foundprocess(uint16_t pid);
 #endif
