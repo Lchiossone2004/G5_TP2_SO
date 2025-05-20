@@ -178,7 +178,7 @@ int foundprocess(uint16_t pid) {
 
 void printFixed(const char* str) {
     int len = strSize(str);
-    imprimirVideo((char*)str, len, BLANCO);
+    imprimirVideo(str, len, BLANCO);
     // Relleno de espacios para alinear columnas
     for (int i = len; i < COL_WIDTH; i++) {
         imprimirVideo(" ", 1, BLANCO);
