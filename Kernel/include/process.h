@@ -35,7 +35,7 @@ void exit_process();
 uint16_t get_pid();
 uint16_t fork();
 void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer, int priority, int is_foreground);
-void wait_pid(uint16_t pid);
-void wait();
+uint16_t wait_pid(uint16_t pid);
+uint16_t wait();
 void initialize_zero(uint16_t array[], int size);
 #endif

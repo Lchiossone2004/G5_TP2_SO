@@ -17,6 +17,6 @@ int modify_priority(uint16_t pid, int newPriority);
 int foundprocess(uint16_t pid);
 void get_processes();
 void printFixed(const char* str);
-void quitCPU();
+uint16_t quitCPU();
 
 #endif

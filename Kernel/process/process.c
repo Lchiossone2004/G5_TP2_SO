@@ -88,27 +88,31 @@ void copy_context(p_info* new_process, char *name, void * stack_base, void * sta
     new_process->children_length = 0;
 }
 
-void wait_pid(uint16_t pid) {
+uint16_t wait_pid(uint16_t pid) {
     p_info* current = get_current_process();
     for (int i = 0; i < current->children_length; i++) {
         if (current->children[i] == pid) {
             while (1) {
                 // Esperar a que el proceso hijo termine
                 if (foundprocess(pid) == -1) {
-                    break;
+                    current->children[i] = 0;  // Eliminar el PID de la lista de hijos
+                    return pid;
                 }
             }
             break;
         }
     }
+    return -1;  // Proceso hijo no encontrado
 }
-void wait() {
+uint16_t wait() {
     p_info* current = get_current_process();
     for(int i = 0; i < current->children_length; i++) {
         if(current->children[i] != 0) {
             wait_pid(current->children[i]);
+            
         }
     }
+    return 0;
 }
 
 void initialize_zero(uint16_t array[], int size) {

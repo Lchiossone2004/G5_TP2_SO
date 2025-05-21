@@ -236,14 +236,15 @@ void get_processes() {
     }
 }
 
-void quitCPU() {
+uint16_t quitCPU() {
     for(int i = 0; i < MAX_PROCESSES; i++) {
         if(processes_list[i]->state == RUNNING) {
             processes_list[i]->state = READY;
             add_to_ready_list(processes_list[i]);
             scheduler(processes_list[i]->stack_pointer);
-            return;
+            return processes_list[i]->pid;
         }
     }
+    return -1; // No hay procesos en ejecución
 }
 
