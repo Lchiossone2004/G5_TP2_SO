@@ -21,8 +21,7 @@ uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[],
 
     p_stack* new_stack = stack_base - sizeof(p_stack);
 
-    copy_context(new_process, name, stack_base, new_stack, priority, is_foreground);
-    
+    copy_context(new_process, name, stack_base, new_stack, priority, is_foreground);    
     new_stack->rbp = stack_base;
     new_stack->rsp = stack_base;
     new_stack->cs = (void*)0x8;
@@ -65,10 +64,11 @@ uint16_t get_pid() {
 uint16_t fork() {
     p_info* current = get_current_process();
     p_info* new_process = mm_malloc(sizeof(p_info));
-    if (!new_process) return -1;
+    if (!new_process || current->children_length >= MAX_CHILDREN) return -1;
 
     copy_context(new_process, current->name, current->stack_base, current->stack_pointer, current->priority, current->is_foreground);
-
+    current->children[current->children_length] = new_process->pid;
+    current->children_length++;
     add_to_process_list(new_process);
     add_to_ready_list(new_process);
 
@@ -84,5 +84,35 @@ void copy_context(p_info* new_process, char *name, void * stack_base, void * sta
     new_process->state = READY;
     new_process->priority = priority;
     new_process->is_foreground = is_foreground;
+    initialize_zero(new_process->children, MAX_CHILDREN);
+    new_process->children_length = 0;
 }
- 
+
+void wait_pid(uint16_t pid) {
+    p_info* current = get_current_process();
+    for (int i = 0; i < current->children_length; i++) {
+        if (current->children[i] == pid) {
+            while (1) {
+                // Esperar a que el proceso hijo termine
+                if (foundprocess(pid) == -1) {
+                    break;
+                }
+            }
+            break;
+        }
+    }
+}
+void wait() {
+    p_info* current = get_current_process();
+    for(int i = 0; i < current->children_length; i++) {
+        if(current->children[i] != 0) {
+            wait_pid(current->children[i]);
+        }
+    }
+}
+
+void initialize_zero(uint16_t array[], int size) {
+    for (int i = 0; i < size; i++) {
+        array[i] = 0;
+    }
+}

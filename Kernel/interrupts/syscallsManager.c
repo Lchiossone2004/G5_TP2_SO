@@ -64,7 +64,8 @@ static syscall_fn syscall_table[] = {
     [28] = sys_unblock,
     [29] = sys_getProcesses,
     [30] = sys_fork,
-    [31] = sys_quitCPU
+    [31] = sys_quitCPU,
+    [32] = sys_wait
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -329,5 +330,9 @@ uint64_t sys_fork(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
 }
 uint64_t sys_quitCPU(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     quitCPU();
+    return 0;
+}
+uint64_t sys_wait(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    wait();
     return 0;
 }
