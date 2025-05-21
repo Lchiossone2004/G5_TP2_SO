@@ -68,3 +68,22 @@ uint16_t get_pid() {
     p_info* current = get_current_process();
     return current->pid;
 }
+
+uint16_t fork() {
+    p_info* current = get_current_process();
+    p_info* new_process = mm_malloc(sizeof(p_info));
+    if (!new_process) return -1;
+
+    new_process->pid = next_pid++;
+    new_process->name = mm_malloc(strSize(current->name) + 1);
+    memcpy(new_process->name, current->name, strSize(current->name));
+    new_process->stack_base = current->stack_base;
+    new_process->stack_pointer = current->stack_pointer;
+    new_process->state = READY;
+    new_process->priority = current->priority; 
+
+    add_to_process_list(new_process);
+    add_to_ready_list(new_process);
+
+    return new_process->pid;
+}

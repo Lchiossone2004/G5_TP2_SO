@@ -62,7 +62,8 @@ static syscall_fn syscall_table[] = {
     [26] = sys_modifyPriority,
     [27] = sys_block,
     [28] = sys_unblock,
-    [29] = sys_getProcesses
+    [29] = sys_getProcesses,
+    [30] = sys_fork
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -321,4 +322,7 @@ uint64_t sys_unblock(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
 uint64_t sys_getProcesses(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     get_processes();
     return 0;
+}
+uint64_t sys_fork(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return fork();
 }

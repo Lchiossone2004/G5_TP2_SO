@@ -35,7 +35,7 @@ syscall(4, STDOUT, "\n", 1);
 syscall(4, STDOUT, "PID B: ", 7);
 syscall(4, STDOUT, bufB, strSize(bufB));
 syscall(4, STDOUT, "\n", 1);
-syscall(29);
+
 
 syscall(8, 30);  // dejar que impriman
 //syscall(23, pidA, 0, 0, 0, 0);  // matar a A
@@ -49,6 +49,8 @@ syscall(8, 30);  // dejar que impriman
 
 void sayA(uint8_t argc, char** argv) {
     char letra = 'A';
+    uint16_t childpid = syscall(30);
+    //syscall(29);
     while (1) {
         print(argv[0]);
         syscall(8, 1);
@@ -57,6 +59,8 @@ void sayA(uint8_t argc, char** argv) {
 
 void sayB(uint8_t argc, char** argv) {
     char letra = 'B';
+    uint16_t childpid = syscall(30);
+    syscall(29);
     while (1) {
         for (int i = 0; i < 3; i++) {
             syscall(4, STDOUT, &letra, 1);
