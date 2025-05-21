@@ -26,7 +26,7 @@ static size_t total_allocated = 0;
 static size_t total_freed = 0;
 static size_t current_blocks = 0;
 
-typedef uint64_t (*syscall_fn)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
+typedef uint64_t (*syscall_fn)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
 
 
 extern void _sti();
@@ -63,20 +63,21 @@ static syscall_fn syscall_table[] = {
     [27] = sys_block,
     [28] = sys_unblock,
     [29] = sys_getProcesses,
-    [30] = sys_fork
+    [30] = sys_fork,
+    [31] = sys_quitCPU
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
 
-uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     if (rdi < SYSCALL_TABLE_SIZE && syscall_table[rdi]) {
-    return syscall_table[rdi](rsi, rdx, rcx, r8, r9); 
+    return syscall_table[rdi](rsi, rdx, rcx, r8, r9, r10); 
 }
 
     return 0;
 }
 
-uint64_t sys_registers_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,uint64_t r9 ){
+uint64_t sys_registers_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,uint64_t r9, uint64_t r10 ){
     unsigned int fd = (unsigned int) rsi;
     if(fd == STDOUT){
         printRegisters();
@@ -84,7 +85,7 @@ uint64_t sys_registers_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
     return 0;
 }
 
-uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     unsigned int fd = (unsigned int) rsi;
     char *letter = (char *) rdx;
     size_t count = (size_t) rcx;
@@ -106,7 +107,7 @@ uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
     return 0;
 }
 
-uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     unsigned int fd = (unsigned int) rsi;
     char *buffer = (char *) rdx;
     size_t count = (size_t) rcx;
@@ -123,7 +124,7 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     return 0;
 }
 
-uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     unsigned int fd = (unsigned int) rsi;
     char *buffer = (char *) rdx;
     size_t count = (size_t) rcx;
@@ -138,7 +139,7 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
 }
 
 
-uint64_t sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){ 
+uint64_t sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){ 
     unsigned int fd = (unsigned int) rsi;
     if(fd == STDOUT) {
         zoomIN();
@@ -147,7 +148,7 @@ uint64_t sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint6
     return 0;
 }
 
-uint64_t sys_zoomOut(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_zoomOut(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     unsigned int fd = (unsigned int) rsi;
     if(fd == STDOUT) {
         zoomOUT();
@@ -156,7 +157,7 @@ uint64_t sys_zoomOut(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
     return 0;
 }
 
-uint64_t sys_newLine(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_newLine(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     unsigned int fd = (unsigned int) rsi;
     if(fd == STDOUT){
         nlVideo();
@@ -164,7 +165,7 @@ uint64_t sys_newLine(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
     return 0;
 }
 
-uint64_t sys_sleep(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_sleep(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     int ticks = (int) rsi;
 
     _sti();
@@ -175,7 +176,7 @@ uint64_t sys_sleep(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
     return 0;
 }
 
-uint64_t sys_clear(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_clear(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     unsigned int fd = (unsigned int) rsi;
     if(fd == STDOUT){
         videoClear();
@@ -183,7 +184,7 @@ uint64_t sys_clear(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
     return 0;
 }
 
-uint64_t sys_putPixel(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t sys_putPixel(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     int posx = (int) rsi;
     int posy = (int) rdx;
     uint32_t color = (uint32_t) rcx;
@@ -195,7 +196,7 @@ uint64_t sys_putPixel(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uin
     return 0;
 }
 
-uint64_t sys_getTime(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t sys_getTime(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     unsigned int fd = (unsigned int) rsi;
     char *ret = (char *) rdx;
 
@@ -207,7 +208,7 @@ uint64_t sys_getTime(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
     return 0;
 }
 
-uint64_t sys_getKey(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t sys_getKey(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     unsigned int fd = (unsigned int) rsi;
     char *buffer = (char *) rdx;
 
@@ -223,7 +224,7 @@ uint64_t seed_changer() {
     return 0;
 }
 
-uint64_t sys_ranN(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_ranN(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     int *toRan = (int *) rsi;
     seed_changer();
     *toRan = (PARA_ALEATORIOS_1 * seed + PARA_ALEATORIOS_2);
@@ -233,14 +234,14 @@ uint64_t sys_ranN(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     return 0;
 }
 
-uint64_t sys_clearBuffer(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_clearBuffer(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     while(!isBufferEmpty()){
         getBuffer();
     }
     return 0;
 }
 
-uint64_t sys_delete_video(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_delete_video(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     unsigned int cant = (unsigned int) rsi;
     for(int i = 0; i < cant - 1; i++){
         deleteVideo();
@@ -248,12 +249,12 @@ uint64_t sys_delete_video(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     return 0;
 }
 
-uint64_t sys_test_mm(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_test_mm(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     // aún no implementada
     return 0;
 }
 
-uint64_t sys_malloc(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_malloc(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     void **ptr = (void **) rsi;
     size_t size = (size_t) rdx;
 
@@ -267,7 +268,7 @@ uint64_t sys_malloc(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint6
     return 0;
 }
 
-uint64_t sys_free(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_free(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     void *ptr = (void *) rsi;
     if (ptr == NULL) return 0;
 
@@ -278,7 +279,7 @@ uint64_t sys_free(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     return 0;
 }
 
-uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     memory_info_t *info = (memory_info_t *) rsi;
     if (info == NULL) return 0;
 
@@ -297,32 +298,36 @@ uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
     }
 }
 
-uint64_t sys_create(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    return createProcess((void (*)(uint8_t, char**))rsi, (uint8_t)rdx, (char**)rcx, (char*)r8, (int)r9);
+uint64_t sys_create(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    return createProcess((void (*)(uint8_t, char**))rsi, (uint8_t)rdx, (char**)rcx, (char*)r8, (int)r9, (int)r10);
 }
-uint64_t sys_kill(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t sys_kill(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return kill_process(rsi);
 }
-uint64_t sys_getPid(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t sys_getPid(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return get_pid();
 }
-uint64_t sys_endProcess(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t sys_endProcess(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     exit_process();
     return 0;
 }
-uint64_t sys_modifyPriority(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+uint64_t sys_modifyPriority(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     return modify_priority((uint16_t)rsi, (int)rdx);
 }
-uint64_t sys_block(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t sys_block(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return block_process((uint16_t)rsi);
 }
-uint64_t sys_unblock(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t sys_unblock(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return unblock_process((uint16_t)rsi);
 }
-uint64_t sys_getProcesses(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t sys_getProcesses(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     get_processes();
     return 0;
 }
-uint64_t sys_fork(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t sys_fork(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return fork();
+}
+uint64_t sys_quitCPU(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    quitCPU();
+    return 0;
 }

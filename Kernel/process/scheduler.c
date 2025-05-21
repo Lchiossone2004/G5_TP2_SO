@@ -229,10 +229,21 @@ void get_processes() {
         }
         printFixed(estado);
 
-        printFixed(processes_list[i]->is_foreground ? "YES" : "NO");
+        printFixed(processes_list[i]->is_foreground == 1 ? "YES" : "NO");
 
 
         nlVideo();
+    }
+}
+
+void quitCPU() {
+    for(int i = 0; i < MAX_PROCESSES; i++) {
+        if(processes_list[i]->state == RUNNING) {
+            processes_list[i]->state = READY;
+            add_to_ready_list(processes_list[i]);
+            scheduler(processes_list[i]->stack_pointer);
+            return;
+        }
     }
 }
 

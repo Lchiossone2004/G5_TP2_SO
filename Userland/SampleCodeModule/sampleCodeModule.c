@@ -19,8 +19,8 @@ int main() {
 	//void* functionPointer2 = (void*)inactive;
 	//startShell();
 	char* args[] = {"hola"};
-	uint64_t pidA = syscall(22, (void*)sayA, 1, args, "A", 2);
-    uint64_t pidB = syscall(22, (void*)sayB, 1, args, "B", 2);
+	uint64_t pidA = syscall(22, (void*)sayA, 1, args, "A", 3, 1);
+    uint64_t pidB = syscall(22, (void*)sayB, 1, args, "B", 2, 0);
     
 
 
@@ -49,7 +49,7 @@ syscall(8, 30);  // dejar que impriman
 
 void sayA(uint8_t argc, char** argv) {
     char letra = 'A';
-    uint16_t childpid = syscall(30);
+   uint16_t childpid = syscall(30);
     //syscall(29);
     while (1) {
         print(argv[0]);

@@ -29,10 +29,10 @@ typedef struct {
     void* ss;
 } p_stack;
 
-uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority);
+uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority, int is_foreground);
 void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv) ;
 void exit_process();  
 uint16_t get_pid();
 uint16_t fork();
-void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer, int priority);
+void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer, int priority, int is_foreground);
 #endif
