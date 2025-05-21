@@ -21,15 +21,8 @@ uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[],
 
     p_stack* new_stack = stack_base - sizeof(p_stack);
 
-    new_process->pid = next_pid++;
-    new_process->name = mm_malloc(strSize(name) + 1);
-    memcpy(new_process->name, name, strSize(name));
-    new_process->stack_base = stack_base;
-    new_process->stack_pointer = new_stack;
-    new_process->state = READY;
-    new_process->priority = priority; 
-
-
+    copy_context(new_process, name, stack_base, new_stack, priority);
+    
     new_stack->rbp = stack_base;
     new_stack->rsp = stack_base;
     new_stack->cs = (void*)0x8;
@@ -74,16 +67,21 @@ uint16_t fork() {
     p_info* new_process = mm_malloc(sizeof(p_info));
     if (!new_process) return -1;
 
-    new_process->pid = next_pid++;
-    new_process->name = mm_malloc(strSize(current->name) + 1);
-    memcpy(new_process->name, current->name, strSize(current->name));
-    new_process->stack_base = current->stack_base;
-    new_process->stack_pointer = current->stack_pointer;
-    new_process->state = READY;
-    new_process->priority = current->priority; 
+    copy_context(new_process, current->name, current->stack_base, current->stack_pointer, current->priority);
 
     add_to_process_list(new_process);
     add_to_ready_list(new_process);
 
     return new_process->pid;
 }
+
+void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer, int priority) {
+    new_process->pid = next_pid++;
+    new_process->name = mm_malloc(strSize(name) + 1);
+    memcpy(new_process->name, name, strSize(name));
+    new_process->stack_base = stack_base;
+    new_process->stack_pointer = stack_pointer;
+    new_process->state = READY;
+    new_process->priority = priority;
+}
+ 

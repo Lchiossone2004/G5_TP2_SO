@@ -3,6 +3,7 @@
 
 #include<stdint.h>
 #include <stdlib.h>
+#include <pcb.h>
 
 
 typedef struct {
@@ -33,4 +34,5 @@ void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv)
 void exit_process();  
 uint16_t get_pid();
 uint16_t fork();
+void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer, int priority);
 #endif
