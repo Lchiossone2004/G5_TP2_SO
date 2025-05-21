@@ -195,6 +195,7 @@ void get_processes() {
     printFixed("Stack Base");
     printFixed("Stack Pointer");
     printFixed("Estado");
+    printFixed("Foreground");
     nlVideo();
 
 
@@ -227,6 +228,9 @@ void get_processes() {
             default: estado = "UNKNOWN"; break;
         }
         printFixed(estado);
+
+        printFixed(processes_list[i]->is_foreground ? "YES" : "NO");
+
 
         nlVideo();
     }

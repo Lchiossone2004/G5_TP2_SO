@@ -47,7 +47,7 @@ void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv)
 }
 
 void exit_process() {
-    p_info* current = get_current_process();  // asumimos que esto existe
+    p_info* current = get_current_process();  
 
     current->state = TERMINATED;
     remove_from_ready_list(current);  // o remove_from_process_list

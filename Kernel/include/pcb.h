@@ -13,6 +13,7 @@ typedef struct{
     void* stack_pointer;
     char ** argv;
     int priority;
+    int is_foreground;
     STATUS state;
 }p_info;
 
