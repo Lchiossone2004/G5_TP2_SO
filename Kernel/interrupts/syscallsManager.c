@@ -10,6 +10,7 @@
 #include <syscallsManager.h>
 #include "../include/process.h"
 #include "../include/scheduler.h"
+#include <sem.h>
 #define ROJO    0xFF0000
 #define BLANCO  0xFFFFFF
 #define VERDE   0x00FF00
@@ -65,7 +66,12 @@ static syscall_fn syscall_table[] = {
     [29] = sys_getProcesses,
     [30] = sys_fork,
     [31] = sys_quitCPU,
-    [32] = sys_wait
+    [32] = sys_wait,
+    [33] = sys_sem_open,
+    [34] = sys_sem_close,
+    [35] = sys_sem_wait,
+    [36] = sys_sem_post,
+    [37] = sys_sem_get_value
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -334,4 +340,19 @@ uint64_t sys_quitCPU(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
 }
 uint64_t sys_wait(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return wait();
+}
+uint64_t sys_sem_open(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    return sem_open(rsi, rdx);
+}
+uint64_t sys_sem_close(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    return sem_close(rsi);
+}
+uint64_t sys_sem_wait(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    return sem_wait(rsi);
+}
+uint64_t sys_sem_post(uint64_t rsi, uint64_t rdx, uint64_t rcx,uint64_t r8, uint64_t r9, uint64_t r10) {
+    return sem_post(rsi);
+}
+uint64_t sys_sem_get_value(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    return sem_get_value(rsi);
 }
