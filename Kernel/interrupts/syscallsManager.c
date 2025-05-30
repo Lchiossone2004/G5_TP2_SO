@@ -10,7 +10,7 @@
 #include <syscallsManager.h>
 #include "../include/process.h"
 #include "../include/scheduler.h"
-#include <sem.h>
+#include "../include/sem.h"
 #define ROJO    0xFF0000
 #define BLANCO  0xFFFFFF
 #define VERDE   0x00FF00
