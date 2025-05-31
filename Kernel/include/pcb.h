@@ -1,6 +1,6 @@
 #ifndef PCB_H
 #define PCB_H
-
+#define MAX_CHILDREN 9
 #include<stdint.h>
 #include <stdlib.h>
 
@@ -13,7 +13,10 @@ typedef struct{
     void* stack_pointer;
     char ** argv;
     int priority;
+    int is_foreground;
     STATUS state;
+    uint16_t children[MAX_CHILDREN];
+    uint16_t children_length;
 }p_info;
 
 typedef struct ReadyNode {

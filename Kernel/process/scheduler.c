@@ -1,6 +1,9 @@
 #include "../include/scheduler.h"
 #include "../memory/memory_manager.h"
+#include "../include/videoDriver.h"
 #define MAX_PROCESSES 10
+#define BLANCO  0xFFFFFF
+#define COL_WIDTH 18
 
 p_info* processes_list[MAX_PROCESSES];
 int n_processes = 0;
@@ -87,14 +90,23 @@ void remove_from_ready_list(p_info* process) {
     } while (curr != ready_list);
 }
 
-void block_process(p_info* process) {
-    process->state = BLOCKED;
-    remove_from_ready_list(process);
+int block_process(uint16_t pid) {
+    int idx = foundprocess(pid);
+      if(idx != -1 && processes_list[idx]->state == RUNNING) {
+            processes_list[idx]->state = BLOCKED;
+            return 1;
+        }
+        return 0;
 }
 
-void unblock_process(p_info* process) {
-    process->state = READY;
-    add_to_ready_list(process);
+int unblock_process(uint16_t pid) {
+    int idx = foundprocess(pid);
+    if(idx != -1 && processes_list[idx]->state == BLOCKED) {
+        processes_list[idx]->state = READY;
+        add_to_ready_list(processes_list[idx]);
+        return 1;
+    }
+        return 0;
 }
 
 void add_to_process_list(p_info* process){
@@ -113,13 +125,17 @@ p_info* find_process_by_stack(void* sp) {
     }
     return NULL;
 }
+
 p_info* get_current_process(){
     return current_process;
 }
+
 int kill_process(uint64_t pid) {
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-        if (processes_list[i] && processes_list[i]->pid == pid) {
-            p_info* p = processes_list[i];
+        int idx = foundprocess(pid);
+        if (idx == -1) {
+        return 0; //process not found
+        }
+            p_info* p = processes_list[idx];
             p->state = TERMINATED;
             remove_from_ready_list(p);
 
@@ -127,7 +143,7 @@ int kill_process(uint64_t pid) {
             mm_free(p->name);
             mm_free(p);
 
-            processes_list[i] = NULL;
+            processes_list[idx] = NULL;
             n_processes--;
 
             if (p == current_process) {
@@ -136,6 +152,99 @@ int kill_process(uint64_t pid) {
 
             return 1;  
         }
+ 
+
+int modify_priority(uint16_t pid, int newPriority) {
+    int idx = foundprocess(pid);
+    if (idx == -1) {
+        return 0; //process not found
     }
-    return 0;  // no se encontró
+    processes_list[idx]->priority = newPriority;
+    return 1;
+    
+    }
+
+int foundprocess(uint16_t pid) {
+     for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (processes_list[i] && processes_list[i]->pid == pid) {
+            return i;
+        }
+     }
+     return -1; //not found
 }
+
+
+ 
+
+void printFixed(const char* str) {
+    int len = strSize(str);
+    imprimirVideo(str, len, BLANCO);
+    // Relleno de espacios para alinear columnas
+    for (int i = len; i < COL_WIDTH; i++) {
+        imprimirVideo(" ", 1, BLANCO);
+    }
+}
+
+void get_processes() {
+    char buffer[32];
+
+    // Encabezado
+    printFixed("PID");
+    printFixed("Nombre");
+    printFixed("Prioridad");
+    printFixed("Stack Base");
+    printFixed("Stack Pointer");
+    printFixed("Estado");
+    printFixed("Foreground");
+    nlVideo();
+
+
+
+    // Datos de procesos
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (!processes_list[i]) continue;
+
+        uintToBase(processes_list[i]->pid, buffer, 10);
+        printFixed(buffer);
+
+        printFixed(processes_list[i]->name);
+
+        uintToBase(processes_list[i]->priority, buffer, 10);
+        printFixed(buffer);
+
+        uintToBase((uint64_t)processes_list[i]->stack_base, buffer, 16);
+        printFixed(buffer);
+
+        uintToBase((uint64_t)processes_list[i]->stack_pointer, buffer, 16);
+        printFixed(buffer);
+
+    
+        const char *estado;
+        switch (processes_list[i]->state) {
+            case READY: estado = "READY"; break;
+            case RUNNING: estado = "RUNNING"; break;
+            case BLOCKED: estado = "BLOCKED"; break;
+            case TERMINATED: estado = "TERMINATED"; break;
+            default: estado = "UNKNOWN"; break;
+        }
+        printFixed(estado);
+
+        printFixed(processes_list[i]->is_foreground == 1 ? "YES" : "NO");
+
+
+        nlVideo();
+    }
+}
+
+uint16_t quitCPU() {
+    for(int i = 0; i < MAX_PROCESSES; i++) {
+        if(processes_list[i]->state == RUNNING) {
+            processes_list[i]->state = READY;
+            add_to_ready_list(processes_list[i]);
+            scheduler(processes_list[i]->stack_pointer);
+            return processes_list[i]->pid;
+        }
+    }
+    return -1; // No hay procesos en ejecución
+}
+
