@@ -1,0 +1,27 @@
+#ifndef PCB_H
+#define PCB_H
+#define MAX_CHILDREN 9
+#include<stdint.h>
+#include <stdlib.h>
+
+typedef enum STATUS {RUNNING,READY, BLOCKED, TERMINATED} STATUS;
+
+typedef struct{
+    uint16_t pid;
+    char* name;
+    void* stack_base;
+    void* stack_pointer;
+    char ** argv;
+    int priority;
+    int is_foreground;
+    STATUS state;
+    uint16_t children[MAX_CHILDREN];
+    uint16_t children_length;
+}p_info;
+
+typedef struct ReadyNode {
+    p_info* process_info;
+    struct ReadyNode* next;
+} ReadyNode;
+
+#endif

@@ -24,6 +24,7 @@ EXTERN getStackBase
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN syscallsManager
+EXTERN scheduler
 EXTERN getStackBase
 SECTION .text
 
@@ -150,6 +151,22 @@ SECTION .text
 	iretq
 %endmacro
 
+%macro irqHandlerMaster 0
+	pushState
+
+	mov rdi, rsp
+	call scheduler
+	mov rsp, rax
+
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
+%endmacro
+
+
 %macro exceptionHandler 1
 	push rax
 	mov rax, [rsp + 8]
@@ -208,7 +225,18 @@ picSlaveMask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
-	irqHandlerMaster 0
+	pushState
+	
+	mov rdi, rsp
+	call scheduler
+	mov rsp, rax
+
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
 
 ;Keyboard
 _irq01Handler:
@@ -235,9 +263,9 @@ _irq05Handler:
 	irqHandlerMaster 5
 
 _irq08Handler:
-	pushState
+	pushStateNoRax
 	call syscallsManager
-	popState
+	popStateNoRax
 	iretq		
 
 ;activa el sti (para poder recibir interrupciones dentro del getChar)

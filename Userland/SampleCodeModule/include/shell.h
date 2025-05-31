@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #define NEW_LINE "shell: >"
 #define TAB "     "
@@ -9,6 +10,7 @@
 #define STDOUT 1
 #define STDERR 2
 
+void startShell();
 void shell();
 void getKey(char *buffer, int index);
 void chekCommand();

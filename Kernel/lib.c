@@ -81,3 +81,13 @@ void printRegisters(){
 	nlVideo();
 	return;
 }
+
+int strSize(char *word)
+{
+    int toRet = 0;
+    while (word[toRet] != 0)
+    {
+        toRet++;
+    }
+    return toRet;
+}
