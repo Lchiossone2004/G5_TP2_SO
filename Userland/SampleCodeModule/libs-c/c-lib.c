@@ -40,3 +40,27 @@ void sleep(int ticks)
     syscall(8, ticks);
     return;
 }
+int sem_open_lib(int id, int initial_value) 
+{
+    return syscall(33, id, initial_value);
+}
+
+int sem_close_lib(int id) 
+{
+    return syscall(34, id);
+}
+
+int sem_wait_lib(int id) 
+{
+    return syscall(35, id);
+}
+
+int sem_post_lib(int id) 
+{
+    return syscall(36, id);
+}
+
+int sem_getvalue_lib(int id) 
+{
+    return syscall(37, id);
+}

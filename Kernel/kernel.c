@@ -6,7 +6,7 @@
 #include <idtLoader.h>
 #include <videoDriver.h>
 #include "memory/memory_manager.h"
-
+#include <sem.h>
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -91,7 +91,7 @@ int main()
 	void* memory_start = (void*)0x600000;  // Dirección de inicio de la memoria disponible
 	size_t memory_size = 0x200000;         // 2MB de memoria disponible
 	init_memory_manager(memory_start, memory_size);
-	
+	init_semaphores();
 	((EntryPoint)sampleCodeModuleAddress)();		// Llamo al userland
 	return 0;
 }
