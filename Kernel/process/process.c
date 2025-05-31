@@ -63,17 +63,27 @@ uint16_t get_pid() {
 
 uint16_t fork() {
     p_info* current = get_current_process();
-    p_info* new_process = mm_malloc(sizeof(p_info));
-    if (!new_process || current->children_length >= MAX_CHILDREN) return -1;
+    if (current->children_length >= MAX_CHILDREN)
+        return -1;
 
-    copy_context(new_process, current->name, current->stack_base, current->stack_pointer, current->priority, current->is_foreground);
+    void* stack_base = mm_malloc(STACK_SIZE);
+    void* stack_top = stack_base + STACK_SIZE;
+    p_stack* new_stack = stack_top - sizeof(p_stack);
+
+    p_info* new_process = mm_malloc(sizeof(p_info));
+    if (!new_process) return -1;
+
+    copy_context(new_process, current->name, stack_base, new_stack, current->priority, current->is_foreground);
+
     current->children[current->children_length] = new_process->pid;
     current->children_length++;
+
     add_to_process_list(new_process);
     add_to_ready_list(new_process);
 
     return new_process->pid;
 }
+
 
 void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer, int priority, int is_foreground) {
     new_process->pid = next_pid++;
@@ -93,9 +103,9 @@ uint16_t wait_pid(uint16_t pid) {
     for (int i = 0; i < current->children_length; i++) {
         if (current->children[i] == pid) {
             while (1) {
-                // Esperar a que el proceso hijo termine
+                
                 if (foundprocess(pid) == -1) {
-                    current->children[i] = 0;  // Eliminar el PID de la lista de hijos
+                    current->children[i] = 0;
                     return pid;
                 }
             }

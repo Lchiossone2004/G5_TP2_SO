@@ -19,7 +19,7 @@ int main() {
 	//void* functionPointer2 = (void*)inactive;
 	//startShell();
 	char* args[] = {"hola"};
-	uint64_t pidA = syscall(22, (void*)sayA, 1, args, "A", 3, 1);
+	uint64_t pidA = syscall(22, (void*)sayA, 1, args, "A", 5, 1);
     uint64_t pidB = syscall(22, (void*)sayB, 1, args, "B", 2, 0);
     
 

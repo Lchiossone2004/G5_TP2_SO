@@ -21,6 +21,7 @@ typedef struct{
 
 typedef struct ReadyNode {
     p_info* process_info;
+    int counter;
     struct ReadyNode* next;
 } ReadyNode;
 
