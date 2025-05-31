@@ -12,9 +12,4 @@
 
 void startShell();
 void shell();
-void getKey(char *buffer, int index);
-void chekCommand();
-void clearBuffer();
-int processCommand();
-void clear();
-void help();
+

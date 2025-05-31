@@ -8,6 +8,11 @@
         "cstdint": "c",
         "process.h": "c",
         "pcb.h": "c",
-        "videodriver.h": "c"
+        "videodriver.h": "c",
+        "memory-lib.h": "c",
+        "stdlib.h": "c",
+        "time.h": "c",
+        "c-lib.h": "c",
+        "time-lib.h": "c"
     }
 }

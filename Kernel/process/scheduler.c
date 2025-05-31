@@ -29,12 +29,18 @@ void* scheduler(void* current_sp) {
     do {
         current_node = current_node->next;
         if (current_node->process_info->state == READY) {
-            if (--current_node->counter <= 0) {
+            //if (--current_node->counter <= 0) {
                 current_process = current_node->process_info;
                 current_process->state = RUNNING;
                 current_node->counter = MAX_PRIORITY + 1 - current_process->priority;
                 return current_process->stack_pointer;
-            }
+            //}
+            // if(current_node->counter < 0 && current_node->next ==NULL){ //Les parece bien?
+            //     current_process = current_node->process_info;
+            //     current_process->state = RUNNING;
+            //     current_node->counter = MAX_PRIORITY + 1 - current_process->priority;
+            //     return current_process->stack_pointer;
+            // }
         }
     } while (current_node != start);
 
