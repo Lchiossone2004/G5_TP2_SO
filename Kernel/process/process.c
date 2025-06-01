@@ -11,7 +11,6 @@
 
  static uint64_t next_pid = 1;
 uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority, int is_foreground) {
-
     void* stack_top = mm_malloc(STACK_SIZE) ;
     void* stack_base = stack_top + STACK_SIZE;
     if (!stack_top) return -1;

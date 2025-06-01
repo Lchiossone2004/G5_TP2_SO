@@ -19,38 +19,37 @@ p_info* current_process = NULL;
 void* scheduler(void* current_sp) {
     if (!ready_list)
         return current_sp;
-
     if (current_process && current_process->state == RUNNING) {
         current_process->stack_pointer = current_sp;
+        if (--current_node->counter > 0) {
+            return current_sp;
+        }
         current_process->state = READY;
     }
-
     ReadyNode* start = current_node;
     do {
         current_node = current_node->next;
         if (current_node->process_info->state == READY) {
-            //if (--current_node->counter <= 0) {
-                current_process = current_node->process_info;
-                current_process->state = RUNNING;
-                current_node->counter = MAX_PRIORITY + 1 - current_process->priority;
-                return current_process->stack_pointer;
-            //}
-            // if(current_node->counter < 0 && current_node->next ==NULL){ //Les parece bien?
-            //     current_process = current_node->process_info;
-            //     current_process->state = RUNNING;
-            //     current_node->counter = MAX_PRIORITY + 1 - current_process->priority;
-            //     return current_process->stack_pointer;
-            // }
+            current_process = current_node->process_info;
+            current_process->state = RUNNING;
+            current_node->counter = current_process->priority;  
+            return current_process->stack_pointer;
         }
     } while (current_node != start);
-
-    return current_sp;
+    if (current_process) {
+        current_process->state = RUNNING;
+        current_node->counter = current_process->priority;
+        return current_process->stack_pointer;
+    }
+    return current_sp; 
 }
+
 
 void add_to_ready_list(p_info* process) {
     ReadyNode* node = mm_malloc(sizeof(ReadyNode));
     node->process_info = process;
-    node->counter = MAX_PRIORITY + 1 - process->priority;
+    node->counter = process->priority;
+
 
     if (!ready_list) {
         ready_list = node;
@@ -168,7 +167,7 @@ int modify_priority(uint16_t pid, int newPriority) {
     if (node) {
         do {
             if (node->process_info == process) {
-                node->counter = MAX_PRIORITY + 1 - newPriority;
+                node->counter = newPriority;
                 break;
             }
             node = node->next;
