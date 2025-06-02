@@ -28,16 +28,24 @@ uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[],
     new_stack->ss = 0x0;
     new_stack->rip = entry_point_wrapper;
     new_stack->rdi = fn;
-    new_stack->rsi = (void*)argc;
-    new_stack->rdx = argv;
-
+    load_args(new_stack, argc, argv);
     add_to_process_list(new_process);
     add_to_ready_list(new_process);
 
     return new_process->pid;
 }
 
-
+void load_args(p_stack *new_stack, uint8_t argc, char* argv[]){
+    char ** argv_l = mm_malloc((argc+1) * sizeof(char *));
+    for(uint8_t i=0; i < argc; i++){
+        uint64_t length = strSize(argv[i]) + 1;
+        argv_l[i] = mm_malloc(length * sizeof(char));
+        memcpy(argv_l[i], argv[i], length);
+    }
+    argv_l[argc] = NULL;
+    new_stack->rsi = (void *)(uint64_t)argc;
+    new_stack->rdx = argv_l;
+}
 
 void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv) {
     fn(argc, argv);

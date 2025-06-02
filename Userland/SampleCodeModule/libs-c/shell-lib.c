@@ -1,5 +1,5 @@
 #include <shell-lib.h>
-
+#include "test.h"
 extern void syscall(__uint64_t rdi, ...);
 extern void invalidOp();
 
@@ -52,14 +52,9 @@ void chekCommand(char *buffer, int *index, int *ultimaLetra, char *commands[])
     }
     if (command == 10)
     {
-        // Ejecutar test de memoria
-        print(TAB);
-        print("testeando\n");
-        int* block1 = usr_malloc(10);
-        int* block2 = usr_malloc(10);
-        int* block3 = usr_malloc(10);
-        usr_free(block1);  // Free first block
-        usr_free(block3);  // Free last block, leaving middle block allocated
+        void * aux = test_mm;
+        char* args[] = {"hola", "bunas"};
+        syscall(22,aux,2,args, "test_mm", 3);
         print_usr_mem_info();
     }
     if (command == 11)

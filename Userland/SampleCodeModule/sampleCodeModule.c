@@ -1,5 +1,5 @@
 /* sampleCodeModule.c */
-#include "./include/shell-lib.h"
+#include "./include/shell.h"
 #include <stdint.h>
 #include "./include/c-lib.h"
 #define VERDE 0x00FF00
@@ -12,8 +12,8 @@ void inactive(){}
 
 int main() {
 
-	startShell();
-
+	char* args[] = {"hola", "bunas"};
+    syscall(22,(void*)shell,2,args, "shell", 5);
 	while (1) {
     syscall(8, 5);  // el main no interfiere, solo espera
 }

@@ -30,6 +30,7 @@ typedef struct {
 } p_stack;
 
 uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority, int is_foreground);
+void load_args(p_stack *new_process, uint8_t argc, char* argv[]);
 void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv) ;
 void exit_process();  
 uint16_t get_pid();

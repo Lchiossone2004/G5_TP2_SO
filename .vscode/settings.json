@@ -13,6 +13,11 @@
         "stdlib.h": "c",
         "time.h": "c",
         "c-lib.h": "c",
-        "time-lib.h": "c"
+        "time-lib.h": "c",
+        "memory.h": "c",
+        "syscall.h": "c",
+        "test_util.h": "c",
+        "test.h": "c",
+        "shell.h": "c"
     }
 }

@@ -17,7 +17,7 @@ void startShell(){
     char* args[] = {"hola", "bunas"};
     syscall(22,(void*)shell,2,args, "shell", 5);//prueba con prioridad dummy alta
 }
-void shell()
+void shell(uint64_t argc, char *argv[])
 {
     print(NEW_LINE);
     while (1)
