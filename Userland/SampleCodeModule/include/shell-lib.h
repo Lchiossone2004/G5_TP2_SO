@@ -8,7 +8,7 @@
 #include <time-lib.h>
 #include <c-lib.h>
 
-#define NUMBER_OF_COMMANDS 12
+#define NUMBER_OF_COMMANDS 13
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
