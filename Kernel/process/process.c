@@ -53,14 +53,8 @@ void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv)
 }
 
 void exit_process() {
-    p_info* current = get_current_process();  
-
-    current->state = TERMINATED;
-    remove_from_ready_list(current);  // o remove_from_process_list
-    // Liberar recursos si corresponde
-    mm_free(current->stack_base);
-    mm_free(current);  // si usás malloc para los procesos
-    while (1);  // por seguridad
+    p_info* current = get_current_process();
+    remove_from_processes_list(current);
 }
 
 uint16_t get_pid() {

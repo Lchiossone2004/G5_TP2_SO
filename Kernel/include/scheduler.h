@@ -7,6 +7,7 @@
 void* scheduler(void* current_sp);
 void add_to_ready_list(p_info* process);
 void remove_from_ready_list(p_info* process);
+int remove_from_processes_list(p_info* process);
 int block_process(uint16_t pid);
 int unblock_process(uint16_t pid);
 void add_to_process_list(p_info* process);

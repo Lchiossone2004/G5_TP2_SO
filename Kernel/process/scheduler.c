@@ -137,23 +137,15 @@ p_info* get_current_process() {
 int kill_process(uint64_t pid) {
     int idx = foundprocess(pid);
     if (idx == -1)
-        return 0;
+        return 1;
 
     p_info* p = processes_list[idx];
-    p->state = TERMINATED;
-    remove_from_ready_list(p);
-
-    mm_free(p->stack_base);
-    mm_free(p->name);
-    mm_free(p);
-
-    processes_list[idx] = NULL;
-    n_processes--;
+    remove_from_processes_list(p);
 
     if (p == current_process)
         current_process = NULL;
 
-    return 1;
+    return 0;
 }
 
 int modify_priority(uint16_t pid, int newPriority) {
@@ -249,4 +241,20 @@ uint16_t quitCPU() {
         }
     }
     return (uint16_t)-1;
+}
+
+int remove_from_processes_list(p_info* process) {
+    int idx = foundprocess(process->pid);
+    if (idx < 0 || idx >= MAX_PROCESSES || processes_list[idx] == NULL) {
+        return -1; 
+    }
+    process->state = TERMINATED;
+    remove_from_ready_list(process);
+    mm_free(process->stack_base);
+    mm_free(process->name);
+    mm_free(process);
+    processes_list[idx] = NULL;
+    n_processes--;
+
+    return 0; 
 }
