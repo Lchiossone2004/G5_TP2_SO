@@ -8,7 +8,8 @@
 #include <time-lib.h>
 #include <c-lib.h>
 
-#define NUMBER_OF_COMMANDS 13
+#define NUMBER_OF_COMMANDS 14
+#define WORD_BUFFER_SIZE 128
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2

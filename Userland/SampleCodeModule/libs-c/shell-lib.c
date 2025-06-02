@@ -64,6 +64,30 @@ void chekCommand(char *buffer, int *index, int *ultimaLetra, char *commands[])
         print("closing shell...");
         return;
     }
+    if (command == 12) {
+
+    char *argStr = buffer + 5;
+    
+    int valid = 1;
+    for (int i = 0; argStr[i] != 0; i++) {
+        if (argStr[i] < '0' || argStr[i] > '9') {
+            valid = 0;
+            break;
+        }
+    }
+
+    if (!valid) {
+        printErr("kill: invalid PID");
+        return;
+    }
+
+    int pid = strToInt(argStr);
+    syscall(23, pid);
+}
+
+    if (command == 13) {
+        syscall(29);
+    }
     if (command == 0)
     {
         print(TAB);
@@ -96,27 +120,36 @@ void clearBuffer(char *buffer, int *ultimaLetra)
     return;
 }
 
-int processCommand(char *buffer, int *ultimaLetra, int * index, char *commands[])
-{
-    int found = 0;
-    int ret = 0;
-    char *aux;
-    if (ultimaLetra == 0 || (index == 0 && buffer[0] == 0))
-    {
-        found = 1;
-        ret = -1;
+int processCommand(char *buffer, int *ultimaLetra, int *index, char *commands[]) {
+    if (ultimaLetra == 0 || (index == 0 && buffer[0] == 0)) {
+        return -1;
     }
-    while (ret < NUMBER_OF_COMMANDS && !found)
-    {
-        aux = commands[ret++];
-        found = strCompare(aux, buffer);
+
+    for (int j = 0; j < NUMBER_OF_COMMANDS; j++) {
+        if (strCompare(commands[j], buffer)) {
+            return j + 1; 
+        }
     }
-    if (found == 0)
-    {
-        ret = 0;
+
+   
+    char commandPart[WORD_BUFFER_SIZE] = {0};
+    int i = 0;
+    while (buffer[i] != ' ' && buffer[i] != 0 && i < WORD_BUFFER_SIZE - 1) {
+        commandPart[i] = buffer[i];
+        i++;
     }
-    return ret;
+    commandPart[i] = 0;
+
+  
+    for (int j = 0; j < NUMBER_OF_COMMANDS; j++) {
+        if (strCompare(commands[j], commandPart)) {
+            return j + 1;
+        }
+    }
+
+    return 0;
 }
+
 
 void clear()
 {
@@ -132,4 +165,12 @@ void help(char *commands[])
         print("     #) ");
         print(commands[i]);
     }
+}
+int strToInt(const char *str) {
+    int res = 0;
+    while (*str >= '0' && *str <= '9') {
+        res = res * 10 + (*str - '0');
+        str++;
+    }
+    return res;
 }

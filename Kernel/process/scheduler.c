@@ -140,13 +140,18 @@ int kill_process(uint64_t pid) {
         return 1;
 
     p_info* p = processes_list[idx];
-    remove_from_processes_list(p);
 
-    if (p == current_process)
-        current_process = NULL;
+    if (p == current_process) {
+        p->state = TERMINATED;
+        remove_from_ready_list(p);
+        
+    } else {
+        remove_from_processes_list(p);
+    }
 
     return 0;
 }
+
 
 int modify_priority(uint16_t pid, int newPriority) {
     int idx = foundprocess(pid);

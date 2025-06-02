@@ -9,7 +9,7 @@ static char buffer[WORD_BUFFER_SIZE] = {0};
 static char letra[1] = {0};
 static int ultimaLetra;
 static int index = 0;
-static char *commands[] = {"help", "time ARG", "time UTC", "zoomin", "zoomout", "clear", "print registers", "div cero", "invalid op", "testmm", "exit"};
+static char *commands[] = {"help", "time ARG", "time UTC", "zoomin", "zoomout", "clear", "print registers", "div cero", "invalid op", "testmm", "exit", "kill", "ps"};
 
 extern void syscall(__uint64_t rdi, ...);
 
