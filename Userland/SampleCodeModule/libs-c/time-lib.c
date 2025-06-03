@@ -11,6 +11,7 @@ void syscall(uint64_t rsi, ...);
 static char Timepo[3];
 void printTime(int area)
 {
+	print("		");
 	getTime();
 	char toPrint[9] = "hh:mm:ss";
 	char aux = Timepo[0] >> 4;
@@ -47,6 +48,7 @@ void printTime(int area)
 		print("(ARG): ");
 	}
 	print(toPrint);
+	nlPrint();
 }
 
 void getTime()
