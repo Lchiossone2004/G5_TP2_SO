@@ -1,6 +1,6 @@
 #include <shell-lib.h>
 #include "test.h"
-extern void syscall(__uint64_t rdi, ...);
+extern uint64_t syscall(__uint64_t rdi, ...);
 extern void invalidOp();
 
 
@@ -79,10 +79,14 @@ void chekCommand(char *buffer, int *index, int *ultimaLetra, char *commands[])
     if (!valid) {
         printErr("kill: invalid PID");
      
-    }
+    } else {
 
     int pid = strToInt(argStr);
-    syscall(23, pid);
+    int notFoundProcess = syscall(23, pid);
+    if(notFoundProcess) {
+        printErr("kill: process not found");
+    }
+    }
 }
 
     if (command == 13) {
