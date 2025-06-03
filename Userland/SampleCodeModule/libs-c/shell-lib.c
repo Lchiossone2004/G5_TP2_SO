@@ -78,7 +78,7 @@ void chekCommand(char *buffer, int *index, int *ultimaLetra, char *commands[])
 
     if (!valid) {
         printErr("kill: invalid PID");
-        return;
+     
     }
 
     int pid = strToInt(argStr);

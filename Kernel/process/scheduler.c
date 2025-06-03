@@ -19,6 +19,8 @@ p_info* current_process = NULL;
 void* scheduler(void* current_sp) {
     if (!ready_list)
         return current_sp;
+   
+
     if (current_process && current_process->state == RUNNING) {
         current_process->stack_pointer = current_sp;
         if (--current_node->counter > 0) {
