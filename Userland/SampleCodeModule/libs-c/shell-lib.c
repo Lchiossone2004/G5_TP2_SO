@@ -6,7 +6,7 @@ extern void invalidOp();
 
 void getKey(char *letra, int *index)
 {
-    syscall(2, STDIN, letra, index);
+    syscall(2, STDIN, letra, *index);
 }
 
 void chekCommand(char *buffer, int *index, int *ultimaLetra, char *commands[])
@@ -125,7 +125,7 @@ void clearBuffer(char *buffer, int *ultimaLetra)
 }
 
 int processCommand(char *buffer, int *ultimaLetra, int *index, char *commands[]) {
-    if (ultimaLetra == 0 || (index == 0 && buffer[0] == 0)) {
+    if (*ultimaLetra == 0 || (*index == 0 && buffer[0] == 0)) {
         return -1;
     }
 

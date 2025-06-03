@@ -12,8 +12,8 @@ void inactive(){}
 
 int main() {
 
-	char* args[] = {"hola", "bunas"};
-    syscall(22,(void*)shell,2,args, "shell", 5);
+	//char* args[] = {"hola", "bunas"};
+    syscall(22,(void*)shell,NULL,NULL, "shell", 5);
 	while (1) {
     syscall(8, 5);  // el main no interfiere, solo espera
 }

@@ -13,11 +13,7 @@ static char *commands[] = {"help", "time ARG", "time UTC", "zoomin", "zoomout", 
 
 extern void syscall(__uint64_t rdi, ...);
 
-void startShell(){
-    char* args[] = {"hola", "bunas"};
-    syscall(22,(void*)shell,2,args, "shell", 5);//prueba con prioridad dummy alta
-}
-void shell(uint64_t argc, char *argv[])
+void shell()
 {
     print(NEW_LINE);
     while (1)

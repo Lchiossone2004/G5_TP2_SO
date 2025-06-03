@@ -35,7 +35,7 @@ void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv)
 void exit_process();  
 uint16_t get_pid();
 uint16_t fork();
-void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer, int priority, int is_foreground);
+void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer,void * stack_top ,int priority, int is_foreground);
 uint16_t wait_pid(uint16_t pid);
 uint16_t wait();
 void initialize_zero(uint16_t array[], int size);

@@ -8,13 +8,16 @@
 #include <time-lib.h>
 #include <c-lib.h>
 
+#define WORD_BUFFER_SIZE 1024
 #define NUMBER_OF_COMMANDS 14
-#define WORD_BUFFER_SIZE 128
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
 #define TAB "     "
 #define NEW_LINE "shell: >"
+#define STDIN 0
+#define STDOUT 1
+#define STDERR 2
 
 
 

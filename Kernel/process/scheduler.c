@@ -1,6 +1,8 @@
 #include "../include/scheduler.h"
 #include "../memory/memory_manager.h"
 #include "../include/videoDriver.h"
+#include "../include/lib.h"
+#include "../include/naiveConsole.h"
 
 #define MAX_PROCESSES 10
 #define MAX_PRIORITY 10
@@ -186,8 +188,8 @@ int foundprocess(uint16_t pid) {
 }
 
 void printFixed(const char* str) {
-    int len = strSize(str);
-    imprimirVideo(str, len, BLANCO);
+    int len = strSize((char*)str);
+    imprimirVideo((char*)str, len, BLANCO);
 
     for (int i = len; i < COL_WIDTH; i++) {
         imprimirVideo(" ", 1, BLANCO);
@@ -257,7 +259,7 @@ int remove_from_processes_list(p_info* process) {
     }
     process->state = TERMINATED;
     remove_from_ready_list(process);
-    mm_free(process->stack_base);
+    mm_free(process->stack_top); //okey este es el problema
     mm_free(process->name);
     mm_free(process);
     processes_list[idx] = NULL;

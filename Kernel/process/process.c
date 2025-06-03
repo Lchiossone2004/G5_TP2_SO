@@ -20,7 +20,7 @@ uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[],
 
     p_stack* new_stack = stack_base - sizeof(p_stack);
 
-    copy_context(new_process, name, stack_base, new_stack, priority, is_foreground);    
+    copy_context(new_process, name, stack_base, new_stack, stack_top,priority, is_foreground);    
     new_stack->rbp = stack_base;
     new_stack->rsp = stack_base;
     new_stack->cs = (void*)0x8;
@@ -74,7 +74,7 @@ uint16_t fork() {
     p_info* new_process = mm_malloc(sizeof(p_info));
     if (!new_process) return -1;
 
-    copy_context(new_process, current->name, stack_base, new_stack, current->priority, current->is_foreground);
+    copy_context(new_process, current->name, stack_base, new_stack, stack_top,current->priority, current->is_foreground);
 
     current->children[current->children_length] = new_process->pid;
     current->children_length++;
@@ -86,12 +86,13 @@ uint16_t fork() {
 }
 
 
-void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer, int priority, int is_foreground) {
+void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer,void * stack_top ,int priority, int is_foreground) {
     new_process->pid = next_pid++;
     new_process->name = mm_malloc(strSize(name) + 1);
     memcpy(new_process->name, name, strSize(name));
     new_process->stack_base = stack_base;
     new_process->stack_pointer = stack_pointer;
+    new_process->stack_top = stack_top;
     new_process->state = READY;
     new_process->priority = priority;
     new_process->is_foreground = is_foreground;
