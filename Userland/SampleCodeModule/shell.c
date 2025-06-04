@@ -60,7 +60,7 @@ void chekCommand(char *buffer, int *index, Command aux)
     aux = parseCommand(buffer);
     int command = processCommand(aux.command, index);
     if(aux.arg_count == 1 && strCompare(aux.args[0],"-info") ){
-        commandInfo(command - 1);
+        commandInfo(command - 1, -1);
     }
     else{
     shell_table[command](aux.arg_count, aux.args, aux.command);

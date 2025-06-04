@@ -18,9 +18,15 @@ void help(uint64_t argc, char *argv[], char* command){
         nlPrint();
     }
     else if(argc == 1 && strCompare(argv[0], "all")){
-        clear(0,NULL,NULL);             //Limpio por que sino no alcanza la pantalla
         for(int i = 0; i < NUMBER_OF_COMMANDS; i++){
-            commandInfo(i);
+            if(i<NUMBER_OF_COMMANDS-1){
+                commandInfo(i,i+1);
+                i++;
+            }
+            else{
+                commandInfo(i,-1);
+            }
+            nlPrint();
             nlPrint();
         }
     }
@@ -32,10 +38,6 @@ void help(uint64_t argc, char *argv[], char* command){
 void whatTime(uint64_t argc, char *argv[], char* command){
     if(argc != 1){
         argsError(argc,argv);
-        return;
-    }
-    if(strCompare(argv[0], "-info")){
-        commandInfo(command);
         return;
     }
     if(strCompare(argv[0], "ARG")){
@@ -101,16 +103,16 @@ void test(uint64_t argc, char *argv[], char* command){
         argsError(argc,argv);
     }
     if(strCompare(argv[0],"MM")){
-        usr_create_process((void*)test_mm, argc,argv, "memory test", 3, 0);
+        usr_create_process((void*)test_mm, argc,argv, "memory test", PRIORITY_LOW, 0);
     }
     if(strCompare(argv[0],"Prio")){
-        usr_create_process((void*)test_prio,argc,argv, "priority test", 3,0);
+        usr_create_process((void*)test_prio,argc,argv, "priority test", PRIORITY_LOW,0);
     }
     if(strCompare(argv[0],"Processes")){
-        usr_create_process((void*)test_processes,argc,argv, "processes test", 3, 0);
+        usr_create_process((void*)test_processes,argc,argv, "processes test", PRIORITY_LOW, 0);
     }
     if(strCompare(argv[0],"Sync")){
-        usr_create_process((void*)test_processes,argc,argv, "sync test", 3, 0);
+        usr_create_process((void*)test_processes,argc,argv, "sync test", PRIORITY_LOW, 0);
     }
     nlPrint();
 }
@@ -218,18 +220,33 @@ void argsError(uint64_t argc, char *argv[]){
     nlPrint();
 }
 
-void commandInfo(int commandNum){
-    print(TAB);
-    print("- This is the [");
-    print(commands[commandNum]);
-    print("] command.");
-    nlPrint();
-    print(TAB);
-    print("- ");
-    print(commandDescrition[commandNum]);
-    nlPrint();
-    print(TAB);
-    print("- Possible arguments: ");
-    print(commandArgs[commandNum]);
-    nlPrint();
+void commandInfo(int i,int j){
+            print(TAB);
+            print("- This is the [");
+            print(commands[i]);
+            print("] command.");
+            if(j != -1){
+                syscall(38);
+                print("- This is the [");
+                print(commands[j]);
+                print("] command.");
+            }
+            nlPrint();
+            print(TAB);
+            print("- ");
+            print(commandDescrition[i]);
+            if(j!= -1){
+                syscall(38);
+                print("- ");
+                print(commandDescrition[j]);
+            }
+            nlPrint();
+            print(TAB);
+            print("- Possible arguments: ");
+            print(commandArgs[i]);
+            if(j!= -1){
+                 syscall(38);
+                print("- Possible arguments: ");
+                print(commandArgs[j]);
+            }
 }  

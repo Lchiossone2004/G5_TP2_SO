@@ -8,9 +8,14 @@
 #define MAX_PROCESSES 10
 
 // extern void* setup_process_stack(void (*fn)(uint8_t, char**), uint8_t argc, char** argv, void* stack_top);
+static int pirority[] = {8, 4,2,1}; //8 =critica, 4=alta,2=normal,1=baja
+static char* pirorityName[] = {"Critic", "High", "Normal", "Low"};
 
  static uint64_t next_pid = 1;
-uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority, int is_foreground) {
+uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int prio, int is_foreground) {
+    if(prio>4){
+        return;
+    }
     void* stack_top = mm_malloc(STACK_SIZE) ;
     void* stack_base = stack_top + STACK_SIZE;
     if (!stack_top) return -1;
@@ -20,7 +25,7 @@ uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[],
 
     p_stack* new_stack = stack_base - sizeof(p_stack);
 
-    copy_context(new_process, name, stack_base, new_stack, stack_top,priority, is_foreground);    
+    copy_context(new_process, name, stack_base, new_stack, stack_top,prio, is_foreground);    
     new_stack->rbp = stack_base;
     new_stack->rsp = stack_base;
     new_stack->cs = (void*)0x8;
@@ -86,7 +91,8 @@ uint16_t fork() {
 }
 
 
-void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer,void * stack_top ,int priority, int is_foreground) {
+void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer,void * stack_top ,int prio, int is_foreground) {
+    int len = strSize(pirorityName[prio]);
     new_process->pid = next_pid++;
     new_process->name = mm_malloc(strSize(name) + 1);
     memcpy(new_process->name, name, strSize(name));
@@ -94,7 +100,9 @@ void copy_context(p_info* new_process, char *name, void * stack_base, void * sta
     new_process->stack_pointer = stack_pointer;
     new_process->stack_top = stack_top;
     new_process->state = READY;
-    new_process->priority = priority;
+    new_process->priority = pirority[prio];
+    new_process->priorityName = mm_malloc(len * sizeof(char));
+    memcpy(new_process->priorityName,pirorityName[prio],len);
     new_process->is_foreground = is_foreground;
     initialize_zero(new_process->children, MAX_CHILDREN);
     new_process->children_length = 0;

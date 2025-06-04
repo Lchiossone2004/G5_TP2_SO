@@ -71,7 +71,8 @@ static syscall_fn syscall_table[] = {
     [34] = sys_sem_close,
     [35] = sys_sem_wait,
     [36] = sys_sem_post,
-    [37] = sys_sem_get_value
+    [37] = sys_sem_get_value,
+    [38] = sys_go_middle
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -355,4 +356,8 @@ uint64_t sys_sem_post(uint64_t rsi, uint64_t rdx, uint64_t rcx,uint64_t r8, uint
 }
 uint64_t sys_sem_get_value(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return sem_get_value(rsi);
+}
+
+uint64_t sys_go_middle(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    return goMiddle();
 }

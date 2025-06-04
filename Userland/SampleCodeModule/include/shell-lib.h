@@ -16,13 +16,20 @@
 #define STDOUT 1
 #define STDERR 2
 
+typedef enum {
+    PRIORITY_CRITICAL = 0,  
+    PRIORITY_HIGH = 1,     
+    PRIORITY_NORMAL = 2,      
+    PRIORITY_LOW = 3         
+} PriorityLevel;
+
 static char *commands[] = {"help", "time", "zoom", "clear", "regs", "div cero", "invalid op", "test", "block" , "unblock", "nice" ,"yeild","kill", "ps","mem"};
 
-static char *commandDescrition[] ={ "It gives a list of the possible commands that can be used is this Shell.",
+static char *commandDescrition[] ={ "Shows list of available commands.",
                                     "It prints the actual time.",
                                     "Zooms in or out dependng on the argument.",
                                     "Clears the screen.",
-                                    "Prints the saved cpu registers (registers can be saved with 'esc' key).",
+                                    "Prints the saved cpu registers/",
                                     "Causes a division by cero to show the error handeling.",
                                     "Causes a invalid operation to show the error handeling.",
                                     "Allows to run tests on diferent functionalities.",
@@ -54,7 +61,7 @@ void ps(uint64_t argc, char *argv[], char* command);
 void mem(uint64_t argc, char *argv[], char* command);
 void invalid(uint64_t argc, char *argv[], char* command);
 void argsError(uint64_t argc, char *argv[]);
-void commandInfo(int commandNum);
+void commandInfo(int i,int j);
 
 
 

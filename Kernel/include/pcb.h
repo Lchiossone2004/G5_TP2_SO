@@ -14,6 +14,7 @@ typedef struct{
     void* stack_pointer;
     char ** argv;
     int priority;
+    char *priorityName;
     int is_foreground;
     STATUS state;
     uint16_t children[MAX_CHILDREN];

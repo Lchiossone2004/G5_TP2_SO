@@ -15,3 +15,4 @@ void zoomIN();
 void zoomOUT();
 void videoClear();
 void rePrint();
+uint_fast64_t goMiddle();

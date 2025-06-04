@@ -261,3 +261,7 @@ void zoomOUT()
 		return;
 	}
 }
+
+uint64_t goMiddle(){
+	x = BORDER_X/2;
+}

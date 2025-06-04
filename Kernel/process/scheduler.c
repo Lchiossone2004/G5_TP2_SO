@@ -216,8 +216,7 @@ void get_processes() {
 
         printFixed(processes_list[i]->name);
 
-        uintToBase(processes_list[i]->priority, buffer, 10);
-        printFixed(buffer);
+        printFixed(processes_list[i]->priorityName);
 
         uintToBase((uint64_t)processes_list[i]->stack_base, buffer, 16);
         printFixed(buffer);
@@ -261,6 +260,7 @@ int remove_from_processes_list(p_info* process) {
     remove_from_ready_list(process);
     mm_free(process->stack_top); //okey este es el problema
     mm_free(process->name);
+    mm_free(process->priorityName);
     mm_free(process);
     processes_list[idx] = NULL;
     n_processes--;
