@@ -59,8 +59,12 @@ void chekCommand(char *buffer, int *index, Command aux)
     deleteSpaces(buffer);
     aux = parseCommand(buffer);
     int command = processCommand(aux.command, index);
-
+    if(aux.arg_count == 1 && strCompare(aux.args[0],"-info") ){
+        commandInfo(command - 1);
+    }
+    else{
     shell_table[command](aux.arg_count, aux.args, aux.command);
+    }
 
     freeCommand(&aux);
 }
@@ -101,27 +105,25 @@ Command parseCommand(char *input) {
     int i = 0;
     int index = 0;
 
-    // Inicializa el arreglo de argumentos con malloc
     toRet.args = (char **)usr_malloc(sizeof(char *) * MAX_ARGS);
     toRet.arg_count = 0;
 
-    // Saltar espacios iniciales
+
     while (index < len && input[index] == ' ') index++;
 
-    // Parsear el comando
+
     i = 0;
     while (index < len && input[index] != ' ' && i < 123) {
         toRet.command[i++] = input[index++];
     }
     toRet.command[i] = '\0';
 
-    // Parsear argumentos
+
     while (index < len && toRet.arg_count < MAX_ARGS) {
-        // Saltar espacios
+
         while (index < len && input[index] == ' ') index++;
         if (index >= len) break;
 
-        // Reservar espacio para un argumento nuevo
         toRet.args[toRet.arg_count] = (char *)usr_malloc(sizeof(char) * MAX_ARG_LEN);
         i = 0;
 

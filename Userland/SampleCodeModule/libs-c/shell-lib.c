@@ -4,21 +4,37 @@
 
 extern void invalidOp();
 
-void help(uint64_t argc, char *argv[], char* command)
-{
-    print("     Here is a list of the commands:");
-    for (int i = 0; i < NUMBER_OF_COMMANDS; i++)
-    {
-        nlPrint();
-        print("     #) ");
-        print(commands[i]);
+void help(uint64_t argc, char *argv[], char* command){
+    if(argc != 1){
+        argsError(argc,argv);
     }
-    nlPrint();
+    else if(argc == 0){
+        print("     Here is a list of the commands:");
+        for (int i = 0; i < NUMBER_OF_COMMANDS; i++)
+        {
+            nlPrint();
+            print("     #) ");
+            print(commands[i]);
+        }
+        nlPrint();
+        print("To know more about any command type [command] -info");
+        nlPrint();
+    }
+    else if(strCompare(argv[0], "all")){
+        for(int i = 0; i < NUMBER_OF_COMMANDS; i++){
+            commandInfo(i);
+            nlPrint();
+        }
+    }
 }
 
 void whatTime(uint64_t argc, char *argv[], char* command){
     if(argc != 1){
-        trowError(argc,argv);
+        argsError(argc,argv);
+        return;
+    }
+    if(strCompare(argv[0], "-info")){
+        commandInfo(command);
         return;
     }
     if(strCompare(argv[0], "ARG")){
@@ -28,7 +44,7 @@ void whatTime(uint64_t argc, char *argv[], char* command){
         printTime(0);
     }
     else{
-        trowError(argc,argv);
+        argsError(argc,argv);
         return;
     }
     print(TAB);
@@ -36,63 +52,97 @@ void whatTime(uint64_t argc, char *argv[], char* command){
 }
 
 void zoom(uint64_t argc, char *argv[], char* command){
-    syscall(6, STDOUT);
-     nlPrint();
+    if(argc != 1){
+        argsError(argc,argv);
+    }
+    if(strCompare(argv[0],"IN")){
+        syscall(6, STDOUT);
+    }
+    if(strCompare(argv[0],"OUT")){
+        syscall(7, STDOUT);
+    }
+    nlPrint();
 }
 
-void clear(uint64_t argc, char *argv[], char* command)
-{
+void clear(uint64_t argc, char *argv[], char* command){
+    if(argc > 0){
+        argsError(argc,argv);
+    }
     syscall(9, STDOUT);
     nlPrint();
 }
 
 void printReg(uint64_t argc, char *argv[], char* command){
+    if(argc > 0){
+        argsError(argc,argv);
+    }
     syscall(1, STDOUT);
      nlPrint();
 }
 
 void divCero(uint64_t argc, char *argv[], char* command){
+    if(argc > 0){
+        argsError(argc,argv);
+    }
     int aux = 0/0;
     nlPrint();
 }
 void invalidOperation(uint64_t argc, char *argv[], char* command){
+    if(argc > 0){
+        argsError(argc,argv);
+    }
     invalidOp();
     nlPrint();
 }
 
 void test(uint64_t argc, char *argv[], char* command){
-    print_usr_mem_info();
+    if(argc != 1){
+        argsError(argc,argv);
+    }
+    if(strCompare(argv[0],"MM")){
+        syscall(22,(void*)test_mm,argc,argv, "memory test", 3, 0);
+        print_usr_mem_info();
+    }
+    if(strCompare(argv[0],"Prio")){
+        syscall(22,(void*)test_prio,argc,argv, "priority test", 3, 0);
+    }
+    if(strCompare(argv[0],"Processes")){
+        syscall(22,(void*)test_processes,argc,argv, "processes test", 3, 0);
+    }
+    if(strCompare(argv[0],"Sync")){
+        syscall(22,(void*)test_processes,argc,argv, "sync test", 3, 0);
+    }
     nlPrint();
 }
 
 void kill(uint64_t argc, char *argv[], char* command){
-    char *argStr = command + 5;
-    
-    int valid = 1;
-    for (int i = 0; argStr[i] != 0; i++) {
-        if (argStr[i] < '0' || argStr[i] > '9') {
-            valid = 0;
-            break;
+    if(argc != 1){
+        argsError(argc,argv);
+    }
+    else{
+        int pid = strToInt(argv[0]);
+        if(pid >0){
+            int notFoundProcess = syscall(23, pid);
+            print(TAB);
+        if(notFoundProcess) {
+            printErr("kill: process not found");
         }
+        }
+        else{
+            printErr("Invalid PID");
+        }
+        nlPrint();
     }
-
-    if (!valid) {
-        printErr("kill: invalid PID");
-     
-    } else {
-
-    int pid = strToInt(argStr);
-    int notFoundProcess = syscall(23, pid);
-    if(notFoundProcess) {
-        printErr("kill: process not found");
-    }
-    }
-    nlPrint();
 }
 
 void ps(uint64_t argc, char *argv[], char* command){
-    syscall(29);
-    nlPrint();
+    if(argc > 0){
+        argsError(argc,argv);
+    }
+    else{
+        syscall(29);
+        nlPrint();
+    }
 }
 
 void invalid(uint64_t argc, char *argv[], char* command){
@@ -103,12 +153,33 @@ void invalid(uint64_t argc, char *argv[], char* command){
     nlPrint();
 }
 
-void trowError(uint64_t argc, char *argv[]){
+void argsError(uint64_t argc, char *argv[]){
     print(TAB);
-    printErr("Invalid Args:");
-    for(int i= 0; i<argc;i++){
-            print(" ");
-            printErr(argv[i]);
+    if(argc == 0){
+        printErr("Missing Arguments.");
+    }
+    else{
+        printErr("Invalid Args:");
+        for(int i= 0; i<argc;i++){
+                print(" ");
+                printErr(argv[i]);
+        }
     }
     nlPrint();
 }
+
+void commandInfo(int commandNum){
+    print(TAB);
+    print("- This is the [");
+    print(commands[commandNum]);
+    print("] command.");
+    nlPrint();
+    print(TAB);
+    print("- ");
+    print(commandDescrition[commandNum]);
+    nlPrint();
+    print(TAB);
+    print("- Possible arguments: ");
+    print(commandArgs[commandNum]);
+    nlPrint();
+}  

@@ -7,7 +7,7 @@
 #include <memory-lib.h>
 #include <shell-lib.h>
 
-
+#define NEW_LINE "shell: >"
 #define MAX_ARG_LEN 124
 #define MAX_ARGS 5
 
