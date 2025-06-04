@@ -262,9 +262,12 @@ _irq04Handler:
 _irq05Handler:
 	irqHandlerMaster 5
 
-_irq08Handler:
+_irq08Handler: 
+	mov rax, [rsp + 0x30]
 	pushStateNoRax
+	push rax
 	call syscallsManager
+	pop rax
 	popStateNoRax
 	iretq		
 
@@ -308,3 +311,4 @@ userland equ 0x400000
 SECTION .bss
 regBuffer resq 17
 auxRIP resq 1
+auxARG resq 1

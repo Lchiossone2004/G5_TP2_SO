@@ -104,7 +104,7 @@ void test(uint64_t argc, char *argv[], char* command){
         print_usr_mem_info();
     }
     if(strCompare(argv[0],"Prio")){
-        syscall(22,(void*)test_prio,argc,argv, "priority test", 3, 0);
+        syscall(22,(void*)test_prio,argc,argv, "priority test", 3,0);
     }
     if(strCompare(argv[0],"Processes")){
         syscall(22,(void*)test_processes,argc,argv, "processes test", 3, 0);
