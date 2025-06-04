@@ -267,7 +267,7 @@ _irq08Handler:
 	pushStateNoRax
 	push rax
 	call syscallsManager
-	pop rax
+	pop rbx
 	popStateNoRax
 	iretq		
 

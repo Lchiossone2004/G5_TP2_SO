@@ -23,8 +23,13 @@ static shell_fn shell_table[] = {
     [6] = divCero,
     [7] = invalidOperation,
     [8] = test,
-    [9] = kill,
-    [10] = ps
+    [9] = block,
+    [10] = unblock,
+    [11] = nice,
+    [12] = yeild,
+    [13] = kill,
+    [14] = ps,
+    [15] = mem
 };
 
 typedef struct {

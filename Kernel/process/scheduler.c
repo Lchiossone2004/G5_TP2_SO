@@ -99,7 +99,7 @@ void remove_from_ready_list(p_info* process) {
 
 int block_process(uint16_t pid) {
     int idx = foundprocess(pid);
-    if (idx != -1 && processes_list[idx]->state == RUNNING) {
+    if (idx != -1 && processes_list[idx]->state == RUNNING || processes_list[idx]->state == READY) {
         processes_list[idx]->state = BLOCKED;
         return 1;
     }

@@ -1,7 +1,4 @@
 #include <c-lib.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string-lib.h>
 
 #define STDIN 0
 #define STDOUT 1
@@ -9,58 +6,86 @@
 
 extern uint64_t syscall(uint64_t rdi, ...);
 
-void printRegisters()
-{
+//Other
+
+void printRegisters(){
     syscall(1, STDOUT);
 }
 
-void print(char *word)
-{
+void print(char *word){
     syscall(4, STDOUT, word, strSize(word));
 }
 
-void read(char *buffer, int size)
-{
+void read(char *buffer, int size){
     syscall(3, STDOUT, buffer, size);
     return;
 }
 
-void printErr(char *word)
-{
+void printErr(char *word){
     syscall(4, STDERR, word, strSize(word));
 }
 
-void nlPrint()
-{
+void nlPrint(){
     syscall(5, STDOUT);
 }
 
-void sleep(int ticks)
-{
+void sleep(int ticks){
     syscall(8, ticks);
     return;
 }
-int sem_open_lib(int id, int initial_value) 
-{
+
+//Proc
+
+void usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground){
+        syscall(22,fn,argc,argv, name, prio, is_foreground);
+}
+
+void usr_block_process(int pid){
+    syscall(27,pid);
+}
+
+void usr_unblock_process(int pid){
+    syscall(28,pid);
+
+}
+
+int usr_kill(int pid){
+    int toRet = -1;
+    if(pid >0){
+        toRet = syscall(23, pid);
+    }
+    return toRet;
+
+}
+
+void usr_yeild(){
+    syscall(31);
+}
+
+void usr_nice(int pid, int newPrio){
+    if(pid > 0 && newPrio > 0){
+        syscall(26,pid,newPrio);
+    }
+}
+
+//Sems
+
+int usr_sem_open(int id, int initial_value) {
     return syscall(33, id, initial_value);
 }
 
-int sem_close_lib(int id) 
-{
+int usr_sem_close(int id){
     return syscall(34, id);
 }
 
-int sem_wait_lib(int id) 
-{
+int usr_sem_wait(int id){
     return syscall(35, id);
 }
 
-int sem_post_lib(int id) 
-{
+int usr_sem_post(int id){
     return syscall(36, id);
 }
 
-int sem_getvalue_lib(int id) 
-{
+int usr_sem_getvalue(int id){
     return syscall(37, id);
 }

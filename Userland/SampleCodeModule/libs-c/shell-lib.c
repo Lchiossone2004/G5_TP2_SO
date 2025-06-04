@@ -5,10 +5,7 @@
 extern void invalidOp();
 
 void help(uint64_t argc, char *argv[], char* command){
-    if(argc != 1){
-        argsError(argc,argv);
-    }
-    else if(argc == 0){
+    if(argc == 0){
         print("     Here is a list of the commands:");
         for (int i = 0; i < NUMBER_OF_COMMANDS; i++)
         {
@@ -20,11 +17,15 @@ void help(uint64_t argc, char *argv[], char* command){
         print("To know more about any command type [command] -info");
         nlPrint();
     }
-    else if(strCompare(argv[0], "all")){
+    else if(argc == 1 && strCompare(argv[0], "all")){
+        clear(0,NULL,NULL);             //Limpio por que sino no alcanza la pantalla
         for(int i = 0; i < NUMBER_OF_COMMANDS; i++){
             commandInfo(i);
             nlPrint();
         }
+    }
+    else{
+        argsError(argc,argv);
     }
 }
 
@@ -100,19 +101,59 @@ void test(uint64_t argc, char *argv[], char* command){
         argsError(argc,argv);
     }
     if(strCompare(argv[0],"MM")){
-        syscall(22,(void*)test_mm,argc,argv, "memory test", 3, 0);
-        print_usr_mem_info();
+        usr_create_process((void*)test_mm, argc,argv, "memory test", 3, 0);
     }
     if(strCompare(argv[0],"Prio")){
-        syscall(22,(void*)test_prio,argc,argv, "priority test", 3,0);
+        usr_create_process((void*)test_prio,argc,argv, "priority test", 3,0);
     }
     if(strCompare(argv[0],"Processes")){
-        syscall(22,(void*)test_processes,argc,argv, "processes test", 3, 0);
+        usr_create_process((void*)test_processes,argc,argv, "processes test", 3, 0);
     }
     if(strCompare(argv[0],"Sync")){
-        syscall(22,(void*)test_processes,argc,argv, "sync test", 3, 0);
+        usr_create_process((void*)test_processes,argc,argv, "sync test", 3, 0);
     }
     nlPrint();
+}
+
+void block(uint64_t argc, char *argv[], char* command){
+    if(argc != 1){
+        argsError(argc,argv);
+    }
+    else{
+        int pid = strToInt(argv[0]);
+        usr_block_process(pid);
+    }
+}
+
+void unblock(uint64_t argc, char *argv[], char* command){
+    if(argc != 1){
+        argsError(argc,argv);
+    }
+    else{
+        int pid = strToInt(argv[0]);
+        usr_unblock_process(pid);
+    }
+}
+
+void nice(uint64_t argc, char *argv[], char* command){
+    if(argc != 2){
+        argsError(argc,argv);
+    }
+    else{
+        int pid = strToInt(argv[0]);
+        int newPrio = strToInt(argv[1]);
+        usr_nice(pid, newPrio);
+    }
+
+}
+
+void yeild(uint64_t argc, char *argv[], char* command){
+    if(argc > 0){
+        argsError(argc,argv);
+    }
+    else{
+        usr_yeild();
+    }
 }
 
 void kill(uint64_t argc, char *argv[], char* command){
@@ -122,7 +163,7 @@ void kill(uint64_t argc, char *argv[], char* command){
     else{
         int pid = strToInt(argv[0]);
         if(pid >0){
-            int notFoundProcess = syscall(23, pid);
+            int notFoundProcess = usr_kill(pid);
             print(TAB);
         if(notFoundProcess) {
             printErr("kill: process not found");
@@ -142,6 +183,15 @@ void ps(uint64_t argc, char *argv[], char* command){
     else{
         syscall(29);
         nlPrint();
+    }
+}
+
+void mem(uint64_t argc, char *argv[], char* command){
+        if(argc > 0){
+        argsError(argc,argv);
+    }
+    else{
+        print_usr_mem_info();
     }
 }
 
