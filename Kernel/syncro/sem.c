@@ -84,6 +84,10 @@ int8_t sem_wait(int8_t id) {
         return -1;
     }
     if (s->value == 0) {
+        if (s->count >= MAX_PROCESSES) {
+            lock_release(&s->lock);
+            return -1;
+        }
         s->waiting[s->tail] = pid;
         s->tail = (s->tail + 1) % MAX_PROCESSES;
         s->count++;
