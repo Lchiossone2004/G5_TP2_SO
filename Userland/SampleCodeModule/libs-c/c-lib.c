@@ -60,7 +60,7 @@ int usr_kill(int pid){
 
 }
 
-void usr_yeild(){
+void usr_yield(){
     syscall(31);
 }
 

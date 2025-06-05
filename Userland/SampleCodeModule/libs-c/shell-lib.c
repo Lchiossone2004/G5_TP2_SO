@@ -105,6 +105,7 @@ void test(uint64_t argc, char *argv[], char* command, int is_foregorund){
         usr_create_process((void*)test_processes,argc,argv, "processes test", PRIORITY_LOW, is_foregorund);
     }
     else if(strCompare(argv[0],"Sync")){
+        
         usr_create_process((void*)test_sync,argc,argv, "sync test", PRIORITY_LOW, is_foregorund);
     }
 }
@@ -146,7 +147,7 @@ void yeild(uint64_t argc, char *argv[], char* command, int is_foregorund){
         argsError(argc,argv);
     }
     else{
-        usr_yeild();
+        usr_yield();
     }
 }
 

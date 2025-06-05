@@ -55,6 +55,7 @@ void load_args(p_stack *new_stack, uint8_t argc, char* argv[]){
 void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv) {
     fn(argc, argv);
     exit_process();
+    while (1);      //LA OTRA OPCION SERIA LLAMAR A LA INTERRUPCION DE TIMER TICK PARA QUE CAMBIE EL CONTEXTO DEL SCHEDULER
 }
 
 void exit_process() {
