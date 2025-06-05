@@ -59,6 +59,9 @@ void chekCommand(Command aux)
     aux = parseCommand(buffer);
     int command = processCommand(aux.command);
     if(command >= 0 && command <NUMBER_OF_COMMANDS){
+        if (strchr(aux.command, '|')) {  
+            pipeCommand(aux.arg_count, aux.args, aux.command);  
+        }
         if(aux.arg_count == 1 && strCompare(aux.args[0],"-info")){
             commandInfo(command - 1, -1);
             nlPrint();

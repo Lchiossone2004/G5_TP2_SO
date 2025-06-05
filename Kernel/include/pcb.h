@@ -9,13 +9,6 @@
 #include "../include/pipe.h"
 typedef enum STATUS {RUNNING,READY, BLOCKED, TERMINATED} STATUS;
 
-typedef struct {
-    int pipefd[2];  
-    int in_use;   
-    char* id;   
-    PipeBuffer* internal_pipe; 
-} Pipe;
-
 
 typedef struct{
     uint16_t pid;

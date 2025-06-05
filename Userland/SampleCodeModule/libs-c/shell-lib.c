@@ -225,6 +225,53 @@ void argsError(uint64_t argc, char *argv[]){
     nlPrint();
 }
 
+void pipeCommand(uint64_t argc, char *argv[], char *command) {
+    if (argc != 1) {
+        argsError(argc, argv);
+        return;
+    }
+
+    char *full_command = argv[0];
+    char *pipe_pos = strchr(full_command, '|');
+
+    if (pipe_pos == NULL) {
+        printErr("Pipe symbol '|' not found.\n");
+        return;
+    }
+
+    *pipe_pos = '\0';  
+    char *cmd1 = strtok(full_command, " ");
+    char *cmd2 = strtok(pipe_pos + 1, " "); 
+
+    if (!cmd1 || !cmd2) {
+        printErr("Invalid commands.\n");
+        return;
+    }
+
+   
+    int pipefd[2];  
+    int pipe_index = syscall(40, cmd1, 0); 
+    if (pipe_index < 0) {
+        printErr("Failed to create pipe.\n");
+        return;
+    }
+
+    if (syscall(41, cmd2, 0, pipefd) < 0) { 
+        printErr("Failed to open pipe.\n");
+        return;
+    }
+
+   
+    syscall(4, pipefd[1], cmd1, 0);  
+    syscall(3, pipefd[0], cmd2, 0);  
+
+  
+    syscall(32, 0);  
+    syscall(32, 0);  
+}
+
+
+
 void commandInfo(int i,int j){
     (void) commandDescrition;   //Bilardeada para sacar el warning
     (void) commandArgs;

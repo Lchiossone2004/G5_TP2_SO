@@ -22,6 +22,7 @@ void loadBuffer(uint8_t key){
     if(curr == 12) {
         curr = 0;
     }
+
     if(ctrl_pressed && key == 0x2E){
         int pid = get_foreground_process();
         kill_process(pid);
@@ -146,11 +147,13 @@ char toLetter(uint8_t i){
         case 0x2D: aux =  'x'; break;
         case 0x15: aux =  'y'; break;
         case 0x2C: aux =  'z'; break;
+        
         case 0x39: aux =  ' '; break;
         case 0x2A:  break; //shift izquierdo
         case 0x36:  break; //shift derecho
         case 0x1D:  break; //ctrl
         case 0x3A:  break; //capslock
+        case 0x2B: aux =  '|'; break; 
         
         default: return '?';       // Tecla no reconocida
     }

@@ -24,11 +24,7 @@ uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[],
 
     p_stack* new_stack = stack_base - sizeof(p_stack);
 
-    copy_context(new_process, name, stack_base, new_stack, stack_top,prio, is_foreground); 
-
-    for (int i = 0; i < MAX_PIPES; i++) {
-        new_process->pipes[i] = NULL;
-    }
+    copy_context(new_process, name, stack_base, new_stack, stack_top,prio, is_foreground);
 
     new_stack->rbp = stack_base;
     new_stack->rsp = stack_base;
@@ -44,7 +40,7 @@ uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[],
     return new_process->pid;
 }
 
-void load_args(p_stack *new_stack, uint8_t argc, char* argv[]){
+void load_args(p_stack *new_stack, uint8_t argc, char* argv[]) {
     char ** argv_l = mm_malloc((argc+1) * sizeof(char *));
     for(uint8_t i=0; i < argc; i++){
         uint64_t length = strSize(argv[i]) + 1;
@@ -83,7 +79,7 @@ uint16_t fork() {
     p_info* new_process = mm_malloc(sizeof(p_info));
     if (!new_process) return -1;
 
-    copy_context(new_process, current->name, stack_base, new_stack, stack_top,current->priority, current->is_foreground);
+    copy_context(new_process, current->name, stack_base, new_stack, stack_top, current->priority, current->is_foreground);
 
     current->children[current->children_length] = new_process->pid;
     current->children_length++;
@@ -94,8 +90,7 @@ uint16_t fork() {
     return new_process->pid;
 }
 
-
-void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer,void * stack_top ,int prio, int is_foreground) {
+void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer, void * stack_top, int prio, int is_foreground) {
     int len = strSize(pirorityName[prio]);
     new_process->pid = next_pid++;
     new_process->name = mm_malloc(strSize(name) + 1);
@@ -117,7 +112,6 @@ uint16_t wait_pid(uint16_t pid) {
     for (int i = 0; i < current->children_length; i++) {
         if (current->children[i] == pid) {
             while (1) {
-
                 if (foundprocess(pid) == -1) {
                     current->children[i] = 0;
                     return pid;
@@ -153,105 +147,3 @@ size_t strlen(const char* str) {
     return length;
 }
 
-char* strdup(const char* str) {
-    if (str == NULL) {
-        return NULL;
-    }
-
-    size_t len = strlen(str) + 1;
-
-    char* copy = (char*)mm_malloc(len);
-    if (!copy) {
-        return NULL;  
-    }
-
-    memcpy(copy, str, len);
-
-    return copy;  
-}
-
-int create_pipe_for_process(p_info* process, const char* pipe_id) {
-    for (int i = 0; i < MAX_PIPES; i++) {
-        if (process->pipes[i] == NULL) {
-            process->pipes[i] = (Pipe*)mm_malloc(sizeof(Pipe)); 
-            if (!process->pipes[i]) {
-                return -1;
-            }
-
-            process->pipes[i]->in_use = 1;
-            process->pipes[i]->id = strdup(pipe_id); 
-
-            process->pipes[i]->internal_pipe = (PipeBuffer*)mm_malloc(sizeof(PipeBuffer)); 
-            if (!process->pipes[i]->internal_pipe) {
-                mm_free(process->pipes[i]->id);
-                mm_free(process->pipes[i]);
-                return -1;  
-            }
-
-
-            process->pipes[i]->internal_pipe->read_buffer = (char*)mm_malloc(1024);  
-            process->pipes[i]->internal_pipe->write_buffer = (char*)mm_malloc(1024); 
-            if (!process->pipes[i]->internal_pipe->read_buffer || !process->pipes[i]->internal_pipe->write_buffer) {
-                mm_free(process->pipes[i]->internal_pipe);
-                mm_free(process->pipes[i]->id);
-                mm_free(process->pipes[i]);
-                return -1;  
-            }
-
-            process->pipes[i]->internal_pipe->buffer_size = 1024;  
-            process->pipes[i]->internal_pipe->read_pos = 0;
-            process->pipes[i]->internal_pipe->write_pos = 0;
-
-            return i;  
-        }
-    }
-    return -1;
-}
-
-
-int open_pipe_for_process(p_info* process, const char* pipe_id, int* pipefd) {
-    for (int i = 0; i < MAX_PIPES; i++) {
-        if (process->pipes[i] != NULL && strcmp(process->pipes[i]->id, pipe_id) == 0) {
-            pipefd[0] = process->pipes[i]->pipefd[0];
-            pipefd[1] = process->pipes[i]->pipefd[1];
-            return 0;
-        }
-    }
-    return -1;  
-}
-
-int read_from_pipe_or_terminal(p_info* process, const char* pipe_id, char* buffer, int size) {
-    int pipefd[2];  
-    int pipe_index = open_pipe_for_process(process, pipe_id, pipefd); 
-
-    if (pipe_index == -1) {  
-        return sys_read(STDIN, buffer, size);  
-    }
-
-    return read_from_pipe(process->pipes[pipe_index], buffer, size);
-}
-
-int write_to_pipe_or_terminal(p_info* process, const char* pipe_id, const char* buffer, int size) {
-    int pipefd[2];  
-    int pipe_index = open_pipe_for_process(process, pipe_id, pipefd);  
-
-    if (pipe_index == -1) {  
-        return sys_write(STDOUT, buffer, size);
-    }
-
- 
-    return write_to_pipe(process->pipes[pipe_index], buffer, size);
-}
-
-
-
-void free_pipe(p_info* process, const char* pipe_id) {
-    for (int i = 0; i < MAX_PIPES; i++) {
-        if (process->pipes[i] != NULL && strcmp(process->pipes[i]->id, pipe_id) == 0) {
-            mm_free(process->pipes[i]->id);
-            mm_free(process->pipes[i]);    
-            process->pipes[i] = NULL;      
-            break;
-        }
-    }
-}
