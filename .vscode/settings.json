@@ -18,6 +18,9 @@
         "syscall.h": "c",
         "test_util.h": "c",
         "test.h": "c",
-        "shell.h": "c"
+        "shell.h": "c",
+        "keyboard.h": "c",
+        "lib.h": "c",
+        "scheduler.h": "c"
     }
 }

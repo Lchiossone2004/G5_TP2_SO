@@ -29,7 +29,8 @@ static shell_fn shell_table[] = {
     [12] = yeild,
     [13] = kill,
     [14] = ps,
-    [15] = mem
+    [15] = loop,
+    [16] = mem
 };
 
 typedef struct {
@@ -43,9 +44,10 @@ typedef struct {
 #define SHELL_TABLE_SIZE (sizeof(shell_table) / sizeof(shell_fn))
 
 void shell();
-void getKey(char *letra, int *index);
-void chekCommand(char *buffer, int *index, Command aux);
-int processCommand(char *buffer, int * index);
+void getKey();
+void chekCommand(Command aux);
+int processCommand(char *input);
+void clearBuffer();
 Command parseCommand(char * input);
 void freeCommand(Command *cmd);
 

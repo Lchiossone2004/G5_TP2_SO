@@ -10,5 +10,6 @@ void size_t_to_str(size_t value, char* buffer);
 int strToInt(const char *str);
 void strCpy(char* dest, const char* src);
 void deleteSpaces(char * str);
+void intToString(int value, char *buffer, size_t bufferSize);
 
 #endif

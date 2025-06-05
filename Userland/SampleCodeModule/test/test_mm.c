@@ -21,6 +21,7 @@ typedef struct MM_rq {
 uint64_t test_mm(uint64_t argc, char *argv[]) {
     while (1)
     {
+      print("test");
     }
     
 //   mm_rq mm_rqs[MAX_BLOCKS];

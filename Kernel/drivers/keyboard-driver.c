@@ -4,8 +4,10 @@
 #include <keyboard.h>
 #include <videoDriver.h>
 #include <lib.h>
+#include "scheduler.h"
 
 static uint64_t shift_pressed = 0;
+static uint64_t ctrl_pressed = 0;
 static uint64_t caps_pressed = 0;
 
 
@@ -19,6 +21,14 @@ void loadBuffer(uint8_t key){
     //updateKeyboardStatus(key,);
     if(curr == 12) {
         curr = 0;
+    }
+    if(ctrl_pressed && key == 0x2E){
+        int pid = get_foreground_process();
+        kill_process(pid);
+        return;
+    }
+    if(ctrl_pressed && key == 0x20){ 
+        //Comportamiento del ctrl+d
     }
     if(!specialKey(key)){
         char letter = toLetter(key); 
@@ -69,7 +79,10 @@ int getCurr() {
 void updateKeyboardStatus(uint8_t scancode, uint8_t isPressed) {
     if (scancode == 0x2A || scancode == 0x36) {  // Shift izquierdo o derecho
         shift_pressed = isPressed;  // Cambia según esté presionado o no
-    } else if (scancode == 0x3A && isPressed) {  // Caps Lock presionado (toggle)
+    }else if(scancode == 0x1D || scancode == 0xE01D){
+        ctrl_pressed = isPressed;
+    } 
+    else if (scancode == 0x3A && isPressed) {  // Caps Lock presionado (toggle)
         caps_pressed = !caps_pressed;
     }
 }
@@ -147,6 +160,7 @@ char toLetter(uint8_t i){
     if(aux >= '0' && aux <= '9' && shift_pressed) { //si es un número y esta el shift apretado
         aux = shiftNum(aux); //actua segun el numero que corresponda
     }
+
     return aux; 
 }
 

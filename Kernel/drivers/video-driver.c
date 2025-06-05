@@ -3,6 +3,7 @@
 #include <font.h>
 #include <naiveConsole.h>
 #include <lib.h>
+#include "scheduler.h"
 
 #define MOV_X 8		  // Lo que ocupa en x de un char
 #define MOV_Y 16	  // Lo que ocupa en y de un char
@@ -20,6 +21,7 @@
 #define MAX_FIL_IN_SHELL 48
 #define COLOR_1 0x00b6e2f0
 #define COLOR_2 0x009de0f5
+
 
 struct vbe_mode_info_structure
 {
@@ -82,20 +84,22 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y)
 
 void imprimirVideo(char *palabra, int size, uint32_t color)
 {
-	for (int i = 0; i < size; i++)
-	{
-		if (palabra[i] == '\n')
-		{
-			nlVideo();
-		}
-		else
-		{
-			y = aux;
-			word vol;
-			vol.num = palabra[i];
-			vol.color = color;
-			matrix[(y / zoom) / MOV_Y][(x / zoom) / MOV_X] = vol;
-			charVideo(palabra[i], 1, color);
+	p_info * current_p = get_current_process();
+	if(current_p->is_foreground){	
+		for (int i = 0; i < size; i++){
+			if (palabra[i] == '\n')
+			{
+				nlVideo();
+			}
+			else
+			{
+				y = aux;
+				word vol;
+				vol.num = palabra[i];
+				vol.color = color;
+				matrix[(y / zoom) / MOV_Y][(x / zoom) / MOV_X] = vol;
+				charVideo(palabra[i], 1, color);
+			}
 		}
 	}
 }

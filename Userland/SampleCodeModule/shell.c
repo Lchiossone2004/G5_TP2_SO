@@ -5,7 +5,6 @@ static char letra[1] = {0};
 static int ultimaLetra;
 static int index = 0;
 
-extern uint64_t syscall(__uint64_t rdi, ...);
 
 void shell()
 {
@@ -15,7 +14,7 @@ void shell()
     {
         if (index == WORD_BUFFER_SIZE - 1)
         {
-            chekCommand(buffer,&index,aux);
+            chekCommand(aux);
             print(NEW_LINE);
             index = 0;
             ultimaLetra = 0;
@@ -28,7 +27,7 @@ void shell()
         }
         if (*letra == 1)
         {
-            chekCommand(buffer,&index,aux);
+            chekCommand(aux);
             print(NEW_LINE);
             index = 0;
             ultimaLetra = 0;
@@ -49,33 +48,37 @@ void shell()
     }
 }
 
-void getKey(char *letra, int *index)
+void getKey()
 {
-    syscall(2, STDIN, letra, *index);
+    syscall(2, STDIN, letra, index);
 }
 
-void chekCommand(char *buffer, int *index, Command aux)
+void chekCommand(Command aux)
 {
     deleteSpaces(buffer);
     aux = parseCommand(buffer);
-    int command = processCommand(aux.command, index);
-    if(aux.arg_count == 1 && strCompare(aux.args[0],"-info") ){
-        commandInfo(command - 1, -1);
+    int command = processCommand(aux.command);
+    if(command >= 0 && command <NUMBER_OF_COMMANDS){
+        if(aux.arg_count == 1 && strCompare(aux.args[0],"-info")){
+            commandInfo(command - 1, -1);
+            nlPrint();
+        }
+        else{
+        shell_table[command](aux.arg_count, aux.args, aux.command);
+        }
     }
-    else{
-    shell_table[command](aux.arg_count, aux.args, aux.command);
-    }
-
+    clearBuffer();
+    index = 0;
     freeCommand(&aux);
 }
 
-int processCommand(char *buffer, int *index) {
-    if (*index == 0 && buffer[0] == 0) {
+int processCommand(char *input) {
+    if (index == 0 && input[0] == 0) {
         return -1;
     }
 
     for (int j = 0; j < NUMBER_OF_COMMANDS; j++) {
-        if (strCompare(commands[j], buffer)) {
+        if (strCompare(commands[j], input)) {
             return j + 1; 
         }
     }
@@ -83,8 +86,8 @@ int processCommand(char *buffer, int *index) {
    
     char commandPart[WORD_BUFFER_SIZE] = {0};
     int i = 0;
-    while (buffer[i] != ' ' && buffer[i] != 0 && i < WORD_BUFFER_SIZE - 1) {
-        commandPart[i] = buffer[i];
+    while (input[i] != ' ' && input[i] != 0 && i < WORD_BUFFER_SIZE - 1) {
+        commandPart[i] = input[i];
         i++;
     }
     commandPart[i] = 0;
@@ -97,6 +100,12 @@ int processCommand(char *buffer, int *index) {
     }
 
     return 0;
+}
+
+void clearBuffer(){
+    for(int i = 0; i < index ; i++){
+        buffer[i] = ' ';
+    }
 }
 
 Command parseCommand(char *input) {

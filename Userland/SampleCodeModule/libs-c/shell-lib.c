@@ -1,8 +1,7 @@
 #include <shell-lib.h>
 #include "string-lib.h"
 #include "test.h"
-
-extern void invalidOp();
+#include "c-lib.h"
 
 void help(uint64_t argc, char *argv[], char* command){
     if(argc == 0){
@@ -27,7 +26,6 @@ void help(uint64_t argc, char *argv[], char* command){
                 commandInfo(i,-1);
             }
             nlPrint();
-            nlPrint();
         }
     }
     else{
@@ -51,7 +49,6 @@ void whatTime(uint64_t argc, char *argv[], char* command){
         return;
     }
     print(TAB);
-    nlPrint();
 }
 
 void zoom(uint64_t argc, char *argv[], char* command){
@@ -72,7 +69,6 @@ void clear(uint64_t argc, char *argv[], char* command){
         argsError(argc,argv);
     }
     syscall(9, STDOUT);
-    nlPrint();
 }
 
 void printReg(uint64_t argc, char *argv[], char* command){
@@ -80,7 +76,6 @@ void printReg(uint64_t argc, char *argv[], char* command){
         argsError(argc,argv);
     }
     syscall(1, STDOUT);
-     nlPrint();
 }
 
 void divCero(uint64_t argc, char *argv[], char* command){
@@ -88,14 +83,12 @@ void divCero(uint64_t argc, char *argv[], char* command){
         argsError(argc,argv);
     }
     int aux = 0/0;
-    nlPrint();
 }
 void invalidOperation(uint64_t argc, char *argv[], char* command){
     if(argc > 0){
         argsError(argc,argv);
     }
     invalidOp();
-    nlPrint();
 }
 
 void test(uint64_t argc, char *argv[], char* command){
@@ -103,18 +96,17 @@ void test(uint64_t argc, char *argv[], char* command){
         argsError(argc,argv);
     }
     if(strCompare(argv[0],"MM")){
-        usr_create_process((void*)test_mm, argc,argv, "memory test", PRIORITY_LOW, 0);
+        usr_create_process((void*)test_mm, argc,argv, "memory test", PRIORITY_LOW, 1);
     }
-    if(strCompare(argv[0],"Prio")){
+    else if(strCompare(argv[0],"Prio")){
         usr_create_process((void*)test_prio,argc,argv, "priority test", PRIORITY_LOW,0);
     }
-    if(strCompare(argv[0],"Processes")){
+    else if(strCompare(argv[0],"Processes")){
         usr_create_process((void*)test_processes,argc,argv, "processes test", PRIORITY_LOW, 0);
     }
-    if(strCompare(argv[0],"Sync")){
+    else if(strCompare(argv[0],"Sync")){
         usr_create_process((void*)test_processes,argc,argv, "sync test", PRIORITY_LOW, 0);
     }
-    nlPrint();
 }
 
 void block(uint64_t argc, char *argv[], char* command){
@@ -184,7 +176,6 @@ void ps(uint64_t argc, char *argv[], char* command){
     }
     else{
         syscall(29);
-        nlPrint();
     }
 }
 
@@ -194,6 +185,20 @@ void mem(uint64_t argc, char *argv[], char* command){
     }
     else{
         print_usr_mem_info();
+    }
+}
+
+void loop(uint64_t argc, char *argv[], char* command){
+    int pid = syscall(33);
+    int len = 124;
+    char buffer[len];
+    intToString(pid,buffer,len);
+    while(1){
+        print(buffer);
+        nlPrint();
+        print("These Aren't the Droids Your Looking For");
+        nlPrint();
+        for(int i = 0; i <100000000; i++);
     }
 }
 
@@ -221,6 +226,9 @@ void argsError(uint64_t argc, char *argv[]){
 }
 
 void commandInfo(int i,int j){
+    (void) commandDescrition;   //Bilardeada para sacar el warning
+    (void) commandArgs;
+
             print(TAB);
             print("- This is the [");
             print(commands[i]);
@@ -249,4 +257,5 @@ void commandInfo(int i,int j){
                 print("- Possible arguments: ");
                 print(commandArgs[j]);
             }
+            nlPrint();
 }  

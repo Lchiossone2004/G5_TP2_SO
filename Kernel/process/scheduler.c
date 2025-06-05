@@ -200,11 +200,11 @@ void get_processes() {
     char buffer[32];
 
     printFixed("PID");
-    printFixed("Nombre");
-    printFixed("Prioridad");
+    printFixed("Name");
+    printFixed("Priority");
     printFixed("Stack Base");
     printFixed("Stack Pointer");
-    printFixed("Estado");
+    printFixed("State");
     printFixed("Foreground");
     nlVideo();
 
@@ -267,3 +267,13 @@ int remove_from_processes_list(p_info* process) {
 
     return 0; 
 }
+
+int get_foreground_process(){
+    for(int i = 0; i <MAX_PROCESSES; i++){
+        if(processes_list[i]->is_foreground){
+            return processes_list[i]->pid;
+        }
+    }   
+    return -1;
+}
+

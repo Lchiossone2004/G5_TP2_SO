@@ -9,7 +9,7 @@
 #include <c-lib.h>
 
 #define WORD_BUFFER_SIZE 1024
-#define NUMBER_OF_COMMANDS 15
+#define NUMBER_OF_COMMANDS 16
 #define TAB "     "
 #define NEW_LINE "shell: >"
 #define STDIN 0
@@ -23,7 +23,7 @@ typedef enum {
     PRIORITY_LOW = 3         
 } PriorityLevel;
 
-static char *commands[] = {"help", "time", "zoom", "clear", "regs", "div cero", "invalid op", "test", "block" , "unblock", "nice" ,"yeild","kill", "ps","mem"};
+static char *commands[] = {"help", "time", "zoom", "clear", "regs", "div cero", "invalid op", "test", "block" , "unblock", "nice" ,"yeild","kill", "ps", "loop", "mem"};
 
 static char *commandDescrition[] ={ "Shows list of available commands.",
                                     "It prints the actual time.",
@@ -39,10 +39,14 @@ static char *commandDescrition[] ={ "Shows list of available commands.",
                                     "Gives up the Cpu",
                                     "Kills the selected process.",
                                     "Shows a list of the existing processes.",
+                                    "Loops and shows it PID and a special message",
                                     "Shows the current state of allocated memory."
                                 };
 
-static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM - Prio - Processes - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none","none"};
+static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM - Prio - Processes - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none"};
+
+extern uint64_t syscall(__uint64_t rdi, ...);
+extern void invalidOp();
 
 void help(uint64_t argc, char *argv[], char* command);
 void whatTime(uint64_t argc, char *argv[], char* command);
@@ -58,6 +62,7 @@ void nice(uint64_t argc, char *argv[], char* command);
 void yeild(uint64_t argc, char *argv[], char* command);
 void kill(uint64_t argc, char *argv[], char* command);
 void ps(uint64_t argc, char *argv[], char* command);
+void loop(uint64_t argc, char *argv[], char* command); //Falta hacer
 void mem(uint64_t argc, char *argv[], char* command);
 void invalid(uint64_t argc, char *argv[], char* command);
 void argsError(uint64_t argc, char *argv[]);

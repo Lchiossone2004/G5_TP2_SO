@@ -67,12 +67,13 @@ static syscall_fn syscall_table[] = {
     [30] = sys_fork,
     [31] = sys_quitCPU,
     [32] = sys_wait,
-    [33] = sys_sem_open,
-    [34] = sys_sem_close,
-    [35] = sys_sem_wait,
-    [36] = sys_sem_post,
-    [37] = sys_sem_get_value,
-    [38] = sys_go_middle
+    [33] = sys_get_foreground,
+    [34] = sys_sem_open,
+    [35] = sys_sem_close,
+    [36] = sys_sem_wait,
+    [37] = sys_sem_post,
+    [38] = sys_sem_get_value,
+    [39] = sys_go_middle
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -173,7 +174,7 @@ uint64_t sys_newLine(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
     return 0;
 }
 
-uint64_t sys_sleep(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
+uint64_t sys_sleep(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){ //AREGLAR
     int ticks = (int) rsi;
 
     _sti();
@@ -342,6 +343,11 @@ uint64_t sys_quitCPU(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
 uint64_t sys_wait(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return wait();
 }
+
+uint64_t sys_get_foreground(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
+    return get_foreground_process();
+}
+
 uint64_t sys_sem_open(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return sem_open(rsi, rdx);
 }

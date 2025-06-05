@@ -91,3 +91,48 @@ void deleteSpaces(char * input){
 
     input[j] = '\0'; 
 }
+
+#include <stddef.h>
+
+void intToString(int value, char *buffer, size_t bufferSize){
+    if (bufferSize < 2) {
+
+        if (bufferSize > 0)
+            buffer[0] = '\0';
+        return;
+    }
+
+    size_t i = 0;
+    int isNegative = 0;
+
+    if (value < 0) {
+        isNegative = 1;
+        value = -value;
+    }
+
+    char temp[12]; 
+    size_t j = 0;
+
+    if (value == 0) {
+        temp[j++] = '0';
+    } else {
+        while (value > 0 && j < sizeof(temp)) {
+            temp[j++] = '0' + (value % 10);
+            value /= 10;
+        }
+    }
+
+    if (isNegative && j < sizeof(temp)) {
+        temp[j++] = '-';
+    }
+    if (j >= bufferSize) {
+        buffer[0] = '\0';
+        return;
+    }
+
+    for (size_t k = 0; k < j && k < bufferSize - 1; k++) {
+        buffer[k] = temp[j - k - 1];
+    }
+
+    buffer[j < bufferSize - 1 ? j : bufferSize - 1] = '\0';
+}

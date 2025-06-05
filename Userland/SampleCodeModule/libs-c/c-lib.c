@@ -37,7 +37,9 @@ void sleep(int ticks){
 //Proc
 
 void usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground){
+    
         syscall(22,fn,argc,argv, name, prio, is_foreground);
+        return;
 }
 
 void usr_block_process(int pid){
