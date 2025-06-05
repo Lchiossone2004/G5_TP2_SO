@@ -151,6 +151,19 @@ SECTION .text
 	iretq
 %endmacro
 
+%macro irqHandlerMaster 2
+	pushStateNoRax
+	mov rdi, %1 ; pasaje de parametro
+	call irqDispatcher
+
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
+
+	popStateNoRax
+	iretq
+%endmacro
+
 %macro irqHandlerMaster 0
 	pushState
 
@@ -252,7 +265,18 @@ _irq02Handler:
 
 ;Serial Port 2 and 4
 _irq03Handler:
-	irqHandlerMaster 3
+	pushState
+	
+	mov rdi, rsp
+	call scheduler
+	mov rsp, rax
+
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
 
 ;Serial Port 1 and 3
 _irq04Handler:
