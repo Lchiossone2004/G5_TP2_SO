@@ -4,7 +4,17 @@ GLOBAL invalidOp
 section .text
 
 syscall:
+
+    push rbp
+    mov rbp, rsp
+
+    lea rbx, [rbp+16]  
+
     int 80h
+    
+    mov rsp, rbp
+    pop rbp
+
     ret
 
 invalidOp:

@@ -268,10 +268,10 @@ int remove_from_processes_list(p_info* process) {
     return 0; 
 }
 
-int get_foreground_process(){
+p_info* get_foreground_process(){
     for(int i = 0; i <MAX_PROCESSES; i++){
         if(processes_list[i]->is_foreground){
-            return processes_list[i]->pid;
+            return processes_list[i];
         }
     }   
     return -1;

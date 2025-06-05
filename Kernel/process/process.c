@@ -103,9 +103,15 @@ void copy_context(p_info* new_process, char *name, void * stack_base, void * sta
     new_process->priority = pirority[prio];
     new_process->priorityName = mm_malloc(len * sizeof(char));
     memcpy(new_process->priorityName,pirorityName[prio],len);
-    new_process->is_foreground = is_foreground;
     initialize_zero(new_process->children, MAX_CHILDREN);
     new_process->children_length = 0;
+    new_process->is_foreground = is_foreground;
+    if(new_process->is_foreground){
+        p_info* foreground_proc = get_foreground_process();
+        if(foreground_proc->pid != new_process->pid){
+            foreground_proc->is_foreground = 0;
+        }
+    }
 }
 
 uint16_t wait_pid(uint16_t pid) {

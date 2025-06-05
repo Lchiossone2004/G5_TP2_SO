@@ -58,13 +58,19 @@ void chekCommand(Command aux)
     deleteSpaces(buffer);
     aux = parseCommand(buffer);
     int command = processCommand(aux.command);
+    int is_foreground = 1;
+    for(int i = 0; i<aux.arg_count; i++){
+        if(strCompare(aux.args[i],"&")){
+            is_foreground = 0;
+        }
+    }
     if(command >= 0 && command <NUMBER_OF_COMMANDS){
         if(aux.arg_count == 1 && strCompare(aux.args[0],"-info")){
             commandInfo(command - 1, -1);
             nlPrint();
         }
         else{
-        shell_table[command](aux.arg_count, aux.args, aux.command);
+        shell_table[command](aux.arg_count, aux.args, aux.command,is_foreground);
         }
     }
     clearBuffer();
@@ -122,7 +128,7 @@ Command parseCommand(char *input) {
 
 
     i = 0;
-    while (index < len && input[index] != ' ' && i < 123) {
+    while (index < len && input[index] != ' ' && i < MAX_ARG_LEN - 1) {
         toRet.command[i++] = input[index++];
     }
     toRet.command[i] = '\0';
@@ -133,7 +139,8 @@ Command parseCommand(char *input) {
         while (index < len && input[index] == ' ') index++;
         if (index >= len) break;
 
-        toRet.args[toRet.arg_count] = (char *)usr_malloc(sizeof(char) * MAX_ARG_LEN);
+        char * aux = (char *)usr_malloc(sizeof(char) * MAX_ARG_LEN);
+        toRet.args[toRet.arg_count] = aux;
         i = 0;
 
         while (index < len && input[index] != ' ' && i < MAX_ARG_LEN - 1) {

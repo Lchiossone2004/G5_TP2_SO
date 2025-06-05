@@ -11,7 +11,7 @@
 #define MAX_ARG_LEN 124
 #define MAX_ARGS 5
 
-typedef void (*shell_fn)(uint64_t, char*[], char*);
+typedef void (*shell_fn)(uint64_t, char*[], char*,int);
 
 static shell_fn shell_table[] = {
     [0] = invalid,

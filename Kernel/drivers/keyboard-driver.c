@@ -23,8 +23,8 @@ void loadBuffer(uint8_t key){
         curr = 0;
     }
     if(ctrl_pressed && key == 0x2E){
-        int pid = get_foreground_process();
-        kill_process(pid);
+        p_info * foreground_proc = get_foreground_process();
+        kill_process(foreground_proc->pid);
         return;
     }
     if(ctrl_pressed && key == 0x20){ 

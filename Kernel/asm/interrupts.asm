@@ -262,14 +262,27 @@ _irq04Handler:
 _irq05Handler:
 	irqHandlerMaster 5
 
-_irq08Handler: 
-	mov rax, [rsp + 0x30]
-	pushStateNoRax
-	push rax
-	call syscallsManager
-	pop rbx
-	popStateNoRax
-	iretq		
+_irq08Handler:
+    push rbp
+    mov rbp, rsp
+
+    pushStateNoRax
+    sub rsp, 16
+
+    mov rax, [rbx]         ; argumento 7
+    mov [rsp], rax
+    mov rax, [rbx+8]       ; argumento 8
+    mov [rsp+8], rax
+
+    call syscallsManager
+
+    add rsp, 16
+    popStateNoRax
+
+    mov rsp, rbp
+    pop rbp
+    iretq
+	
 
 ;activa el sti (para poder recibir interrupciones dentro del getChar)
 
@@ -311,4 +324,3 @@ userland equ 0x400000
 SECTION .bss
 regBuffer resq 17
 auxRIP resq 1
-auxARG resq 1
