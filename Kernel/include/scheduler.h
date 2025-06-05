@@ -20,5 +20,6 @@ void get_processes();
 void printFixed(const char* str);
 uint16_t quitCPU();
 int get_foreground_process();
+p_info* get_process_by_pid(uint16_t pid);
 
 #endif

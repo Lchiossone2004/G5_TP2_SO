@@ -99,7 +99,7 @@ void remove_from_ready_list(p_info* process) {
 
 int block_process(uint16_t pid) {
     int idx = foundprocess(pid);
-    if (idx != -1 && processes_list[idx]->state == RUNNING || processes_list[idx]->state == READY) {
+    if (idx != -1 && (processes_list[idx]->state == RUNNING || processes_list[idx]->state == READY)) {
         processes_list[idx]->state = BLOCKED;
         return 1;
     }
@@ -275,5 +275,14 @@ int get_foreground_process(){
         }
     }   
     return -1;
+}
+
+p_info* get_process_by_pid(uint16_t pid) {
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (processes_list[i] && processes_list[i]->pid == pid) {
+            return processes_list[i];
+        }
+    }
+    return NULL;  
 }
 

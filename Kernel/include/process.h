@@ -39,4 +39,7 @@ void copy_context(p_info* new_process, char *name, void * stack_base, void * sta
 uint16_t wait_pid(uint16_t pid);
 uint16_t wait();
 void initialize_zero(uint16_t array[], int size);
+int create_pipe_for_process(p_info* process, const char* pipe_id);
+int open_pipe_for_process(p_info* process, const char* pipe_id, int* pipefd);
+
 #endif

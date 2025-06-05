@@ -73,7 +73,9 @@ static syscall_fn syscall_table[] = {
     [36] = sys_sem_wait,
     [37] = sys_sem_post,
     [38] = sys_sem_get_value,
-    [39] = sys_go_middle
+    [39] = sys_go_middle,
+    [40] = sys_create_pipe,
+    [41] = sys_open_pipe
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -367,3 +369,35 @@ uint64_t sys_sem_get_value(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8
 uint64_t sys_go_middle(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return goMiddle();
 }
+
+uint64_t sys_create_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    const char* pipe_id = (const char*) rsi;
+    uint16_t pid = (uint16_t) rdx;  
+    p_info* target_process = get_process_by_pid(pid);
+    if (!target_process) {
+        return -1;  
+    }
+
+    int pipe_index = create_pipe_for_process(target_process, pipe_id);
+
+    return pipe_index;
+}
+
+
+uint64_t sys_open_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    const char* pipe_id = (const char*) rsi;
+    uint16_t pid = (uint16_t) rdx;  
+    int* pipefd = (int*) rcx;     
+    p_info* target_process = get_process_by_pid(pid);  
+
+    if (!target_process) {
+        return -1;  
+    }
+
+    int pipe_index = open_pipe_for_process(target_process, pipe_id, pipefd);
+
+    return pipe_index;
+}
+
+
+
