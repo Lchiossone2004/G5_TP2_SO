@@ -73,21 +73,21 @@ void usr_nice(int pid, int newPrio){
 //Sems
 
 int usr_sem_open(int id, int initial_value) {
-    return syscall(33, id, initial_value);
+    return syscall(34, id, initial_value);
 }
 
 int usr_sem_close(int id){
-    return syscall(34, id);
-}
-
-int usr_sem_wait(int id){
     return syscall(35, id);
 }
 
-int usr_sem_post(int id){
+int usr_sem_wait(int id){
     return syscall(36, id);
 }
 
-int usr_sem_getvalue(int id){
+int usr_sem_post(int id){
     return syscall(37, id);
+}
+
+int usr_sem_getvalue(int id){
+    return syscall(38, id);
 }
