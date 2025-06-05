@@ -3,7 +3,6 @@
 #include "../include/videoDriver.h"
 #include "../include/lib.h"
 #include "../include/naiveConsole.h"
-#include "../include/time.h"
 
 #define MAX_PROCESSES 10
 #define MAX_PRIORITY 10
@@ -102,7 +101,7 @@ int block_process(uint16_t pid) {
     int idx = foundprocess(pid);
     if (idx != -1 && processes_list[idx]->state == RUNNING || processes_list[idx]->state == READY) {
         processes_list[idx]->state = BLOCKED;
-        scheduler(get_current_process());
+        callScheduler();
         return 1;
     }
     return 0;
