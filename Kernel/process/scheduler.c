@@ -101,7 +101,9 @@ int block_process(uint16_t pid) {
     int idx = foundprocess(pid);
     if (idx != -1 && processes_list[idx]->state == RUNNING || processes_list[idx]->state == READY) {
         processes_list[idx]->state = BLOCKED;
-        callScheduler();
+        if(current_process->pid == pid){  //Solo llamamos inmediatamente al scheduler si hay que blpquear al propio proceso, osea que tena efeto inmediato
+            callScheduler();                
+        }                                                                     
         return 1;
     }
     return 0;
@@ -112,7 +114,7 @@ int unblock_process(uint16_t pid) {
     if (idx != -1 && processes_list[idx]->state == BLOCKED) {
         processes_list[idx]->state = READY;
         add_to_ready_list(processes_list[idx]);
-        scheduler(get_current_process());
+        //callScheduler(); No hace falta que el efecto sea inmediato   
         return 1;
     }
     return 0;

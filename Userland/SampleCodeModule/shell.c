@@ -59,18 +59,33 @@ void chekCommand(Command aux)
     aux = parseCommand(buffer);
     int command = processCommand(aux.command);
     int is_foreground = 1;
+    int offset = 0;
     for(int i = 0; i<aux.arg_count; i++){
         if(strCompare(aux.args[i],"&")){
+            if(i != 0){
+                printErr("Invalid & must be placed after the command");
+                nlPrint();
+                command = -1;
+            }
+            else{
+            // else{
+            //     is_foreground = 0;
+            //     aux.arg_count -=1;
+            //     aux.args +=1;
+            // }
             is_foreground = 0;
+            offset = 1;
+            aux.arg_count--;
+            }
         }
     }
-    if(command >= 0 && command <NUMBER_OF_COMMANDS){
+    if(command >= 0 && command <=NUMBER_OF_COMMANDS){
         if(aux.arg_count == 1 && strCompare(aux.args[0],"-info")){
             commandInfo(command - 1, -1);
             nlPrint();
         }
         else{
-        shell_table[command](aux.arg_count, aux.args, aux.command,is_foreground);
+        shell_table[command](aux.arg_count, aux.args + offset, aux.command,is_foreground);
         }
     }
     clearBuffer();

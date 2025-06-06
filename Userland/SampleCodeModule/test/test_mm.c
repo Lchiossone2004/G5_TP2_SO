@@ -11,14 +11,15 @@
 #include <memory-lib.h>
 #include <shell-lib.h>
 
-#define MAX_BLOCKS 128
+#define MAX_BLOCKS 12 //128
 
 typedef struct MM_rq {
-  void *address;
+  void* address;
   uint32_t size;
 } mm_rq;
 
 uint64_t test_mm(uint64_t argc, char *argv[]) {
+  
   mm_rq mm_rqs[MAX_BLOCKS];
   uint8_t rq;
   uint32_t total;
@@ -37,7 +38,9 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
     // Request as many blocks as we can
     while (rq < MAX_BLOCKS && total < max_memory) {
       mm_rqs[rq].size = GetUniform(max_memory - total - 1) + 1;
-      mm_rqs[rq].address = usr_malloc(mm_rqs[rq].size);
+      void * aux = usr_malloc(mm_rqs[rq].size);
+      mm_rqs[rq].address = aux;
+
 
       if (mm_rqs[rq].address) {
         total += mm_rqs[rq].size;

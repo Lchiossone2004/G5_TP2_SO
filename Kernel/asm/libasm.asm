@@ -92,13 +92,8 @@ getKey:
 
 
 callScheduler:
-	push rbp
-    mov rbp, rsp
-
 	int 0x22
 
-	mov rsp, rbp 
-    pop rbp
 	ret
 outb:
 	push rbp

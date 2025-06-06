@@ -96,7 +96,7 @@ void test(uint64_t argc, char *argv[], char* command, int is_foregorund){
         argsError(argc,argv);
     }
     if(strCompare(argv[0],"MM")){
-        usr_create_process((void*)test_mm, argc,argv, "memory test", PRIORITY_LOW, is_foregorund);
+        usr_create_process((void*)test_mm, argc-1,argv+1, "memory test", PRIORITY_LOW, is_foregorund);
     }
     else if(strCompare(argv[0],"Prio")){
         usr_create_process((void*)test_prio,argc,argv, "priority test", PRIORITY_LOW,is_foregorund);
@@ -156,6 +156,7 @@ void kill(uint64_t argc, char *argv[], char* command, int is_foregorund){
         argsError(argc,argv);
     }
     else{
+        print(argv[0]);
         int pid = strToInt(argv[0]);
         if(pid >0){
             int notFoundProcess = usr_kill(pid);
@@ -181,7 +182,7 @@ void ps(uint64_t argc, char *argv[], char* command, int is_foregorund){
 }
 
 void mem(uint64_t argc, char *argv[], char* command, int is_foregorund){
-        if(argc > 0){
+    if(argc > 0){
         argsError(argc,argv);
     }
     else{
@@ -235,7 +236,7 @@ void commandInfo(int i,int j){
             print(commands[i]);
             print("] command.");
             if(j != -1){
-                syscall(38);
+                syscall(39);
                 print("- This is the [");
                 print(commands[j]);
                 print("] command.");
@@ -245,7 +246,7 @@ void commandInfo(int i,int j){
             print("- ");
             print(commandDescrition[i]);
             if(j!= -1){
-                syscall(38);
+                syscall(39);
                 print("- ");
                 print(commandDescrition[j]);
             }
@@ -254,7 +255,7 @@ void commandInfo(int i,int j){
             print("- Possible arguments: ");
             print(commandArgs[i]);
             if(j!= -1){
-                 syscall(38);
+                 syscall(39);
                 print("- Possible arguments: ");
                 print(commandArgs[j]);
             }
