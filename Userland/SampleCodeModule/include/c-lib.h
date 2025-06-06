@@ -14,9 +14,9 @@ void printErr(char *buffer);
 void sleep(int ticks);
 
 //Proc
-int usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground);
-void usr_block_process(int pid);
-void usr_unblock_process(int pid);
+int32_t usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground);
+int usr_block_process(int pid);
+int usr_unblock_process(int pid);
 int usr_kill(int pid);
 void usr_yield();
 void usr_nice(int pid, int newPrio);

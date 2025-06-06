@@ -36,16 +36,17 @@ void sleep(int ticks){
 
 //Proc
 
-int usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground){
-        return syscall(22,fn,argc,argv, name, prio, is_foreground);
+int32_t usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground){
+        int32_t pid = (int32_t)syscall(22,fn,argc,argv, name, prio, is_foreground);
+        return pid;
 }
 
-void usr_block_process(int pid){
-    syscall(27,pid);
+int usr_block_process(int pid){
+    return syscall(27,pid);
 }
 
-void usr_unblock_process(int pid){
-    syscall(28,pid);
+int usr_unblock_process(int pid){
+    return syscall(28,pid);
 
 }
 

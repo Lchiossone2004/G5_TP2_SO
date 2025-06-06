@@ -19,7 +19,7 @@ void shell()
             index = 0;
             ultimaLetra = 0;
         }
-        getKey(letra, &index);
+        getKey();
         if (*letra == 0 && index > 0)
         {
             index -= 1;
@@ -68,11 +68,6 @@ void chekCommand(Command aux)
                 command = -1;
             }
             else{
-            // else{
-            //     is_foreground = 0;
-            //     aux.arg_count -=1;
-            //     aux.args +=1;
-            // }
             is_foreground = 0;
             offset = 1;
             aux.arg_count--;

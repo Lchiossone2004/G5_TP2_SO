@@ -101,8 +101,8 @@ void test(uint64_t argc, char *argv[], char* command, int is_foregorund){
     else if(strCompare(argv[0],"Prio")){
         usr_create_process((void*)test_prio,argc,argv, "priority test", PRIORITY_LOW,is_foregorund);
     }
-    else if(strCompare(argv[0],"Processes")){
-        usr_create_process((void*)test_processes,argc,argv, "processes test", PRIORITY_LOW, is_foregorund);
+    else if(strCompare(argv[0],"Proc")){
+        usr_create_process((void*)test_processes,argc -1,argv+1, "processes test", PRIORITY_LOW, is_foregorund);
     }
     else if(strCompare(argv[0],"Sync")){
         

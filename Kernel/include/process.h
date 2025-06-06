@@ -29,14 +29,18 @@ typedef struct {
     void* ss;
 } p_stack;
 
-uint64_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority, int is_foreground);
-void load_args(p_stack *new_process, uint8_t argc, char* argv[]);
+int32_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority, int is_foreground);
+void load_args(p_stack *new_stack, p_info * new_process, uint8_t argc, char* argv[]);
 void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv) ;
 void exit_process();  
-uint16_t get_pid();
-uint16_t fork();
+int get_pid();
+int fork();
 void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer,void * stack_top ,int priority, int is_foreground);
-uint16_t wait_pid(uint16_t pid);
-uint16_t wait();
+int wait_pid(int pid);
+int wait();
 void initialize_zero(uint16_t array[], int size);
+void assignForeground(p_info* new_process, int is_foreground);
+void assignPid(p_info* new_process);
+void freePid(int pid);
+
 #endif

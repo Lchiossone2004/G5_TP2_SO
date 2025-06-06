@@ -3,6 +3,7 @@
 #include "../include/videoDriver.h"
 #include "../include/lib.h"
 #include "../include/naiveConsole.h"
+#include "../include/process.h"
 
 #define MAX_PROCESSES 10
 #define MAX_PRIORITY 10
@@ -97,27 +98,39 @@ void remove_from_ready_list(p_info* process) {
     } while (curr != ready_list);
 }
 
-int block_process(uint16_t pid) {
+int block_process(int pid) {
     int idx = foundprocess(pid);
-    if (idx != -1 && processes_list[idx]->state == RUNNING || processes_list[idx]->state == READY) {
+    if (idx != -1 && (processes_list[idx]->state == RUNNING || processes_list[idx]->state == READY)) {
         processes_list[idx]->state = BLOCKED;
         if(current_process->pid == pid){  //Solo llamamos inmediatamente al scheduler si hay que blpquear al propio proceso, osea que tena efeto inmediato
             callScheduler();                
         }                                                                     
         return 1;
     }
-    return 0;
+    return -1;
 }
 
-int unblock_process(uint16_t pid) {
+int unblock_process(int pid) {
     int idx = foundprocess(pid);
     if (idx != -1 && processes_list[idx]->state == BLOCKED) {
         processes_list[idx]->state = READY;
-        add_to_ready_list(processes_list[idx]);
-        //callScheduler(); No hace falta que el efecto sea inmediato   
+        ReadyNode* node = ready_list;
+        int already_in_list = 0;
+        if (node) {
+            do {
+                if (node->process_info == processes_list[idx]) {
+                    already_in_list = 1;
+                    break;
+                }
+                node = node->next;
+            } while (node != ready_list);
+        }
+        if (!already_in_list) {
+            add_to_ready_list(processes_list[idx]);
+        }  
         return 1;
     }
-    return 0;
+    return -1;
 }
 
 void add_to_process_list(p_info* process) {
@@ -142,11 +155,11 @@ p_info* get_current_process() {
     return current_process;
 }
 
-int kill_process(uint64_t pid) {
+int kill_process(int pid) {
     int idx = foundprocess(pid);
     if (idx == -1)
-        return 1;
-
+        return -1;
+    freePid(pid);
     p_info* p = processes_list[idx];
 
     if (p == current_process) {
@@ -161,7 +174,7 @@ int kill_process(uint64_t pid) {
 }
 
 
-int modify_priority(uint16_t pid, int newPriority) {
+int modify_priority(int pid, int newPriority) {
     int idx = foundprocess(pid);
     if (idx == -1)
         return 0;
@@ -182,8 +195,7 @@ int modify_priority(uint16_t pid, int newPriority) {
     return 1;
 }
 
-
-int foundprocess(uint16_t pid) {
+int foundprocess(int pid) {
     for (int i = 0; i < MAX_PROCESSES; i++) {
         if (processes_list[i] && processes_list[i]->pid == pid)
             return i;
@@ -265,6 +277,10 @@ int remove_from_processes_list(p_info* process) {
     mm_free(process->stack_top); //okey este es el problema
     mm_free(process->name);
     mm_free(process->priorityName);
+    for(int i = 0; i <process->argc; i++){
+        mm_free(process->argv[i]);
+    }
+    mm_free(process->argv);
     mm_free(process);
     processes_list[idx] = NULL;
     n_processes--;
@@ -278,6 +294,6 @@ p_info* get_foreground_process(){
             return processes_list[i];
         }
     }   
-    return -1;
+    return NULL;
 }
 

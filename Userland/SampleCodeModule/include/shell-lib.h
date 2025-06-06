@@ -43,7 +43,7 @@ static char *commandDescrition[] ={ "Shows list of available commands.",
                                     "Shows the current state of allocated memory."
                                 };
 
-static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Processes - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none"};
+static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none"};
 
 extern uint64_t syscall(__uint64_t rdi, ...);
 extern void invalidOp();
