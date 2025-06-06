@@ -70,7 +70,6 @@ void chekCommand(Command aux)
             else{
             is_foreground = 0;
             offset = 1;
-            aux.arg_count--;
             }
         }
     }
@@ -80,7 +79,7 @@ void chekCommand(Command aux)
             nlPrint();
         }
         else{
-        shell_table[command](aux.arg_count, aux.args + offset, aux.command,is_foreground);
+        shell_table[command](aux.arg_count - offset, aux.args + offset, aux.command,is_foreground);
         }
     }
     clearBuffer();

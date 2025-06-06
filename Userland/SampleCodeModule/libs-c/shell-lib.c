@@ -98,6 +98,7 @@ void test(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(strCompare(argv[0],"MM")){
         void * ptr = usr_malloc(12);
         usr_free(ptr);
+        return;
         //usr_create_process((void*)test_mm, argc-1,argv+1, "memory test", PRIORITY_LOW, is_foregorund);
     }
     else if(strCompare(argv[0],"Prio")){
