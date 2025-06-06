@@ -72,25 +72,31 @@ void add_to_ready_list(p_info* process) {
 void remove_from_ready_list(p_info* process) {
     if (!ready_list) return;
 
-    ReadyNode *curr = ready_list, *prev = NULL;
+    ReadyNode *curr = ready_list;
+    ReadyNode *prev = NULL;
+
     do {
         if (curr->process_info == process) {
-            if (curr == ready_list) ready_list = curr->next;
-
-            if (prev) prev->next = curr->next;
-
-            ReadyNode* to_free = curr;
-            curr = curr->next;
-
-            if (to_free == to_free->next) {
-                mm_free(to_free);
+            if (curr->next == curr) {
+                mm_free(curr);
                 ready_list = NULL;
                 current_node = NULL;
                 return;
             }
-
-            mm_free(to_free);
-            continue;
+            if (curr == ready_list) {
+                ready_list = curr->next;
+            }
+            if (prev) {
+                prev->next = curr->next;
+            } else {
+                ReadyNode *last = ready_list;
+                while (last->next != curr) {
+                    last = last->next;
+                }
+                last->next = curr->next;
+            }
+            mm_free(curr);
+            return;
         }
 
         prev = curr;
