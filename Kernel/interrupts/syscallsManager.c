@@ -12,6 +12,7 @@
 #include "../include/scheduler.h"
 #include "../include/sem.h"
 #include "../include/pipe.h"
+
 #define ROJO    0xFF0000
 #define BLANCO  0xFFFFFF
 #define VERDE   0x00FF00
@@ -31,11 +32,9 @@ static size_t current_blocks = 0;
 
 typedef uint64_t (*syscall_fn)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
 
-
 extern void _sti();
 
 static int seed = 0;
-
 
 // Array de punteros a funciones, indexado por syscall ID
 static syscall_fn syscall_table[] = {
@@ -84,13 +83,12 @@ static syscall_fn syscall_table[] = {
 
 uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     if (rdi < SYSCALL_TABLE_SIZE && syscall_table[rdi]) {
-    return syscall_table[rdi](rsi, rdx, rcx, r8, r9, r10); 
-}
-
+        return syscall_table[rdi](rsi, rdx, rcx, r8, r9, r10); 
+    }
     return 0;
 }
 
-uint64_t sys_registers_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,uint64_t r9, uint64_t r10 ){
+uint64_t sys_registers_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10 ){
     unsigned int fd = (unsigned int) rsi;
     if(fd == STDOUT){
         printRegisters();
@@ -151,10 +149,10 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
         int pipe_index = fd - PIPE_FD_START;
         Pipe *pipe = get_pipe_by_index(pipe_index);
         
-        if (pipe) {
-            size_t bytes_read = read_from_pipe(pipe->internal_pipe, buffer, count);
+        if (pipe && pipe->reader_pid == get_current_process()->pid) {
+            size_t bytes_read = read_from_pipe(pipe->internal_pipe, buffer, count, pipe->reader_pid);
             return bytes_read;  
-        }
+        } 
     }
 
     return 0;
@@ -171,15 +169,14 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
         int pipe_index = fd - PIPE_FD_START;
         Pipe *pipe = get_pipe_by_index(pipe_index);
 
-        if (pipe) {
-            size_t bytes_written = write_to_pipe(pipe->internal_pipe, buffer, count);
+        if (pipe && pipe->writer_pid == get_current_process()->pid) {
+            size_t bytes_written = write_to_pipe(pipe->internal_pipe, buffer, count, pipe->writer_pid);
             return bytes_written;  
-        }
+        } 
     }
 
     return 0;
 }
-
 
 uint64_t sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){ 
     unsigned int fd = (unsigned int) rsi;
@@ -374,30 +371,6 @@ uint64_t sys_wait(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
 uint64_t sys_get_foreground(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     return get_foreground_process();
 }
-uint64_t sys_create_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    const char* pipe_id = (const char*) rsi;  
-    int pipe_index = create_pipe(pipe_id);    
-
-    if (pipe_index == -1) {
-        return -1;  
-    }
-
-    return PIPE_FD_START + pipe_index;  
-}
-
-uint64_t sys_open_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    const char* pipe_id = (const char*) rsi;  
-    int* pipefd = (int*) rcx;  
-    int pipe_index = open_pipe(pipe_id, pipefd);  
-
-    if (pipe_index == -1) {
-        return -1;  
-    }
-
-    return PIPE_FD_START + pipe_index;  
-}
-
-
 uint64_t sys_sem_open(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return sem_open(rsi, rdx);
 }
@@ -416,4 +389,26 @@ uint64_t sys_sem_get_value(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8
 
 uint64_t sys_go_middle(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return goMiddle();
+}
+uint64_t sys_create_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    const char* pipe_id = (const char*) rsi;  
+    int pipe_index = create_pipe(pipe_id, r8);  // El proceso escritor es r8 (PID)
+    
+    if (pipe_index == -1) {
+        return -1;  
+    }
+
+    return PIPE_FD_START + pipe_index;  
+}
+
+uint64_t sys_open_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    const char* pipe_id = (const char*) rsi;  
+    int* pipefd = (int*) rcx;  
+    int pipe_index = open_pipe(pipe_id, pipefd, r8);  // El proceso lector es r8 (PID)
+    
+    if (pipe_index == -1) {
+        return -1;  
+    }
+
+    return PIPE_FD_START + pipe_index;  
 }

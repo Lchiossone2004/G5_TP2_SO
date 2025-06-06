@@ -9,7 +9,7 @@
 #include <c-lib.h>
 
 #define WORD_BUFFER_SIZE 1024
-#define NUMBER_OF_COMMANDS 17  
+#define NUMBER_OF_COMMANDS 18
 #define TAB "     "
 #define NEW_LINE "shell: >"
 #define STDIN 0
