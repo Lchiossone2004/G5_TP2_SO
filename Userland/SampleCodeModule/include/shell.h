@@ -30,7 +30,8 @@ static shell_fn shell_table[] = {
     [13] = kill,
     [14] = ps,
     [15] = loop,
-    [16] = mem
+    [16] = mem,
+    [17] = pipeCommand
 };
 
 typedef struct {
@@ -50,4 +51,5 @@ int processCommand(char *input);
 void clearBuffer();
 Command parseCommand(char * input);
 void freeCommand(Command *cmd);
+
 
