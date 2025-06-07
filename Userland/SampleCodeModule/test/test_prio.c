@@ -1,3 +1,8 @@
+#include "process-lib.h"
+#include "test_util.h"
+#include "test.h"
+#include "c-lib.h"
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include "../include/test_util.h"
@@ -49,4 +54,5 @@ void test_prio() {
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
     usr_kill(pids[i]);
+
 }

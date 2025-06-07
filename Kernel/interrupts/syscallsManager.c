@@ -11,10 +11,13 @@
 #include "../include/process.h"
 #include "../include/scheduler.h"
 #include "../include/sem.h"
+#include "../include/pipe.h"
+
 #define ROJO    0xFF0000
 #define BLANCO  0xFFFFFF
 #define VERDE   0x00FF00
 #define TAB "     "
+#define PIPE_FD_START 100
 
 #define STDIN 0
 #define STDOUT 1
@@ -29,11 +32,9 @@ static size_t current_blocks = 0;
 
 typedef uint64_t (*syscall_fn)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
 
-
 extern void _sti();
 
 static int seed = 0;
-
 
 // Array de punteros a funciones, indexado por syscall ID
 static syscall_fn syscall_table[] = {
@@ -73,20 +74,21 @@ static syscall_fn syscall_table[] = {
     [36] = sys_sem_wait,
     [37] = sys_sem_post,
     [38] = sys_sem_get_value,
-    [39] = sys_go_middle
+    [39] = sys_go_middle,
+    [40] = sys_create_pipe,
+    [41] = sys_open_pipe
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
 
 uint64_t syscallsManager(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     if (rdi < SYSCALL_TABLE_SIZE && syscall_table[rdi]) {
-    return syscall_table[rdi](rsi, rdx, rcx, r8, r9, r10); 
-}
-
+        return syscall_table[rdi](rsi, rdx, rcx, r8, r9, r10); 
+    }
     return 0;
 }
 
-uint64_t sys_registers_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,uint64_t r9, uint64_t r10 ){
+uint64_t sys_registers_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10 ){
     unsigned int fd = (unsigned int) rsi;
     if(fd == STDOUT){
         printRegisters();
@@ -116,6 +118,20 @@ uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
     return 0;
 }
 
+Pipe* get_pipe_by_index(int pipe_index) {
+    p_info* current_process = get_current_process();
+    if (pipe_index < 0 || pipe_index >= MAX_PIPES) {
+        return NULL;  
+    }
+    
+    Pipe *pipe = current_process->pipes[pipe_index];
+    if (pipe) {
+        return pipe; 
+    }
+
+    return NULL;  
+}
+
 uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     unsigned int fd = (unsigned int) rsi;
     char *buffer = (char *) rdx;
@@ -129,7 +145,16 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
         for(int i = 0; i < count && i <= current ; i++) {
             buffer[i] = getFromBuffer(i);
         }
+    } else if (fd >= PIPE_FD_START) {
+        int pipe_index = fd - PIPE_FD_START;
+        Pipe *pipe = get_pipe_by_index(pipe_index);
+        
+        if (pipe && pipe->reader_pid == get_current_process()->pid) {
+            size_t bytes_read = read_from_pipe(pipe->internal_pipe, buffer, count, pipe->reader_pid);
+            return bytes_read;  
+        } 
     }
+
     return 0;
 }
 
@@ -140,13 +165,18 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
 
     if(fd == STDOUT){
         imprimirVideo(buffer, count, BLANCO);
+    } else if (fd >= PIPE_FD_START) {
+        int pipe_index = fd - PIPE_FD_START;
+        Pipe *pipe = get_pipe_by_index(pipe_index);
+
+        if (pipe && pipe->writer_pid == get_current_process()->pid) {
+            size_t bytes_written = write_to_pipe(pipe->internal_pipe, buffer, count, pipe->writer_pid);
+            return bytes_written;  
+        } 
     }
-    if(fd == STDERR){
-        imprimirVideo(buffer, count, ROJO);
-    }
+
     return 0;
 }
-
 
 uint64_t sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){ 
     unsigned int fd = (unsigned int) rsi;
@@ -174,7 +204,7 @@ uint64_t sys_newLine(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
     return 0;
 }
 
-uint64_t sys_sleep(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){ //AREGLAR
+uint64_t sys_sleep(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     int ticks = (int) rsi;
 
     _sti();
@@ -299,12 +329,6 @@ uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
     return 0;
 }
 
- void counter(uint8_t argc, char** argv){
-    int i = 0;
-    while(1){
-        imprimirVideo("counter", 8, ROJO);
-    }
-}
 
 uint64_t sys_create(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return createProcess((void (*)(uint8_t, char**))rsi, (uint8_t)rdx, (char**)rcx, (char*)r8, (int)r9, (int)r10);
@@ -337,7 +361,7 @@ uint64_t sys_fork(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
 }
 uint64_t sys_quitCPU(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return quitCPU();
-  
+
 }
 uint64_t sys_wait(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return wait();
@@ -347,7 +371,6 @@ uint64_t sys_get_foreground(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r
     p_info* toRet = get_foreground_process();
     return  toRet->pid;
 }
-
 uint64_t sys_sem_open(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return sem_open(rsi, rdx);
 }
@@ -366,4 +389,26 @@ uint64_t sys_sem_get_value(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8
 
 uint64_t sys_go_middle(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return goMiddle();
+}
+uint64_t sys_create_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    const char* pipe_id = (const char*) rsi;  
+    int pipe_index = create_pipe(pipe_id, r8);  // El proceso escritor es r8 (PID)
+    
+    if (pipe_index == -1) {
+        return -1;  
+    }
+
+    return PIPE_FD_START + pipe_index;  
+}
+
+uint64_t sys_open_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    const char* pipe_id = (const char*) rsi;  
+    int* pipefd = (int*) rcx;  
+    int pipe_index = open_pipe(pipe_id, pipefd, r8);  // El proceso lector es r8 (PID)
+    
+    if (pipe_index == -1) {
+        return -1;  
+    }
+
+    return PIPE_FD_START + pipe_index;  
 }
