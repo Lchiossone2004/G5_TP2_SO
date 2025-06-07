@@ -151,6 +151,19 @@ SECTION .text
 	iretq
 %endmacro
 
+%macro irqHandlerMaster 2
+	pushStateNoRax
+	mov rdi, %1 ; pasaje de parametro
+	call irqDispatcher
+
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
+
+	popStateNoRax
+	iretq
+%endmacro
+
 %macro irqHandlerMaster 0
 	pushState
 
@@ -252,7 +265,18 @@ _irq02Handler:
 
 ;Serial Port 2 and 4
 _irq03Handler:
-	irqHandlerMaster 3
+	pushState
+	
+	mov rdi, rsp
+	call scheduler
+	mov rsp, rax
+
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
 
 ;Serial Port 1 and 3
 _irq04Handler:
@@ -262,14 +286,27 @@ _irq04Handler:
 _irq05Handler:
 	irqHandlerMaster 5
 
-_irq08Handler: 
-	mov rax, [rsp + 0x30]
-	pushStateNoRax
-	push rax
-	call syscallsManager
-	pop rbx
-	popStateNoRax
-	iretq		
+_irq08Handler:
+    push rbp
+    mov rbp, rsp
+
+    pushStateNoRax
+    sub rsp, 16
+
+    mov rax, [rbx]         ; argumento 7
+    mov [rsp], rax
+    mov rax, [rbx+8]       ; argumento 8
+    mov [rsp+8], rax
+
+    call syscallsManager
+
+    add rsp, 16
+    popStateNoRax
+
+    mov rsp, rbp
+    pop rbp
+    iretq
+	
 
 ;activa el sti (para poder recibir interrupciones dentro del getChar)
 
@@ -311,4 +348,3 @@ userland equ 0x400000
 SECTION .bss
 regBuffer resq 17
 auxRIP resq 1
-auxARG resq 1

@@ -36,18 +36,17 @@ void sleep(int ticks){
 
 //Proc
 
-void usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground){
-    
-        syscall(22,fn,argc,argv, name, prio, is_foreground);
-        return;
+int32_t usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground){
+        int32_t pid = (int32_t)syscall(22,fn,argc,argv, name, prio, is_foreground);
+        return pid;
 }
 
-void usr_block_process(int pid){
-    syscall(27,pid);
+int usr_block_process(int pid){
+    return syscall(27,pid);
 }
 
-void usr_unblock_process(int pid){
-    syscall(28,pid);
+int usr_unblock_process(int pid){
+    return syscall(28,pid);
 
 }
 
@@ -60,7 +59,7 @@ int usr_kill(int pid){
 
 }
 
-void usr_yeild(){
+void usr_yield(){
     syscall(31);
 }
 
@@ -73,21 +72,21 @@ void usr_nice(int pid, int newPrio){
 //Sems
 
 int usr_sem_open(int id, int initial_value) {
-    return syscall(33, id, initial_value);
+    return syscall(34, id, initial_value);
 }
 
 int usr_sem_close(int id){
-    return syscall(34, id);
-}
-
-int usr_sem_wait(int id){
     return syscall(35, id);
 }
 
-int usr_sem_post(int id){
+int usr_sem_wait(int id){
     return syscall(36, id);
 }
 
-int usr_sem_getvalue(int id){
+int usr_sem_post(int id){
     return syscall(37, id);
+}
+
+int usr_sem_getvalue(int id){
+    return syscall(38, id);
 }

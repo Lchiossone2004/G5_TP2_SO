@@ -50,41 +50,57 @@ static void* buddy_malloc(size_t size) {
     if (size == 0) return NULL;
 
     size_t requested = size;
-
     size_t req_with_hdr = size + sizeof(block_header_t);
+
+    // Encontrar la orden mínima que pueda alojar el tamaño solicitado + header.
     size_t order = get_order(req_with_hdr);
+
+    // Buscar el bloque disponible de orden >= order.
     size_t cur_order = order;
     while (cur_order <= MAX_ORDER && free_blocks[cur_order] == NULL) {
         cur_order++;
     }
     if (cur_order > MAX_ORDER) return NULL;
+
+    // Tomar el bloque más grande disponible.
     block_header_t* block = free_blocks[cur_order];
     free_blocks[cur_order] = block->next;
 
+    // Dividir bloques hasta alcanzar el orden deseado.
     while (cur_order > order) {
         cur_order--;
-        size_t split_block_bytes = (1u << cur_order) * MIN_BLOCK_SIZE;
-        block_header_t* buddy = (block_header_t*)((char*)block + split_block_bytes);
-        buddy->size = split_block_bytes - sizeof(block_header_t);
+
+        size_t split_block_size = (1u << cur_order) * MIN_BLOCK_SIZE;
+        block_header_t* buddy = (block_header_t*)((char*)block + split_block_size);
+
+        // Configurar el buddy.
+        buddy->size = split_block_size - sizeof(block_header_t);
         buddy->user_size = 0;
         buddy->is_free = true;
         buddy->next = free_blocks[cur_order];
         free_blocks[cur_order] = buddy;
 
-        block->size = split_block_bytes - sizeof(block_header_t);
+        // Ajustar el bloque actual.
+        block->size = split_block_size - sizeof(block_header_t);
     }
+
+    // Asignar el bloque al usuario.
     block->is_free = false;
-    block->next = NULL;
     block->user_size = requested;
+    block->next = NULL;
+
     current_blocks++;
     total_allocated += requested;
+
     return (void*)((char*)block + sizeof(block_header_t));
 }
+
 
 static size_t buddy_free(void* ptr) {
     if (ptr == NULL) return 0;
     block_header_t* block = (block_header_t*)((char*)ptr - sizeof(block_header_t));
     size_t freed_size = block->user_size;
+
     block->is_free = true;
     block->user_size = 0;
     if (total_allocated >= freed_size) {
@@ -94,6 +110,7 @@ static size_t buddy_free(void* ptr) {
     current_blocks--;
 
     size_t order = get_order(block->size + sizeof(block_header_t));
+
     while (order < MAX_ORDER) {
         size_t merge_block_bytes = (1u << order) * MIN_BLOCK_SIZE;
         uintptr_t block_addr = (uintptr_t)block;
@@ -105,29 +122,40 @@ static size_t buddy_free(void* ptr) {
         }
 
         block_header_t* buddy = (block_header_t*)buddy_addr;
-        if (!buddy->is_free || buddy->size != block->size) {
+
+        if (!(buddy->is_free) || (buddy->size != block->size)) {
             break;
         }
+
         block_header_t** prev = &free_blocks[order];
-        while (*prev && *prev != buddy) {
-            prev = &(*prev)->next;
+        block_header_t* found = NULL;
+        while (*prev) {
+            if (*prev == buddy) {
+                found = buddy;
+                break;
+            }
+            prev = &((*prev)->next);
         }
-        if (*prev == buddy) {
-            *prev = buddy->next;
-        } else {
+        if (!found) {
             break;
         }
-        if (block_addr > buddy_addr) {
+        *prev = buddy->next;
+
+        if (buddy_addr < block_addr) {
             block = buddy;
         }
 
+        block->size = 2 * (block->size + sizeof(block_header_t)) - sizeof(block_header_t);
+
         order++;
-        block->size = (1u << order) * MIN_BLOCK_SIZE - sizeof(block_header_t);
     }
+
     block->next = free_blocks[order];
     free_blocks[order] = block;
+
     return freed_size;
 }
+
 
 static void buddy_get_info(memory_info_t* info) {
     if (!info) return;

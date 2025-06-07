@@ -294,17 +294,16 @@ uint64_t sys_test_mm(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
 }
 
 uint64_t sys_malloc(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    void **ptr = (void **) rsi;
     size_t size = (size_t) rdx;
 
     if (size == 0) return 0;
 
-    *ptr = mm_malloc(size);
-    if (*ptr != NULL) {
+    void* ptr = mm_malloc(size);
+    if (ptr != NULL) {
         total_allocated += size;
         current_blocks++;
     }
-    return 0;
+    return ptr;
 }
 
 uint64_t sys_free(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
@@ -369,7 +368,8 @@ uint64_t sys_wait(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
 }
 
 uint64_t sys_get_foreground(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    return get_foreground_process();
+    p_info* toRet = get_foreground_process();
+    return  toRet->pid;
 }
 uint64_t sys_sem_open(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return sem_open(rsi, rdx);

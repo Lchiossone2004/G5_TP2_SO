@@ -48,32 +48,31 @@ static char *commandDescrition[] = {
     "Creates a pipe between two commands."  
 };
 
-static char *commandArgs[] = {
-    "all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM - Prio - Processes - Sync", 
-    "pid", "pid", "pid & new priority",  "none", "pid", "none", "none", "none", "command1 | command2"  
-};
+
+static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none"};
+
 
 extern uint64_t syscall(__uint64_t rdi, ...);
 extern void invalidOp();
 
-void help(uint64_t argc, char *argv[], char* command);
-void whatTime(uint64_t argc, char *argv[], char* command);
-void zoom(uint64_t argc, char *argv[], char* command);
-void clear(uint64_t argc, char *argv[], char* command);
-void printReg(uint64_t argc, char *argv[], char* command);
-void divCero(uint64_t argc, char *argv[], char* command);
-void invalidOperation(uint64_t argc, char *argv[], char* command);
-void test(uint64_t argc, char *argv[], char* command);
-void block(uint64_t argc, char *argv[], char* command);
-void unblock(uint64_t argc, char *argv[], char* command);
-void nice(uint64_t argc, char *argv[], char* command);
-void yeild(uint64_t argc, char *argv[], char* command);
-void kill(uint64_t argc, char *argv[], char* command);
-void ps(uint64_t argc, char *argv[], char* command);
-void loop(uint64_t argc, char *argv[], char* command);
-void mem(uint64_t argc, char *argv[], char* command);
-void invalid(uint64_t argc, char *argv[], char* command);
-void pipeCommand(uint64_t argc, char *argv[], char* command);  
+
+void help(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void whatTime(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void zoom(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void clear(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void printReg(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void divCero(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void invalidOperation(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void test(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void block(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void unblock(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void nice(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void yeild(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void kill(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void ps(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void loop(uint64_t argc, char *argv[], char* command, int is_foregorund); //Falta hacer
+void mem(uint64_t argc, char *argv[], char* command, int is_foregorund);
+void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void argsError(uint64_t argc, char *argv[]);
 void commandInfo(int i, int j);
 

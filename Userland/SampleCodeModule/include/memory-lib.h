@@ -16,7 +16,7 @@ typedef struct {
     int memory_leak;
 } memory_info_t;
 
-void *usr_malloc(int size);
+void* usr_malloc(int size);
 void usr_free(void* ptr);
 void print_usr_mem_info();
 

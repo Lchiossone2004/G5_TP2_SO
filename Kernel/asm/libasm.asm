@@ -3,6 +3,7 @@ GLOBAL getHours
 GLOBAL getMins
 GLOBAL getSec
 GLOBAL getKey
+GLOBAL callScheduler
 GLOBAL saveCPURegisters
 GLOBAL getCPURegisters
 GLOBAL outb
@@ -88,6 +89,12 @@ getKey:
     mov rsp, rbp 
     pop rbp
     ret
+
+
+callScheduler:
+	int 0x22
+
+	ret
 outb:
 	push rbp
 	mov rbp, rsp

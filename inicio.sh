@@ -14,9 +14,9 @@ if [ $# -eq 1 ]; then
         exit 1
     fi
 fi
-docker start TPE
-docker exec -it TPE make clean -C /root/Toolchain
-docker exec -it TPE make clean -C /root/
-docker exec -it TPE make -C /root/Toolchain
-docker exec -it TPE make MEMORY_MANAGER=$MEMORY_MANAGER -C /root/
-docker stop TPE
+docker start TP2_SO
+docker exec -it TP2_SO make clean -C /root/Toolchain
+docker exec -it TP2_SO make clean -C /root/
+docker exec -it TP2_SO make -C /root/Toolchain
+docker exec -it TP2_SO make MEMORY_MANAGER=$MEMORY_MANAGER -C /root/
+docker stop TP2_SO  
