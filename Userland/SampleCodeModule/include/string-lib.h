@@ -14,5 +14,6 @@ void intToString(int value, char *buffer, size_t bufferSize);
 char *strpbrk(const char *str1, const char *str2);
 char *strchr(const char *str, int c);
 char* strdup(const char* str);
-
+size_t strlen(const char *s); 
+int isBlank(char c); 
 #endif

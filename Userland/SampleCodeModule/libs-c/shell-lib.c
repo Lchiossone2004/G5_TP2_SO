@@ -233,6 +233,33 @@ void argsError(uint64_t argc, char *argv[]){
     nlPrint();
 }
 
+#include <stdint.h>
+
+
+static void remove_blanks(char *s) {
+    size_t len = strlen(s);
+    if (len > 0) {
+        char *end = s + len - 1;
+        while (len > 0 && isBlank(*end)) {
+            *end = '\0';
+            end--;
+            len--;
+        }
+    }
+    char *src = s;
+    while (*src && isBlank(*src)) {
+        src++;
+    }
+    if (src != s) {
+        char *dst = s;
+        while (*src) {
+            *dst++ = *src++;
+        }
+        *dst = '\0';
+    }
+}
+
+
 void pipeCommand(uint64_t argc, char *argv[], char *command) {
     if (argc != 1) {
         argsError(argc, argv);
@@ -246,10 +273,11 @@ void pipeCommand(uint64_t argc, char *argv[], char *command) {
         printErr("Pipe symbol '|' not found.\n");
         return;
     }
-
-    *pipe_pos = '\0';  
-    char *cmd1 = strtok(full_command, " ");
-    char *cmd2 = strtok(pipe_pos + 1, " "); 
+    *pipe_pos = '\0';
+    char *cmd1 = full_command;
+    char *cmd2 = pipe_pos + 1; 
+    remove_blanks(cmd1);
+    remove_blanks(cmd2);
 
     if (!cmd1 || !cmd2) {
         printErr("Invalid commands.\n");

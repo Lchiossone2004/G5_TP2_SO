@@ -191,5 +191,20 @@ char* strtok(char* str, const char* delimiters) {
 
     return token;
 }
+size_t strlen(const char *s) {
+    size_t len = 0;
+    while (s[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+int isBlank(char c) {
+    return (c == ' '  ||
+            c == '\t' ||
+            c == '\n' ||
+            c == '\v' ||
+            c == '\f' ||
+            c == '\r');
+}
 
 
