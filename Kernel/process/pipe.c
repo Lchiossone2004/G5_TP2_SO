@@ -1,125 +1,144 @@
 #include "../include/pipe.h"
 #include "../memory/memory_manager.h"
 #include "../include/sem.h"
+#include "../include/process.h"
+#include "../include/lib.h"
 
 #define MAX_PIPES 10
 
-Pipe* pipes[MAX_PIPES] = {0};
+Pipe* pipes[MAX_PIPES] = { NULL };
 
-size_t strlen(const char *s) {
-    const char *p = s;
-    while (*p) {
-        p++;
-    }
-    return (size_t)(p - s);
-}
-char* strdup(const char* str) {
-    if (str == NULL) {
-        return NULL;
-    }
+FDEntry fd_table[MAX_FDS] = { NULL};
 
-    size_t len = strlen(str) + 1;
+int create_pipe(int* fd_read, int*fd_write) {
+    int pipe_index = -1;
 
-    char* copy = (char*)mm_malloc(len);
-    if (!copy) {
-        return NULL;
-    }
-    memcpy(copy, str, len);
-
-    return copy;
-}
-
-int create_pipe(const char* pipe_id, uint16_t writer_pid) {
     for (int i = 0; i < MAX_PIPES; i++) {
         if (pipes[i] == NULL) {
-            pipes[i] = (Pipe*)mm_malloc(sizeof(Pipe));
-            if (!pipes[i]) {
-                return -1;
-            }
-
-            pipes[i]->id = strdup(pipe_id);
-            pipes[i]->internal_pipe = (PipeBuffer*)mm_malloc(sizeof(PipeBuffer));
-            if (!pipes[i]->internal_pipe) {
+            pipes[i] = mm_malloc(sizeof(Pipe));
+            if (!pipes[i]) return -1;
+            if (pipe_init(pipes[i]) != 0) {
                 mm_free(pipes[i]);
+                pipes[i] = NULL;
                 return -1;
             }
-
-            init_pipe(pipes[i]->internal_pipe, 1024);
-
-            pipes[i]->writer_pid = writer_pid;
-            pipes[i]->reader_pid = -1;  
-
-            return i;
+            pipe_index = i;
+            break;
         }
     }
-    return -1;
-}
+    if (pipe_index == -1) return -1;
 
-int open_pipe(const char* pipe_id, int* pipefd, uint16_t reader_pid) {
-    for (int i = 0; i < MAX_PIPES; i++) {
-        if (pipes[i] && strcmp(pipes[i]->id, pipe_id) == 0) {
-            pipes[i]->reader_pid = reader_pid;
-
-            pipefd[0] = i; 
-            pipefd[1] = i; 
-            return 0;
+    int fd_r = -1, fd_w = -1;
+    for (int i = 3; i < MAX_FDS && (fd_r == -1 || fd_w == -1); i++) {
+        if (!fd_table[i].in_use) {
+            if (fd_r == -1){
+                fd_r = i;
+            }
+            else{
+            fd_w = i;
+            }
         }
     }
-    return -1;
-}
-
-int init_pipe(PipeBuffer* pipe, size_t buffer_size) {
-    pipe->read_buffer = (char*)mm_malloc(buffer_size);
-    pipe->write_buffer = (char*)mm_malloc(buffer_size);
-    if (!pipe->read_buffer || !pipe->write_buffer) {
+    if (fd_r == -1 || fd_w == -1) {
+        mm_free(pipes[pipe_index]);
+        pipes[pipe_index] = NULL;
         return -1;
     }
-    pipe->read_pos = 0;
-    pipe->write_pos = 0;
-    pipe->buffer_size = buffer_size;
-    pipe->in_use = 1;
 
-    
-    pipe->read_sem = 0; 
-    pipe->write_sem = buffer_size;  
+    fd_table[fd_r].pipe = pipes[pipe_index];
+    fd_table[fd_r].type = FD_READ;
+    fd_table[fd_r].in_use = 1;
+
+    fd_table[fd_w].pipe = pipes[pipe_index];
+    fd_table[fd_w].type = FD_WRITE;
+    fd_table[fd_w].in_use = 1;
+
+    p_info* current_proc = get_current_process();
+    int empty1,empty2 = -1;
+    for(int i = 0; i < MAX_BUFF; i++){
+        if(current_proc->buffers[i] == 0 && empty1 == -1){
+            empty1 = i;
+        }
+        else if(current_proc->buffers[i] == 0 && empty1 != -1){
+            empty2 = i;
+            break;
+        }
+    }
+    if(empty1 == -1 || empty2 == -1){
+        return -1;
+    }
+
+    current_proc->buffers[empty1] = fd_r;
+    current_proc->buffers[empty2] = fd_w;
+    *fd_read = fd_r;
+    *fd_write = fd_w;
 
     return 0;
 }
 
-size_t write_to_pipe(Pipe* pipe, const char* buffer, size_t count, uint16_t writer_pid) {
-    size_t i;
-    if (pipe->writer_pid != writer_pid) {
-        return 0; 
-    }
+int pipe_init(Pipe *pipe) {
+    if (!pipe) return -1;
 
-    for (i = 0; i < count; ++i) {
-        sem_wait(pipe->internal_pipe->write_sem);
+    memset(pipe, 0, sizeof(Pipe)); 
 
-        if (pipe->internal_pipe->write_pos >= pipe->internal_pipe->buffer_size) {
-            return PIPE_FULL;
-        }
-
-        pipe->internal_pipe->write_buffer[pipe->internal_pipe->write_pos++] = buffer[i];
-        sem_post(pipe->internal_pipe->read_sem);
-    }
-    return i;
+    pipe->read_pos = 0;
+    pipe->write_pos = 0;
+    pipe->is_read_open = 1;
+    pipe->is_write_open = 1; 
+    pipe->initialized = 1;
+    pipe->size = MAX_BUFF;
+    return 0;
 }
 
-size_t read_from_pipe(Pipe* pipe, char* buffer, size_t count, uint16_t reader_pid) {
-    size_t i;
-    if (pipe->reader_pid != reader_pid) {
-        return 0;  
+int pipe_write(int fd, const char *buffer, int count) {                                         //FALTA VERIFICAION PARA QUE SE USE DE A 1
+    if (fd < 0 || fd >= MAX_FDS || !fd_table[fd].in_use || fd_table[fd].type != FD_WRITE) {
+        return -1;
     }
+    Pipe *pipe = fd_table[fd].pipe;
+    if(!pipe->is_write_open){
+        return -1;
+    }
+    int written = 0;
 
-    for (i = 0; i < count; ++i) {
-        sem_wait(pipe->internal_pipe->read_sem);
-
-        if (pipe->internal_pipe->read_pos >= pipe->internal_pipe->write_pos) {
-            return PIPE_EMPTY;
+    for (int i = 0; i < count; i++) {
+        size_t next_pos = (pipe->write_pos + 1) % BUFFER_SIZE;
+        if (next_pos == pipe->read_pos) {
+            break;
         }
-
-        buffer[i] = pipe->internal_pipe->read_buffer[pipe->internal_pipe->read_pos++];
-        sem_post(pipe->internal_pipe->write_sem);
+        pipe->buffer[pipe->write_pos] = buffer[i];
+        pipe->write_pos = next_pos;
+        written++;
     }
-    return i;
+    return written;
+}
+
+int pipe_read(int fd, char *buffer, int count) {
+    if (fd < 0 || fd >= MAX_FDS || !fd_table[fd].in_use || fd_table[fd].type != FD_READ) {
+        return -1;
+    }
+    Pipe *pipe = fd_table[fd].pipe;
+    if(!pipe->is_read_open){
+        return -1;
+    }
+    int read = 0;
+
+    while (read < count && pipe->read_pos != pipe->write_pos) {
+        buffer[read++] = pipe->buffer[pipe->read_pos];
+        pipe->read_pos = (pipe->read_pos + 1) % BUFFER_SIZE;
+    }
+    return read;
+}
+
+void pipe_close(int end, int fd){
+        if (fd < 0 || fd >= MAX_FDS || !fd_table[fd].in_use || fd_table[fd].type != FD_READ) {
+        return -1;
+    }
+    Pipe *pipe = fd_table[fd].pipe;
+    if(end == 0 ){   //READ
+        pipe->is_read_open = 0;
+    }
+    if(end == 1 ){   //Write
+        pipe->is_write_open = 1;
+    }
+    return 0;
 }

@@ -14,10 +14,15 @@ void printRegisters(){
 
 void print(char *word){
     syscall(4, STDOUT, word, strSize(word));
+    //syscall(41, word, strSize(word));
 }
 
-void read(char *buffer, int size){
-    syscall(3, STDOUT, buffer, size);
+void write(char *word, int fd, int size){
+    syscall(4, fd, word, strSize(word));
+}
+
+void read(char *buffer,int fd ,int size){
+    syscall(3, fd, buffer, size);
     return;
 }
 
@@ -89,4 +94,10 @@ int usr_sem_post(int id){
 
 int usr_sem_getvalue(int id){
     return syscall(38, id);
+}
+
+//Pipes
+
+int usr_open_pipe(int *fd_read, int* fd_write){
+    return syscall(40,fd_read, fd_write); 
 }

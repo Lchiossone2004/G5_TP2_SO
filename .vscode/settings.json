@@ -21,6 +21,10 @@
         "shell.h": "c",
         "keyboard.h": "c",
         "lib.h": "c",
-        "scheduler.h": "c"
+        "scheduler.h": "c",
+        "sem.h": "c",
+        "stddef.h": "c",
+        "pipe.h": "c",
+        "naiveconsole.h": "c"
     }
 }

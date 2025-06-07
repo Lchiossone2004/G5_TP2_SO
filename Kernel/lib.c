@@ -92,3 +92,36 @@ int strSize(char *word)
     }
     return toRet;
 }
+
+size_t strlen(const char *s) {
+    const char *p = s;
+    while (*p) {
+        p++;
+    }
+    return (size_t)(p - s);
+}
+char* strdup(const char* str) {
+    if (str == NULL) {
+        return NULL;
+    }
+
+    size_t len = strlen(str) + 1;
+
+    char* copy = (char*)mm_malloc(len);
+    if (!copy) {
+        return NULL;
+    }
+    memcpy(copy, str, len);
+
+    return copy;
+}
+
+size_t strcpy_from_index(char *dest, const char *src, size_t start_index, size_t max_len) {
+    size_t i = 0;
+    while (i < max_len && src[start_index + i] != '\0') {
+        dest[i] = src[start_index + i];
+        i++;
+    }
+    dest[i] = '\0';
+    return i; // cantidad de caracteres copiados
+}

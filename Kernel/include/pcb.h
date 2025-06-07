@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "../include/pipe.h"
 typedef enum STATUS {RUNNING,READY, BLOCKED, TERMINATED} STATUS;
-
+#define MAX_BUFF 10
 
 typedef struct{
     int pid;
@@ -24,7 +24,9 @@ typedef struct{
     STATUS state;
     uint16_t children[MAX_CHILDREN];
     uint16_t children_length;
-    Pipe *pipes[MAX_PIPES];
+    int buffers[MAX_BUFF * 2];
+    int stdin;
+    int stdout;
 }p_info;
 
 typedef struct ReadyNode {

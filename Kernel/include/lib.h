@@ -17,5 +17,7 @@ int getSec();
 uint16_t getKey();
 void outb(uint8_t dest, uint8_t org);
 uint8_t inb(uint8_t dest);
-
+char* strdup(const char* str);
+size_t strlen(const char *s) ;
+size_t strcpy_from_index(char *dest, const char *src, size_t start_index, size_t max_len);
 #endif

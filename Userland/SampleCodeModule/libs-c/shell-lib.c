@@ -261,49 +261,56 @@ static void remove_blanks(char *s) {
 
 
 void pipeCommand(uint64_t argc, char *argv[], char *command) {
-    if (argc != 1) {
-        argsError(argc, argv);
-        return;
-    }
+    // if (argc != 1) {
+    //     argsError(argc, argv);
+    //     return;
+    // }
+    int pipe_fd[2] = {NULL};
+    char *buffer = "HOLA BUENAS TESTEANDO";
+    usr_open_pipe(&pipe_fd[0], &pipe_fd[1]);      // 0= READ 1= WRITE
+    write(buffer,pipe_fd[1],strSize(buffer));
+    char buffer2[25];
+    read(buffer2,pipe_fd[0],strSize(buffer));
+    write(buffer2,STDOUT,strSize(buffer));
+    nlPrint();
+    // char *full_command = argv[0];
+    // char *pipe_pos = strchr(full_command, '|');
 
-    char *full_command = argv[0];
-    char *pipe_pos = strchr(full_command, '|');
+    // if (pipe_pos == NULL) {
+    //     printErr("Pipe symbol '|' not found.\n");
+    //     return;
+    // }
+    // *pipe_pos = '\0';
+    // char *cmd1 = full_command;
+    // char *cmd2 = pipe_pos + 1; 
+    // remove_blanks(cmd1);
+    // remove_blanks(cmd2);
 
-    if (pipe_pos == NULL) {
-        printErr("Pipe symbol '|' not found.\n");
-        return;
-    }
-    *pipe_pos = '\0';
-    char *cmd1 = full_command;
-    char *cmd2 = pipe_pos + 1; 
-    remove_blanks(cmd1);
-    remove_blanks(cmd2);
-
-    if (!cmd1 || !cmd2) {
-        printErr("Invalid commands.\n");
-        return;
-    }
-
-   
-    int pipefd[2];  
-    int pipe_index = syscall(40, cmd1, 0); 
-    if (pipe_index < 0) {
-        printErr("Failed to create pipe.\n");
-        return;
-    }
-
-    if (syscall(41, cmd2, 0, pipefd) < 0) { 
-        printErr("Failed to open pipe.\n");
-        return;
-    }
+    // if (!cmd1 || !cmd2) {
+    //     printErr("Invalid commands.\n");
+    //     return;
+    // }
 
    
-    syscall(4, pipefd[1], cmd1, 0);  
-    syscall(3, pipefd[0], cmd2, 0);  
+    // int pipefd[2];  
+    // int pipe_index = syscall(40, cmd1, 0); 
+    // if (pipe_index < 0) {
+    //     printErr("Failed to create pipe.\n");
+    //     return;
+    // }
+
+    // if (syscall(41, cmd2, 0, pipefd) < 0) { 
+    //     printErr("Failed to open pipe.\n");
+    //     return;
+    // }
+
+   
+    // syscall(4, pipefd[1], cmd1, 0);  
+    // syscall(3, pipefd[0], cmd2, 0);  
 
   
-    syscall(32, 0);  
-    syscall(32, 0);  
+    // syscall(32, 0);  
+    // syscall(32, 0);  
 }
 
 

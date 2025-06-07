@@ -7,7 +7,8 @@
 
 //Other
 void print(char *buffer);
-void read(char *buffer, int size);
+void read(char *buffer, int fd, int size);
+void write(char *word, int fd,int size);
 void printRegisters();
 void nlPrint();
 void printErr(char *buffer);
@@ -27,6 +28,10 @@ int usr_sem_close(int id);
 int usr_sem_wait(int id);
 int usr_sem_post(int id);
 int usr_sem_getvalue(int id);
+
+//Pipes
+
+int usr_open_pipe(int *fd_read, int* fd_write);
 
 
 #endif

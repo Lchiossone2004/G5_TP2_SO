@@ -17,7 +17,7 @@
 #define BLANCO  0xFFFFFF
 #define VERDE   0x00FF00
 #define TAB "     "
-#define PIPE_FD_START 100
+#define PIPE_FD_START 3
 
 #define STDIN 0
 #define STDOUT 1
@@ -49,6 +49,7 @@ static syscall_fn syscall_table[] = {
     [9] = sys_clear,
     [10] = sys_putPixel,
     [12] = sys_getTime,
+    [13] = sys_getTime,
     [14] = sys_getKey,
     [15] = sys_ranN,
     [16] = sys_clearBuffer,
@@ -76,7 +77,7 @@ static syscall_fn syscall_table[] = {
     [38] = sys_sem_get_value,
     [39] = sys_go_middle,
     [40] = sys_create_pipe,
-    [41] = sys_open_pipe
+    [41] = sys_print
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -118,20 +119,6 @@ uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
     return 0;
 }
 
-Pipe* get_pipe_by_index(int pipe_index) {
-    p_info* current_process = get_current_process();
-    if (pipe_index < 0 || pipe_index >= MAX_PIPES) {
-        return NULL;  
-    }
-    
-    Pipe *pipe = current_process->pipes[pipe_index];
-    if (pipe) {
-        return pipe; 
-    }
-
-    return NULL;  
-}
-
 uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     unsigned int fd = (unsigned int) rsi;
     char *buffer = (char *) rdx;
@@ -146,13 +133,7 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
             buffer[i] = getFromBuffer(i);
         }
     } else if (fd >= PIPE_FD_START) {
-        int pipe_index = fd - PIPE_FD_START;
-        Pipe *pipe = get_pipe_by_index(pipe_index);
-        
-        if (pipe && pipe->reader_pid == get_current_process()->pid) {
-            size_t bytes_read = read_from_pipe(pipe->internal_pipe, buffer, count, pipe->reader_pid);
-            return bytes_read;  
-        } 
+        pipe_read(fd,buffer,count);
     }
 
     return 0;
@@ -165,14 +146,12 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
 
     if(fd == STDOUT){
         imprimirVideo(buffer, count, BLANCO);
-    } else if (fd >= PIPE_FD_START) {
-        int pipe_index = fd - PIPE_FD_START;
-        Pipe *pipe = get_pipe_by_index(pipe_index);
-
-        if (pipe && pipe->writer_pid == get_current_process()->pid) {
-            size_t bytes_written = write_to_pipe(pipe->internal_pipe, buffer, count, pipe->writer_pid);
-            return bytes_written;  
-        } 
+    }
+    else if(fd == STDERR){
+        imprimirVideo(buffer, count, ROJO);
+    } 
+    else if (fd >= PIPE_FD_START) {
+        pipe_write(fd,buffer,count);
     }
 
     return 0;
@@ -390,25 +369,19 @@ uint64_t sys_sem_get_value(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8
 uint64_t sys_go_middle(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return goMiddle();
 }
-uint64_t sys_create_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    const char* pipe_id = (const char*) rsi;  
-    int pipe_index = create_pipe(pipe_id, r8);  // El proceso escritor es r8 (PID)
-    
-    if (pipe_index == -1) {
-        return -1;  
-    }
 
-    return PIPE_FD_START + pipe_index;  
+
+
+uint64_t sys_create_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    if(create_pipe((int*)rsi, (int*)rdx) == -1){
+        return -1;
+    }
+    return 0;
 }
 
-uint64_t sys_open_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    const char* pipe_id = (const char*) rsi;  
-    int* pipefd = (int*) rcx;  
-    int pipe_index = open_pipe(pipe_id, pipefd, r8);  // El proceso lector es r8 (PID)
-    
-    if (pipe_index == -1) {
-        return -1;  
-    }
-
-    return PIPE_FD_START + pipe_index;  
+uint64_t sys_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
+    char *buffer = (char *) rsi;
+    size_t count = (size_t) rdx;
+    p_info* current_proc = get_current_process();
+    pipe_write(current_proc->stdout,buffer,count);
 }

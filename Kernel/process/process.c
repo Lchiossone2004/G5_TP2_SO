@@ -7,10 +7,9 @@
 #define MAX_PROCESSES 20
 
 extern void callScheduler();
-// extern void* setup_process_stack(void (*fn)(uint8_t, char**), uint8_t argc, char** argv, void* stack_top);
 static int pirority[] = {8, 4,2,1}; //8 =critica, 4=alta,2=normal,1=baja
 static char* pirorityName[] = {"Critic", "High", "Normal", "Low"};
-static int pids[MAX_PROCESSES] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+static int pids[MAX_PROCESSES] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; //ESTO ME PARECE QUE ESTA DEMAS CON {0} ALCANZA 
 
 
 int createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int prio, int is_foreground) {
@@ -129,6 +128,11 @@ void copy_context(p_info* new_process, char *name, void * stack_base, void * sta
     initialize_zero(new_process->children, MAX_CHILDREN);
     new_process->children_length = 0;
     assignForeground(new_process, is_foreground);
+    new_process->stdin = 0;
+    new_process->stdout = 1;
+    for(int i = 0; i <MAX_BUFF; i++){
+        new_process->buffers[i] = 0;
+    }
 }
 
 int wait_pid(int pid) {
@@ -190,3 +194,23 @@ void freePid(int pid){
     }
 }
 
+int Dup(int pid,int newFd, int oldFd){
+    if(oldFd>MAX_BUFF*2 || oldFd < 0){
+        return;
+    }
+    p_info * proc = get_process_by_pid(pid);
+    if(oldFd == 0){
+        proc->stdin = newFd;
+    }
+    else if(oldFd == 1){
+        proc->stdout = newFd;
+    }
+    else{
+        for(int i = 0; i < MAX_BUFF * 2; i++){
+            if(proc->buffers[i] == oldFd){
+                proc->buffers[i] = newFd;
+                break;
+            }
+        }
+    }
+}

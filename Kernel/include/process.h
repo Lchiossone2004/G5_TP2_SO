@@ -42,6 +42,7 @@ void initialize_zero(uint16_t array[], int size);
 void assignForeground(p_info* new_process, int is_foreground);
 void assignPid(p_info* new_process);
 void freePid(int pid);
+int Dup(int pid,int newFd, int oldFd);
 
 
 #endif
