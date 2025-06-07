@@ -270,18 +270,26 @@ uint16_t quitCPU() {
 int remove_from_processes_list(p_info* process) {
     int idx = foundprocess(process->pid);
     if (idx < 0 || idx >= MAX_PROCESSES || processes_list[idx] == NULL) {
-        return -1; 
+        return -1;
+    }
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        p_info *p = processes_list[i];
+        if (p && p->waiting_on_child == process->pid) {
+            p->waiting_on_child = 0;
+            unblock_process(p->pid);
+        }
     }
     process->state = TERMINATED;
     remove_from_ready_list(process);
     mm_free(process->stack_top); //okey este es el problema
     mm_free(process->name);
     mm_free(process->priorityName);
-    for(int i = 0; i <process->argc; i++){
-        mm_free(process->argv[i]);
+    for (int j = 0; j < process->argc; j++) {
+        mm_free(process->argv[j]);
     }
     mm_free(process->argv);
     mm_free(process);
+
     processes_list[idx] = NULL;
     n_processes--;
 
