@@ -272,6 +272,7 @@ int remove_from_processes_list(p_info* process) {
     if (idx < 0 || idx >= MAX_PROCESSES || processes_list[idx] == NULL) {
         return -1;
     }
+
     for (int i = 0; i < MAX_PROCESSES; i++) {
         p_info *p = processes_list[i];
         if (p && p->waiting_on_child == process->pid) {
@@ -279,22 +280,39 @@ int remove_from_processes_list(p_info* process) {
             unblock_process(p->pid);
         }
     }
+
+    if (process->parent_pid > 0) {
+        for (int i = 0; i < MAX_PROCESSES; i++) {
+            p_info *parent = processes_list[i];
+            if (parent && parent->pid == process->parent_pid) {
+                for (int j = 0; j < parent->children_length; j++) {
+                    if (parent->children[j] == process->pid) {
+                        parent->children[j] = parent->children[parent->children_length - 1];
+                        parent->children[parent->children_length - 1] = 0;
+                        parent->children_length--;
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+    }
     process->state = TERMINATED;
     remove_from_ready_list(process);
-    mm_free(process->stack_top); //okey este es el problema
+    mm_free(process->stack_top);
     mm_free(process->name);
     mm_free(process->priorityName);
     for (int j = 0; j < process->argc; j++) {
         mm_free(process->argv[j]);
     }
     mm_free(process->argv);
-    mm_free(process);
 
     processes_list[idx] = NULL;
     n_processes--;
 
-    return 0; 
+    return 0;
 }
+
 
 p_info* get_foreground_process(){
     for(int i = 0; i <MAX_PROCESSES; i++){
