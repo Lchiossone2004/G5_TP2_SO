@@ -3,6 +3,7 @@
 #include "test.h"
 #include "c-lib.h"
 
+
 void help(uint64_t argc, char *argv[], char* command){
     if(argc == 0){
         print("     Here is a list of the commands:");
@@ -99,10 +100,12 @@ void test(uint64_t argc, char *argv[], char* command){
         usr_create_process((void*)test_mm, argc,argv, "memory test", PRIORITY_LOW, 1);
     }
     else if(strCompare(argv[0],"Prio")){
-        usr_create_process((void*)test_prio,argc,argv, "priority test", PRIORITY_LOW,0);
+        usr_create_process((void*)test_prio,argc,argv, "priority test", PRIORITY_LOW,1);
+        
     }
     else if(strCompare(argv[0],"Processes")){
-        usr_create_process((void*)test_processes,argc,argv, "processes test", PRIORITY_LOW, 0);
+        usr_create_process((void*)test_processes,argc,argv, "processes test", PRIORITY_LOW, 1);
+    
     }
     else if(strCompare(argv[0],"Sync")){
         usr_create_process((void*)test_processes,argc,argv, "sync test", PRIORITY_LOW, 0);
