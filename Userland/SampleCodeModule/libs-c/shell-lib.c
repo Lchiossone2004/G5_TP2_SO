@@ -4,6 +4,7 @@
 #include "c-lib.h"
 
 void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
+
     if(argc == 0){
         print("     Here is a list of the commands:");
         for (int i = 0; i < NUMBER_OF_COMMANDS; i++)
@@ -102,10 +103,12 @@ void test(uint64_t argc, char *argv[], char* command, int is_foregorund){
         //usr_create_process((void*)test_mm, argc-1,argv+1, "memory test", PRIORITY_LOW, is_foregorund);
     }
     else if(strCompare(argv[0],"Prio")){
+
         usr_create_process((void*)test_prio,argc,argv, "priority test", PRIORITY_LOW,is_foregorund);
     }
     else if(strCompare(argv[0],"Proc")){
         usr_create_process((void*)test_processes,argc -1,argv+1, "processes test", PRIORITY_LOW, is_foregorund);
+
     }
     else if(strCompare(argv[0],"Sync")){
         
@@ -229,6 +232,53 @@ void argsError(uint64_t argc, char *argv[]){
     }
     nlPrint();
 }
+
+void pipeCommand(uint64_t argc, char *argv[], char *command) {
+    if (argc != 1) {
+        argsError(argc, argv);
+        return;
+    }
+
+    char *full_command = argv[0];
+    char *pipe_pos = strchr(full_command, '|');
+
+    if (pipe_pos == NULL) {
+        printErr("Pipe symbol '|' not found.\n");
+        return;
+    }
+
+    *pipe_pos = '\0';  
+    char *cmd1 = strtok(full_command, " ");
+    char *cmd2 = strtok(pipe_pos + 1, " "); 
+
+    if (!cmd1 || !cmd2) {
+        printErr("Invalid commands.\n");
+        return;
+    }
+
+   
+    int pipefd[2];  
+    int pipe_index = syscall(40, cmd1, 0); 
+    if (pipe_index < 0) {
+        printErr("Failed to create pipe.\n");
+        return;
+    }
+
+    if (syscall(41, cmd2, 0, pipefd) < 0) { 
+        printErr("Failed to open pipe.\n");
+        return;
+    }
+
+   
+    syscall(4, pipefd[1], cmd1, 0);  
+    syscall(3, pipefd[0], cmd2, 0);  
+
+  
+    syscall(32, 0);  
+    syscall(32, 0);  
+}
+
+
 
 void commandInfo(int i,int j){
     (void) commandDescrition;   //Bilardeada para sacar el warning

@@ -297,3 +297,12 @@ p_info* get_foreground_process(){
     return NULL;
 }
 
+p_info* get_process_by_pid(uint16_t pid) {
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (processes_list[i] && processes_list[i]->pid == pid) {
+            return processes_list[i];
+        }
+    }
+    return NULL;  
+}
+

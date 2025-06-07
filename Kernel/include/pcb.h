@@ -1,10 +1,14 @@
 #ifndef PCB_H
 #define PCB_H
 #define MAX_CHILDREN 9
+#define MAX_PIPES 10 
+#define STDIN 0
+#define STDOUT 1
 #include<stdint.h>
 #include <stdlib.h>
-
+#include "../include/pipe.h"
 typedef enum STATUS {RUNNING,READY, BLOCKED, TERMINATED} STATUS;
+
 
 typedef struct{
     int pid;
@@ -20,6 +24,7 @@ typedef struct{
     STATUS state;
     uint16_t children[MAX_CHILDREN];
     uint16_t children_length;
+    Pipe *pipes[MAX_PIPES];
 }p_info;
 
 typedef struct ReadyNode {
@@ -27,5 +32,7 @@ typedef struct ReadyNode {
     int counter;
     struct ReadyNode* next;
 } ReadyNode;
+
+
 
 #endif

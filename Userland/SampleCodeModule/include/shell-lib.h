@@ -9,7 +9,7 @@
 #include <c-lib.h>
 
 #define WORD_BUFFER_SIZE 1024
-#define NUMBER_OF_COMMANDS 16
+#define NUMBER_OF_COMMANDS 18
 #define TAB "     "
 #define NEW_LINE "shell: >"
 #define STDIN 0
@@ -23,30 +23,38 @@ typedef enum {
     PRIORITY_LOW = 3         
 } PriorityLevel;
 
-static char *commands[] = {"help", "time", "zoom", "clear", "regs", "div cero", "invalid op", "test", "block" , "unblock", "nice" ,"yeild","kill", "ps", "loop", "mem"};
+static char *commands[] = {
+    "help", "time", "zoom", "clear", "regs", "div cero", "invalid op", "test", "block", 
+    "unblock", "nice", "yeild", "kill", "ps", "loop", "mem", "pipe" 
+};
 
-static char *commandDescrition[] ={ "Shows list of available commands.",
-                                    "It prints the actual time.",
-                                    "Zooms in or out dependng on the argument.",
-                                    "Clears the screen.",
-                                    "Prints the saved cpu registers/",
-                                    "Causes a division by cero to show the error handeling.",
-                                    "Causes a invalid operation to show the error handeling.",
-                                    "Allows to run tests on diferent functionalities.",
-                                    "Blocks a specific process",
-                                    "Unblock a sprecific process",
-                                    "Changes a process priority",
-                                    "Gives up the Cpu",
-                                    "Kills the selected process.",
-                                    "Shows a list of the existing processes.",
-                                    "Loops and shows it PID and a special message",
-                                    "Shows the current state of allocated memory."
-                                };
+static char *commandDescrition[] = {
+    "Shows list of available commands.",
+    "It prints the actual time.",
+    "Zooms in or out dependng on the argument.",
+    "Clears the screen.",
+    "Prints the saved cpu registers/",
+    "Causes a division by cero to show the error handeling.",
+    "Causes a invalid operation to show the error handeling.",
+    "Allows to run tests on diferent functionalities.",
+    "Blocks a specific process",
+    "Unblock a sprecific process",
+    "Changes a process priority",
+    "Gives up the Cpu",
+    "Kills the selected process.",
+    "Shows a list of the existing processes.",
+    "Loops and shows it PID and a special message",
+    "Shows the current state of allocated memory.",
+    "Creates a pipe between two commands."  
+};
+
 
 static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none"};
 
+
 extern uint64_t syscall(__uint64_t rdi, ...);
 extern void invalidOp();
+
 
 void help(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void whatTime(uint64_t argc, char *argv[], char* command, int is_foregorund);
@@ -66,11 +74,6 @@ void loop(uint64_t argc, char *argv[], char* command, int is_foregorund); //Falt
 void mem(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void argsError(uint64_t argc, char *argv[]);
-void commandInfo(int i,int j);
-
-
-
-
-
+void commandInfo(int i, int j);
 
 #endif

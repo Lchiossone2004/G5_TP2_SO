@@ -136,3 +136,60 @@ void intToString(int value, char *buffer, size_t bufferSize){
 
     buffer[j < bufferSize - 1 ? j : bufferSize - 1] = '\0';
 }
+char *strpbrk(const char *str1, const char *str2) {
+    while (*str1) {
+        const char *s2 = str2;
+        while (*s2) {
+            if (*str1 == *s2) {
+                return (char *)str1;
+            }
+            s2++;
+        }
+        str1++;
+    }
+    return NULL; 
+}
+char *strchr(const char *str, int c) {
+    while (*str != '\0') {
+        if (*str == (char)c) {
+            return (char *)str; 
+        }
+        str++;
+    }
+    return NULL;  
+}
+char* strtok(char* str, const char* delimiters) {
+    static char* static_str = NULL; 
+    char* token;
+    
+    if (str) {
+        static_str = str;
+    }
+
+    if (!static_str) {
+        return NULL;  
+    }
+    while (*static_str && strchr(delimiters, *static_str)) {
+        static_str++;
+    }
+
+    if (!*static_str) {
+        return NULL;  
+    }
+
+    token = static_str;
+
+
+    while (*static_str && !strchr(delimiters, *static_str)) {
+        static_str++;
+    }
+
+    if (*static_str) {
+        *static_str = '\0';  
+        static_str++;  
+    }
+
+    return token;
+}
+
+

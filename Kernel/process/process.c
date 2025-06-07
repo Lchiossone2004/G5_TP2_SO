@@ -12,7 +12,9 @@ static int pirority[] = {8, 4,2,1}; //8 =critica, 4=alta,2=normal,1=baja
 static char* pirorityName[] = {"Critic", "High", "Normal", "Low"};
 static int pids[MAX_PROCESSES] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
+
 int createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int prio, int is_foreground) {
+
     void* stack_top = mm_malloc(STACK_SIZE) ;
     void* stack_base = stack_top + STACK_SIZE;
     if (!stack_top) return -1;
@@ -21,7 +23,8 @@ int createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char
     if (!new_process) return -1;
     p_stack* new_stack = stack_base - sizeof(p_stack);
 
-    copy_context(new_process, name, stack_base, new_stack, stack_top,prio, is_foreground);    
+    copy_context(new_process, name, stack_base, new_stack, stack_top,prio, is_foreground);
+
     new_stack->rbp = stack_base;
     new_stack->rsp = stack_base;
     new_stack->cs = (void*)0x8;
@@ -85,6 +88,7 @@ int fork() {
     }
 
     copy_context(new_process, current->name, stack_base, new_stack, stack_top, current->priority, current->is_foreground);
+
     new_process->argc = current->argc;
     if (current->argc > 0 && current->argv) {
         new_process->argv = mm_malloc((current->argc + 1) * sizeof(char*));
@@ -98,6 +102,7 @@ int fork() {
         new_process->argv = NULL;
     }
 
+
     current->children[current->children_length] = new_process->pid;
     current->children_length++;
 
@@ -107,7 +112,9 @@ int fork() {
     return new_process->pid;
 }
 
+
 void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer,void * stack_top ,int prio, int is_foreground) {
+
     int len = strSize(pirorityName[prio]);
     assignPid(new_process);
     new_process->name = mm_malloc(strSize(name) + 1);
@@ -129,7 +136,6 @@ int wait_pid(int pid) {
     for (int i = 0; i < current->children_length; i++) {
         if (current->children[i] == pid) {
             while (1) {
-                
                 if (foundprocess(pid) == -1) {
                     current->children[i] = 0;
                     return pid;
@@ -138,14 +144,14 @@ int wait_pid(int pid) {
             break;
         }
     }
-    return -1;  // Proceso hijo no encontrado
+    return -1;
 }
+
 int wait() {
     p_info* current = get_current_process();
     for(int i = 0; i < current->children_length; i++) {
         if(current->children[i] != 0) {
             wait_pid(current->children[i]);
-            
         }
     }
     return 0;
@@ -183,3 +189,4 @@ void freePid(int pid){
         pids[pid-1] = 0;
     }
 }
+
