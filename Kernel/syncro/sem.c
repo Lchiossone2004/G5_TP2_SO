@@ -1,6 +1,5 @@
 #include "../include/sem.h"
 #include <stddef.h>
-#include "../include/scheduler.h"
 #include "../include/process.h"
 extern void lock_acquire(int8_t *lock);
 extern void lock_release(int8_t *lock);

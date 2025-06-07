@@ -5,12 +5,6 @@
 #include "../include/naiveConsole.h"
 #include "../include/process.h"
 
-#define MAX_PROCESSES 10
-#define MAX_PRIORITY 10
-#define BLANCO  0xFFFFFF
-#define COL_WIDTH 18
-
-
 p_info* processes_list[MAX_PROCESSES];
 int n_processes = 0;
 int shellCorriendo = 0;

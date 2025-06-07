@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 #include "defs.h"
-
+#include "scheduler.h"
 #define SEM_MAX 32
-#define MAX_PROCESSES 128
+
 #define pid_t int16_t
 typedef struct semaphore {
     int8_t value;
