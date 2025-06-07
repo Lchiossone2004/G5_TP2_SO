@@ -6,6 +6,7 @@
 #define STACK_SIZE 4096
 #define MAX_PROCESSES 20
 
+
 extern void callScheduler();
 static int pirority[] = {8, 4,2,1}; //8 =critica, 4=alta,2=normal,1=baja
 static char* pirorityName[] = {"Critic", "High", "Normal", "Low"};
@@ -23,6 +24,16 @@ int createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char
     p_stack* new_stack = stack_base - sizeof(p_stack);
 
     copy_context(new_process, name, stack_base, new_stack, stack_top,prio, is_foreground);
+
+    p_info* parent = get_current_process();
+    if (parent) {
+      new_process->parent_pid = parent->pid;
+      if (parent->children_length < MAX_CHILDREN) {
+        parent->children[parent->children_length++] = new_process->pid;
+      }
+    } else {
+      new_process->parent_pid = 0;
+    }
 
     new_stack->rbp = stack_base;
     new_stack->rsp = stack_base;
@@ -128,39 +139,58 @@ void copy_context(p_info* new_process, char *name, void * stack_base, void * sta
     initialize_zero(new_process->children, MAX_CHILDREN);
     new_process->children_length = 0;
     assignForeground(new_process, is_foreground);
-    new_process->stdin = 0;
-    new_process->stdout = 1;
-    for(int i = 0; i <MAX_BUFF; i++){
-        new_process->buffers[i] = 0;
+    
+    p_info* parent = get_current_process();
+    if (parent) {
+    for (int i = 0; i < MAX_PIPES; i++) {
+        new_process->buffers[i] = parent->buffers[i];
     }
+    new_process->stdin  = parent->stdin;
+    new_process->stdout = parent->stdout;
+}   else {
+
+    for (int i = 0; i < MAX_PIPES; i++) {
+        new_process->buffers[i] = NULL;
+    }
+    new_process->stdin = STDIN;
+    new_process->stdout = STDOUT;
+}
+  
 }
 
+
 int wait_pid(int pid) {
-    p_info* current = get_current_process();
+    p_info *current = get_current_process();
+
+
+    if (foundprocess(pid) != -1) {
+        current->waiting_on_child = pid;
+        block_process(current->pid);
+        quitCPU();               
+        current->waiting_on_child = 0;
+    }
     for (int i = 0; i < current->children_length; i++) {
         if (current->children[i] == pid) {
-            while (1) {
-                if (foundprocess(pid) == -1) {
-                    current->children[i] = 0;
-                    return pid;
-                }
-            }
+            current->children[i] = 0;
             break;
         }
-    }
-    return -1;
+   }
+   return pid;
 }
 
 int wait() {
-    p_info* current = get_current_process();
-    for(int i = 0; i < current->children_length; i++) {
-        if(current->children[i] != 0) {
-            wait_pid(current->children[i]);
+    p_info *current = get_current_process();
+    int ret = -1;
+
+
+    for (int i = 0; i < current->children_length; i++) {
+        int child = current->children[i];
+        if (child != 0) {
+            ret = wait_pid(child);
         }
     }
-    return 0;
+    return ret;
 }
-
 void initialize_zero(uint16_t array[], int size) {
     for (int i = 0; i < size; i++) {
         array[i] = 0;
