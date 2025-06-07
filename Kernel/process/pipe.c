@@ -6,6 +6,13 @@
 
 Pipe* pipes[MAX_PIPES] = {0};
 
+size_t strlen(const char *s) {
+    const char *p = s;
+    while (*p) {
+        p++;
+    }
+    return (size_t)(p - s);
+}
 char* strdup(const char* str) {
     if (str == NULL) {
         return NULL;
