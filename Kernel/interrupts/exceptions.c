@@ -1,5 +1,7 @@
 #include <videoDriver.h>
 #include <lib.h>
+#include "scheduler.h"
+#include "pipe.h"
 
 #define ZERO_EXCEPTION_ID 0
 #define WRONG_OP_EXCEPTION_ID 1
@@ -20,16 +22,18 @@ void exceptionDispatcher(int exception) {
 }
 
 static void zero_division() {
-	imprimirVideo(TAB, 5,ROJO);
-	imprimirVideo("Error: invalid operation, division by 0",40,ROJO);
+	char * error = "Error: invalid operation, division by 0";
+	p_info  * proc = get_current_process();
+	pipe_write(proc->stdin,error,strSize(error));
 	nlVideo();
 	printRegisters();
 	return;
 }
 
 static void wrong_op() {
-	imprimirVideo(TAB, 5,ROJO);
-	imprimirVideo("Error: invalid op code",23,ROJO);
+	char * error = "Error: invalid op code";
+	p_info  * proc = get_current_process();
+	pipe_write(proc->stdin,error,strSize(error));
 	nlVideo();
 	printRegisters();
 	return; 

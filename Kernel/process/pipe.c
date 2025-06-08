@@ -29,13 +29,13 @@ int create_pipe(int* fd_read, int*fd_write) {
     if (pipe_index == -1) return -1;
 
     int fd_r = -1, fd_w = -1;
-    for (int i = 3; i < MAX_FDS && (fd_r == -1 || fd_w == -1); i++) {
+    for (int i = 0; i < MAX_FDS && (fd_r == -1 || fd_w == -1); i++) {
         if (!fd_table[i].in_use) {
-            if (fd_r == -1){
-                fd_r = i;
+            if (fd_w == -1){
+                fd_w = i;
             }
             else{
-            fd_w = i;
+            fd_r = i;
             }
         }
     }
@@ -86,6 +86,7 @@ int pipe_init(Pipe *pipe) {
     pipe->is_read_open = 1;
     pipe->is_write_open = 1; 
     pipe->initialized = 1;
+    pipe->index = 0;
     pipe->size = MAX_BUFF;
     return 0;
 }
@@ -108,6 +109,7 @@ int pipe_write(int fd, const char *buffer, int count) {                         
         pipe->buffer[pipe->write_pos] = buffer[i];
         pipe->write_pos = next_pos;
         written++;
+        pipe->index++;
     }
     return written;
 }
@@ -121,15 +123,16 @@ int pipe_read(int fd, char *buffer, int count) {
         return -1;
     }
     int read = 0;
-
+    
     while (read < count && pipe->read_pos != pipe->write_pos) {
         buffer[read++] = pipe->buffer[pipe->read_pos];
         pipe->read_pos = (pipe->read_pos + 1) % BUFFER_SIZE;
+        pipe->index--;
     }
     return read;
 }
 
-void pipe_close(int end, int fd){
+int pipe_close(int end, int fd){
         if (fd < 0 || fd >= MAX_FDS || !fd_table[fd].in_use || fd_table[fd].type != FD_READ) {
         return -1;
     }
@@ -141,4 +144,12 @@ void pipe_close(int end, int fd){
         pipe->is_write_open = 1;
     }
     return 0;
+}
+
+Pipe* get_pipe(int fd){
+    return fd_table[fd].pipe;
+}
+
+char * get_pipe_buffer(int fd){
+    return fd_table[fd].pipe->buffer;
 }

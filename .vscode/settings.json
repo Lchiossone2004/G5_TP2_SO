@@ -25,6 +25,7 @@
         "sem.h": "c",
         "stddef.h": "c",
         "pipe.h": "c",
-        "naiveconsole.h": "c"
+        "naiveconsole.h": "c",
+        "shell-lib.h": "c"
     }
 }

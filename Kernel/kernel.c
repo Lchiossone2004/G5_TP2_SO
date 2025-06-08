@@ -7,6 +7,8 @@
 #include <videoDriver.h>
 #include "memory/memory_manager.h"
 #include "include/sem.h"
+#include "include/pipe.h"
+
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -92,6 +94,10 @@ int main()
 	init_semaphores();
 	size_t memory_size = 0x200000;         // 2MB de memoria disponible
 	init_memory_manager(memory_start, memory_size);
+
+	//Inicializo stdin y stdout
+	int *pipe_fd[2];
+	create_pipe(&pipe_fd[0], &pipe_fd[1]);
 	((EntryPoint)sampleCodeModuleAddress)();		// Llamo al userland
 	return 0;
 }

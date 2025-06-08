@@ -71,10 +71,10 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 void printRegisters(){
 	uint64_t * registers = getCPURegisters();
     for(int i = 0; i<17; i++){
-    imprimirVideo(TAB,5,BLANCO);
-    imprimirVideo(regs[i],4,VERDE);
-	imprimirVideo("0x",2,BLANCO);
-    printHexaVideo(registers[i]);
+    // imprimirVideo(TAB,5,BLANCO);
+    // imprimirVideo(regs[i],4,VERDE);
+	// imprimirVideo("0x",2,BLANCO);
+    // printHexaVideo(registers[i]);
 	if(i%2 == 1){
 		nlVideo();
 	}

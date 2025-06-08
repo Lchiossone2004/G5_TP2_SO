@@ -4,43 +4,46 @@ static char buffer[WORD_BUFFER_SIZE] = {0};
 static char letra[1] = {0};
 static int ultimaLetra;
 static int index = 0;
+static int last = 0;
 
+void fetch_command(){
+    syscall(41,buffer);
+}
 
-void shell()
-{
+void shell() {
     print(NEW_LINE);
     Command aux;
-    while (1)
-    {
-        if (index == WORD_BUFFER_SIZE - 1)
-        {
+    char letra = ' ';
+    while (1) {
+        if (index >= WORD_BUFFER_SIZE - 1) {
             chekCommand(aux);
             print(NEW_LINE);
             index = 0;
             ultimaLetra = 0;
         }
-        getKey();
-        if (*letra == 0 && index > 0)
-        {
+
+        getKey(&letra);
+
+        if (letra == 0 && index > 0) {
+            // Retroceso (borrar)
             index -= 1;
             buffer[index] = 0;
         }
-        if (*letra == 1)
-        {
+        else if (letra == '\n') {
+            // Enter
+            fetch_command();
             chekCommand(aux);
             print(NEW_LINE);
+            clearBuffer();
             index = 0;
             ultimaLetra = 0;
         }
-        if (*letra != 0 && *letra != 1)
-        {
-            if (*letra == ' ')
-            {
+        else if (letra != 0 && letra != 1) {
+            // Cualquier otra letra
+            if (letra == ' ') {
                 buffer[index++] = ' ';
-            }
-            else
-            {
-                buffer[index++] = *letra;
+            } else {
+                buffer[index++] = letra;
                 ultimaLetra = index;
             }
             buffer[index] = 0;
@@ -48,9 +51,8 @@ void shell()
     }
 }
 
-void getKey()
-{
-    syscall(2, STDIN, letra, index);
+int getKey(char *letra) {
+    return syscall(14,letra,1);
 }
 
 void chekCommand(Command aux)
@@ -58,13 +60,13 @@ void chekCommand(Command aux)
     deleteSpaces(buffer);
     aux = parseCommand(buffer);
     int command = processCommand(aux.command);
+    //print(aux.command);
     int is_foreground = 1;
     int offset = 0;
     for(int i = 0; i<aux.arg_count; i++){
         if(strCompare(aux.args[i],"&")){
             if(i != 0){
-                printErr("Invalid & must be placed after the command");
-                nlPrint();
+                print("Invalid & must be placed after the command\n");
                 command = -1;
             }
             else{
@@ -76,7 +78,7 @@ void chekCommand(Command aux)
     if(command >= 0 && command <=NUMBER_OF_COMMANDS){
         if(aux.arg_count == 1 && strCompare(aux.args[0],"-info")){
             commandInfo(command - 1, -1);
-            nlPrint();
+            print('\n');
         }
         else{
         shell_table[command](aux.arg_count - offset, aux.args + offset, aux.command,is_foreground);
@@ -131,7 +133,6 @@ Command parseCommand(char *input) {
 
     toRet.args = (char **)usr_malloc(sizeof(char *) * MAX_ARGS);
     toRet.arg_count = 0;
-
 
     while (index < len && input[index] == ' ') index++;
 

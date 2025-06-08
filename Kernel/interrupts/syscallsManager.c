@@ -77,7 +77,7 @@ static syscall_fn syscall_table[] = {
     [38] = sys_sem_get_value,
     [39] = sys_go_middle,
     [40] = sys_create_pipe,
-    [41] = sys_print
+    [41] = check_for_command
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -97,23 +97,25 @@ uint64_t sys_registers_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
     return 0;
 }
 
-uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    unsigned int fd = (unsigned int) rsi;
+uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){ //SEGUIR
+    p_info * current_proc = get_current_process();
     char *letter = (char *) rdx;
     size_t count = (size_t) rcx;
 
     _sti();
-    if(fd == STDIN){
-        while(isBufferEmpty());
-        *letter = getBuffer();
+    if(current_proc->stdin == STDIN){
+        Pipe * in_pipe = get_pipe(STDIN);
+        while(in_pipe->write_pos == 0);
+        *letter = in_pipe->buffer[0];
+        in_pipe->write_pos;
         if(*letter == 0 && count > 0){
-            deleteVideo();
+            //deleteVideo();
         }
         if (*letter == 1) {
             nlVideo();
         }
         if(*letter != 0 && *letter != 1){
-            imprimirVideo(letter, 1, BLANCO);
+            //imprimirVideo(letter, 1, BLANCO);
         }
     }
     return 0;
@@ -140,28 +142,22 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
 }
 
 uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    unsigned int fd = (unsigned int) rsi;
-    char *buffer = (char *) rdx;
-    size_t count = (size_t) rcx;
+    char *buffer = (char *) rsi;
+    size_t count = (size_t) rdx;
 
-    if(fd == STDOUT){
-        imprimirVideo(buffer, count, BLANCO);
-    }
-    else if(fd == STDERR){
-        imprimirVideo(buffer, count, ROJO);
-    } 
-    else if (fd >= PIPE_FD_START) {
-        pipe_write(fd,buffer,count);
-    }
+    p_info* current_proc = get_current_process();
 
+    pipe_write(current_proc->stdin,buffer,count);
+    pipe_read(current_proc->stdout,buffer,count);
+    video_task();
     return 0;
 }
 
 uint64_t sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){ 
     unsigned int fd = (unsigned int) rsi;
     if(fd == STDOUT) {
-        zoomIN();
-        rePrint();
+        //zoomIN();
+        //rePrint();
     }
     return 0;
 }
@@ -169,8 +165,8 @@ uint64_t sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint6
 uint64_t sys_zoomOut(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     unsigned int fd = (unsigned int) rsi;
     if(fd == STDOUT) {
-        zoomOUT();
-        rePrint();
+        //zoomOUT();
+        //rePrint();
     }
     return 0;
 }
@@ -197,7 +193,7 @@ uint64_t sys_sleep(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
 uint64_t sys_clear(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     unsigned int fd = (unsigned int) rsi;
     if(fd == STDOUT){
-        videoClear();
+        //videoClear();
     }
     return 0;
 }
@@ -209,7 +205,7 @@ uint64_t sys_putPixel(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uin
     unsigned int fd = (unsigned int) r8;
 
     if(fd == STDOUT) {
-        putPixel(color, posx, posy);
+        //putPixel(color, posx, posy);
     }
     return 0;
 }
@@ -227,14 +223,15 @@ uint64_t sys_getTime(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
 }
 
 uint64_t sys_getKey(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    unsigned int fd = (unsigned int) rsi;
-    char *buffer = (char *) rdx;
-
+    p_info * current_proc = get_current_process();
+    char *letter = (char *) rsi;
+    int aux = 0;
     _sti();
-    if(fd == STDIN && !isBufferEmpty()){
-        *buffer = getBuffer();
+    while(aux == 0){
+        aux = pipe_read(current_proc->stdout,letter,1);
     }
-    return 0;
+
+    video_task();
 }
 
 uint64_t seed_changer() {
@@ -262,7 +259,7 @@ uint64_t sys_clearBuffer(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 uint64_t sys_delete_video(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     unsigned int cant = (unsigned int) rsi;
     for(int i = 0; i < cant - 1; i++){
-        deleteVideo();
+        //deleteVideo();
     }
     return 0;
 }
@@ -367,7 +364,7 @@ uint64_t sys_sem_get_value(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8
 }
 
 uint64_t sys_go_middle(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    return goMiddle();
+    return ;//goMiddle();
 }
 
 
@@ -379,9 +376,20 @@ uint64_t sys_create_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
     return 0;
 }
 
-uint64_t sys_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
+uint64_t check_for_command(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
+    p_info * current_proc = get_current_process();
     char *buffer = (char *) rsi;
-    size_t count = (size_t) rdx;
-    p_info* current_proc = get_current_process();
-    pipe_write(current_proc->stdout,buffer,count);
+
+    Pipe * curr_pipe = get_pipe(current_proc->stdout);
+    int last_line = 0;
+    for(int i = 0; i < curr_pipe->write_pos; i++){
+        if(curr_pipe->buffer[i] == '>'){
+            last_line = i + 1;
+        }
+    }
+    int j = 0;
+    for(int i = last_line ; i < curr_pipe->write_pos; i++){
+        buffer[j++] = curr_pipe->buffer[i];
+    }
+    buffer[j-1] = '\0';
 }

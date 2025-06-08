@@ -5,6 +5,9 @@
 #include <videoDriver.h>
 #include <lib.h>
 #include "scheduler.h"
+#include "pipe.h"
+
+#define STDIN 0
 
 static uint64_t shift_pressed = 0;
 static uint64_t ctrl_pressed = 0;
@@ -17,38 +20,43 @@ static uint64_t curr = 0; //posicion actual del buffer
 int specialKey(uint8_t key) {
     return  (key == 0 || key == 0x01 || key == 14 || key == 75 || key == 77 || key == 28 || key == 0x1D || key == 0x3A || key == 0x2A || key == 0x36 || key == 0xAA || key == 0xB6 || key == 0x0F );
 }
-void loadBuffer(uint8_t key){
-    //updateKeyboardStatus(key,);
-    if(curr == 12) {
+void loadBuffer(uint8_t key) {
+    p_info *foreground_proc = get_foreground_process();
+    if (curr == 12) {
         curr = 0;
     }
 
-    if(ctrl_pressed && key == 0x2E){
-        p_info * foreground_proc = get_foreground_process();
+    if (ctrl_pressed && key == 0x2E) {
         kill_process(foreground_proc->pid);
         return;
     }
-    if(ctrl_pressed && key == 0x20){ 
-        //Comportamiento del ctrl+d
-    }
-    if(!specialKey(key)){
-        char letter = toLetter(key); 
 
-            buffer[curr++] = letter;
-
+    if (ctrl_pressed && key == 0x20) {
+        // Comportamiento del ctrl+d
     }
-    if(key == 14){      //Borrado      
+
+    if (!specialKey(key)) {
+        char letter = toLetter(key);
+        pipe_write(STDIN, &letter, 1);
+        buffer[curr++] = letter;
+    }
+
+    if (key == 14) { // Borrado
+        char aux = 0x08;
+        pipe_write(STDIN, &aux, 1);
         buffer[curr++] = 0;
     }
-    if(key == 28){      //Enter
-        buffer[curr++] = 1;
+
+    if (key == 28) { // Enter
+        char aux = '\n';
+        pipe_write(STDIN, &aux, 1);
     }
-    if(key == 0x0F){   //TAB
-        buffer[curr++] = ' ';
-        buffer[curr++] = ' ';
-        buffer[curr++] = ' ';
-        buffer[curr++] = ' ';
-        buffer[curr++] = ' ';
+
+    if (key == 0x0F) { // TAB
+        char aux = ' ';
+        for (int i = 0; i < 5; i++) {
+            pipe_write(STDIN, &aux, 1);
+        }
     }
 }
 

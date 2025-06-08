@@ -7,7 +7,7 @@
 #include <memory-lib.h>
 #include <shell-lib.h>
 
-#define NEW_LINE "shell: >"
+#define NEW_LINE "shell:>"
 #define MAX_ARG_LEN 124
 #define MAX_ARGS 5
 
@@ -45,7 +45,7 @@ typedef struct {
 #define SHELL_TABLE_SIZE (sizeof(shell_table) / sizeof(shell_fn))
 
 void shell();
-void getKey();
+int getKey(char *letra);
 void chekCommand(Command aux);
 int processCommand(char *input);
 void clearBuffer();

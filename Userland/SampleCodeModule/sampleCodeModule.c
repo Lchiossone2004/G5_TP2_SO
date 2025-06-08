@@ -15,8 +15,6 @@ void inactive(){
 }
 
 int main() {
-	int *pipe_fd[2];
-	usr_open_pipe(&pipe_fd[0], &pipe_fd[1]); 
 	usr_create_process((void*)inactive,NULL,NULL, "inactive", PRIORITY_LOW,1);
 	usr_create_process((void*)shell,NULL,NULL, "shell", PRIORITY_HIGH,1);
 	while (1) {

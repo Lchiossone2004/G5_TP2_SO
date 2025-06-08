@@ -9,13 +9,12 @@ void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
         print("     Here is a list of the commands:");
         for (int i = 0; i < NUMBER_OF_COMMANDS; i++)
         {
-            nlPrint();
+            print("\n");
             print("     #) ");
             print(commands[i]);
         }
-        nlPrint();
-        print("To know more about any command type [command] -info");
-        nlPrint();
+       print("\n");
+        print("To know more about any command type [command] -info\n");
     }
     else if(argc == 1 && strCompare(argv[0], "all")){
         for(int i = 0; i < NUMBER_OF_COMMANDS; i++){
@@ -26,7 +25,7 @@ void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
             else{
                 commandInfo(i,-1);
             }
-            nlPrint();
+            print("\n");
         }
     }
     else{
@@ -62,7 +61,7 @@ void zoom(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(strCompare(argv[0],"OUT")){
         syscall(7, STDOUT);
     }
-    nlPrint();
+    print("\n");
 }
 
 void clear(uint64_t argc, char *argv[], char* command, int is_foregorund){
@@ -97,10 +96,7 @@ void test(uint64_t argc, char *argv[], char* command, int is_foregorund){
         argsError(argc,argv);
     }
     if(strCompare(argv[0],"MM")){
-        void * ptr = usr_malloc(12);
-        usr_free(ptr);
-        return;
-        //usr_create_process((void*)test_mm, argc-1,argv+1, "memory test", PRIORITY_LOW, is_foregorund);
+        usr_create_process((void*)test_mm, argc-1,argv+1, "memory test", PRIORITY_LOW, is_foregorund);
     }
     else if(strCompare(argv[0],"Prio")){
 
@@ -174,7 +170,7 @@ void kill(uint64_t argc, char *argv[], char* command, int is_foregorund){
         else{
             printErr("Invalid PID");
         }
-        nlPrint();
+        print("\n");
     }
 }
 
@@ -203,19 +199,16 @@ void loop(uint64_t argc, char *argv[], char* command, int is_foregorund){
     intToString(pid,buffer,len);
     while(1){
         print(buffer);
-        nlPrint();
-        print("These Aren't the Droids Your Looking For");
-        nlPrint();
+        print("\n");
+        print("These Aren't the Droids Your Looking For\n");
         for(int i = 0; i <100000000; i++);
     }
 }
 
 void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund){
-    print(TAB);
     printErr("command: [");
     printErr(command);
-    printErr("] not found.");
-    nlPrint();
+    printErr("] not found.\n");
 }
 
 void argsError(uint64_t argc, char *argv[]){
@@ -230,7 +223,7 @@ void argsError(uint64_t argc, char *argv[]){
                 printErr(argv[i]);
         }
     }
-    nlPrint();
+    print("\n");
 }
 
 #include <stdint.h>
@@ -272,7 +265,7 @@ void pipeCommand(uint64_t argc, char *argv[], char *command) {
     char buffer2[25];
     read(buffer2,pipe_fd[0],strSize(buffer));
     write(buffer2,STDOUT,strSize(buffer));
-    nlPrint();
+    print("\n");
     // char *full_command = argv[0];
     // char *pipe_pos = strchr(full_command, '|');
 
@@ -329,7 +322,7 @@ void commandInfo(int i,int j){
                 print(commands[j]);
                 print("] command.");
             }
-            nlPrint();
+            print("\n");
             print(TAB);
             print("- ");
             print(commandDescrition[i]);
@@ -338,7 +331,7 @@ void commandInfo(int i,int j){
                 print("- ");
                 print(commandDescrition[j]);
             }
-            nlPrint();
+            print("\n");
             print(TAB);
             print("- Possible arguments: ");
             print(commandArgs[i]);
@@ -347,5 +340,5 @@ void commandInfo(int i,int j){
                 print("- Possible arguments: ");
                 print(commandArgs[j]);
             }
-            nlPrint();
+            print("\n");
 }  
