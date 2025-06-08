@@ -16,25 +16,20 @@ void init_semaphores(void) {
     }
 }
 
-int16_t sem_open(int16_t initial_value) {
-    int16_t id = -1;
-    for (int16_t i = 1; i < SEM_MAX; i++) {
-        semaphore *s = &semaphores[i];
-        lock_acquire(&s->lock);
-        if (s->value == -1) {
-            s->value = initial_value;
-            s->head  = 0;
-            s->tail  = 0;
-            s->count = 0;
-            id = i;
-            lock_release(&s->lock);
-            return id;
-        }
-        lock_release(&s->lock);
-    }
-    return -1;
-}
+int16_t sem_open(int16_t id, int16_t initial_value) {
+    if (id <= 0 || id >= SEM_MAX) return -1;
+    semaphore *s = &semaphores[id];
 
+    lock_acquire(&s->lock);
+    if (s->value != -1) {
+        lock_release(&s->lock);
+        return id;
+    }
+    s->value = initial_value;
+    s->head  = s->tail = s->count = 0;
+    lock_release(&s->lock);
+    return id;
+}
 
 int16_t sem_close(int16_t id) {
     if (id <= 0 || id >= SEM_MAX) return -1;

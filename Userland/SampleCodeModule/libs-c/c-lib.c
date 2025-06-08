@@ -76,8 +76,8 @@ void usr_nice(int pid, int newPrio){
 
 //Sems
 
-int usr_sem_open(int initial_value) {
-    return syscall(34, initial_value);
+int usr_sem_open(int id, int initial_value) {
+    return syscall(34, id, initial_value);
 }
 
 int usr_sem_close(int id){

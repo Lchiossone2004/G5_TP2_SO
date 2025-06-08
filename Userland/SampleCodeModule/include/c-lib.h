@@ -23,7 +23,7 @@ void usr_yield();
 void usr_nice(int pid, int newPrio);
 
 //Sems
-int usr_sem_open(int initial_value);
+int usr_sem_open(int id, int initial_value);
 int usr_sem_close(int id);
 int usr_sem_wait(int id);
 int usr_sem_post(int id);
