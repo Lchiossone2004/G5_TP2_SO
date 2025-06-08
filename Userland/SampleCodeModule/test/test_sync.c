@@ -1,9 +1,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "../include/test_util.h"
-#include "test.h"
+#include "../include/test.h"
 
-#define SEM_ID "sem"
+#define SEM_ID 1
 #define TOTAL_PAIR_PROCESSES 2
 
 int64_t global; // shared memory
@@ -65,8 +65,8 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    //pids[i] = usr_create_process("my_process_inc", 3, argvDec);
-    //pids[i + TOTAL_PAIR_PROCESSES] = usr_create_process("my_process_inc", 3, argvInc);
+    pids[i] = usr_create_process((void*)my_process_inc, 3, argvDec,"my_process_inc",2,1);
+    pids[i + TOTAL_PAIR_PROCESSES] = usr_create_process((void*)my_process_inc, 3, argvInc, "my_process_inc",2,1);
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
@@ -74,7 +74,9 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
     usr_sem_wait(pids[i + TOTAL_PAIR_PROCESSES]);
   }
 
-  //print("Final value: %d\n", global);
-
+  print("Final value:");
+  char toPrint[4];
+  intToString(global, toPrint, 4);
+  print(toPrint);
   return 0;
 }

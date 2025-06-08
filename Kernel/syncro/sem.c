@@ -1,8 +1,8 @@
 #include "../include/sem.h"
 #include <stddef.h>
 #include "../include/process.h"
-extern void lock_acquire(int8_t *lock);
-extern void lock_release(int8_t *lock);
+extern void lock_acquire(int16_t *lock);
+extern void lock_release(int16_t *lock);
 
 static semaphore semaphores[SEM_MAX];
 
@@ -16,7 +16,7 @@ void init_semaphores(void) {
     }
 }
 
-int8_t sem_open(int8_t id, int8_t initial_value) {
+int16_t sem_open(int16_t id, int16_t initial_value) {
     if (id <= 0 || id >= SEM_MAX) return -1;
     semaphore *s = &semaphores[id];
 
@@ -31,9 +31,11 @@ int8_t sem_open(int8_t id, int8_t initial_value) {
     return id;
 }
 
-int8_t sem_close(int8_t id) {
+int16_t sem_close(int16_t id) {
     if (id <= 0 || id >= SEM_MAX) return -1;
     semaphore *s = &semaphores[id];
+    pid_t to_wake[MAX_PROCESSES];
+    int n = 0;
 
     lock_acquire(&s->lock);
     if (s->value == -1) {
@@ -41,19 +43,22 @@ int8_t sem_close(int8_t id) {
         return -1;
     }
     while (s->count > 0) {
-        pid_t pid = s->waiting[s->head];
+        to_wake[n++] = s->waiting[s->head];
         s->head = (s->head + 1) % MAX_PROCESSES;
         s->count--;
-        unblock_process(pid);
     }
     s->value = -1;
     lock_release(&s->lock);
+    for (int i = 0; i < n; i++)
+        unblock_process(to_wake[i]);
+
     return 0;
 }
 
-int8_t sem_post(int8_t id) {
+int16_t sem_post(int16_t id) {
     if (id <= 0 || id >= SEM_MAX) return -1;
     semaphore *s = &semaphores[id];
+    pid_t pid;
 
     lock_acquire(&s->lock);
     if (s->value == -1) {
@@ -61,18 +66,19 @@ int8_t sem_post(int8_t id) {
         return -1;
     }
     if (s->count > 0) {
-        pid_t pid = s->waiting[s->head];
+        pid = s->waiting[s->head];
         s->head = (s->head + 1) % MAX_PROCESSES;
         s->count--;
+        lock_release(&s->lock);
         unblock_process(pid);
     } else {
         s->value++;
+        lock_release(&s->lock);
     }
-    lock_release(&s->lock);
     return 0;
 }
 
-int8_t sem_wait(int8_t id) {
+int16_t sem_wait(int16_t id) {
     if (id <= 0 || id >= SEM_MAX) return -1;
     semaphore *s = &semaphores[id];
     pid_t pid = get_pid();
@@ -99,10 +105,10 @@ int8_t sem_wait(int8_t id) {
     return 0;
 }
 
-int8_t sem_get_value(int8_t id) {
+int16_t sem_get_value(int16_t id) {
     if (id <= 0 || id >= SEM_MAX) return -1;
     semaphore *s = &semaphores[id];
-    int8_t v;
+    int16_t v;
     lock_acquire(&s->lock);
     v = s->value;
     lock_release(&s->lock);
