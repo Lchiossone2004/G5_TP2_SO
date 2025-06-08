@@ -22,6 +22,8 @@ typedef struct{
     char *priorityName;
     int is_foreground;
     STATUS state;
+    int parent_pid; 
+    int waiting_on_child;
     uint16_t children[MAX_CHILDREN];
     uint16_t children_length;
     int buffers[MAX_BUFF * 2];
