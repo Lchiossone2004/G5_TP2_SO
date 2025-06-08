@@ -1,11 +1,12 @@
 #include <c-lib.h>
-
+#include <stdbool.h>
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
+#define SEM_MAX 10
 
 extern uint64_t syscall(uint64_t rdi, ...);
-
+static bool is_semaphore[SEM_MAX] = { false };
 //Other
 
 void printRegisters(){
@@ -42,8 +43,8 @@ void sleep(int ticks){
 //Proc
 
 int32_t usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground){
-        int32_t pid = (int32_t)syscall(22,fn,argc,argv, name, prio, is_foreground);
-        return pid;
+    int32_t pid = (int32_t)syscall(22,fn,argc,argv, name, prio, is_foreground);
+    return pid;
 }
 
 int usr_block_process(int pid){
@@ -77,19 +78,33 @@ void usr_nice(int pid, int newPrio){
 //Sems
 
 int usr_sem_open(int id, int initial_value) {
-    return syscall(34, id, initial_value);
+    int ret = syscall(34, id, initial_value);
+    if (ret >= 0 && id >= 0 && id < SEM_MAX) {
+        is_semaphore[id] = true;
+    }
+    return ret;
 }
 
-int usr_sem_close(int id){
-    return syscall(35, id);
+int usr_sem_close(int id) {
+    int ret = syscall(35, id);
+    if (ret >= 0 && id >= 0 && id < SEM_MAX) {
+        is_semaphore[id] = false;
+    }
+    return ret;
 }
 
-int usr_sem_wait(int id){
-    return syscall(36, id);
+int usr_sem_wait(int id) {
+    if (id >= 0 && id < SEM_MAX && is_semaphore[id]) {
+        return syscall(36, id);        
+    } else {
+        return syscall(24, id);      
+    }
 }
-
-int usr_sem_post(int id){
-    return syscall(37, id);
+int usr_sem_post(int id) {
+    if (id >= 0 && id < SEM_MAX && is_semaphore[id]) {
+        return syscall(37, id);        
+    }
+    return -1;                      
 }
 
 int usr_sem_getvalue(int id){

@@ -14,17 +14,18 @@ static int pids[MAX_PROCESSES] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; //ES
 
 
 int createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int prio, int is_foreground) {
-
     void* stack_top = mm_malloc(STACK_SIZE) ;
     void* stack_base = stack_top + STACK_SIZE;
-    if (!stack_top) return -1;
+    if (!stack_top) {
+        return -1;
+    }
 
     p_info* new_process = mm_malloc(sizeof(p_info));
-    if (!new_process) return -1;
+    if (!new_process) {
+        return -1;
+    }
     p_stack* new_stack = stack_base - sizeof(p_stack);
-
     copy_context(new_process, name, stack_base, new_stack, stack_top,prio, is_foreground);
-
     p_info* parent = get_current_process();
     if (parent) {
       new_process->parent_pid = parent->pid;
@@ -32,6 +33,7 @@ int createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char
         parent->children[parent->children_length++] = new_process->pid;
       }
     } else {
+
       new_process->parent_pid = 0;
     }
 
@@ -45,7 +47,6 @@ int createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char
     load_args(new_stack, new_process, argc, argv);
     add_to_process_list(new_process);
     add_to_ready_list(new_process);
-
     return new_process->pid;
 }
 
@@ -123,40 +124,43 @@ int fork() {
 }
 
 
-void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer,void * stack_top ,int prio, int is_foreground) {
-
-    int len = strSize(pirorityName[prio]);
+void copy_context(p_info* new_process, char *name, void *stack_base, void *stack_pointer, void *stack_top, int prio, int is_foreground) {
     assignPid(new_process);
-    new_process->name = mm_malloc(strSize(name) + 1);
-    memcpy(new_process->name, name, strSize(name));
+
+    size_t nameLen = strSize(name) + 1;
+    new_process->name = mm_malloc(nameLen);
+    memcpy(new_process->name, name, nameLen);
+
     new_process->stack_base = stack_base;
     new_process->stack_pointer = stack_pointer;
     new_process->stack_top = stack_top;
-    new_process->state = READY;
+
+    new_process->state    = READY;
     new_process->priority = pirority[prio];
-    new_process->priorityName = mm_malloc(len * sizeof(char));
-    memcpy(new_process->priorityName,pirorityName[prio],len);
+    size_t prioNameLen = strSize(pirorityName[prio]) + 1;
+    new_process->priorityName = mm_malloc(prioNameLen);
+    memcpy(new_process->priorityName, pirorityName[prio], prioNameLen);
     initialize_zero(new_process->children, MAX_CHILDREN);
     new_process->children_length = 0;
     assignForeground(new_process, is_foreground);
-    
-    p_info* parent = get_current_process();
-    if (parent) {
-    for (int i = 0; i < MAX_PIPES; i++) {
-        new_process->buffers[i] = parent->buffers[i];
-    }
-    new_process->stdin  = parent->stdin;
-    new_process->stdout = parent->stdout;
-}   else {
 
-    for (int i = 0; i < MAX_PIPES; i++) {
-        new_process->buffers[i] = NULL;
-    }
-    new_process->stdin = STDIN;
-    new_process->stdout = STDOUT;
-}
+    p_info *parent = get_current_process();
   
+    if (parent) {
+        for (int i = 0; i < MAX_PIPES; i++) {
+            new_process->buffers[i] = parent->buffers[i];
+        }
+        new_process->stdin  = parent->stdin;
+        new_process->stdout = parent->stdout;
+    } else {
+        for (int i = 0; i < MAX_PIPES; i++) {
+            new_process->buffers[i] = NULL;
+        }
+        new_process->stdin  = STDIN;
+        new_process->stdout = STDOUT;
+    }
 }
+
 
 
 int wait_pid(int pid) {
@@ -197,15 +201,16 @@ void initialize_zero(uint16_t array[], int size) {
     }
 }
 
-void assignForeground(p_info* new_process, int is_foreground){
-    new_process->is_foreground = is_foreground;
-    if(new_process->is_foreground){
-        p_info* foreground_proc = get_foreground_process();
-        if(foreground_proc->pid != new_process->pid){
-            foreground_proc->is_foreground = 0;
+void assignForeground(p_info* new_p, int is_fg) {
+    new_p->is_foreground = is_fg;
+    if (is_fg) {
+        p_info *current_fg = get_foreground_process();
+        if (current_fg != NULL && current_fg->pid != new_p->pid) {
+            current_fg->is_foreground = 0;
         }
     }
 }
+
 
 void assignPid(p_info* new_process){
     new_process->pid = 0;
