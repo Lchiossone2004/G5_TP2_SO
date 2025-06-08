@@ -87,9 +87,9 @@ int pipe_init(Pipe *pipe) {
     pipe->is_write_open = 1; 
     pipe->initialized = 1;
     pipe->index = 0;
-    pipe->size = MAX_BUFF;
+    pipe->size = BUFF;
     pipe->sem_data_available = sem_open(0);
-    pipe->sem_free_space = sem_open(MAX_BUFF);
+    pipe->sem_free_space = sem_open(BUFF);
     return 0;
 }
 

@@ -4,7 +4,6 @@
 #include <naiveConsole.h>
 #include <lib.h>
 #include "scheduler.h"
-#include "pipe.h"
 
 #define MOV_X 8		  // Lo que ocupa en x de un char
 #define MOV_Y 16	  // Lo que ocupa en y de un char
@@ -74,31 +73,36 @@ static int y = 0;
 static int aux = 0;
 static word matrix[BORDER_Y / MOV_Y][BORDER_X / MOV_X] = {0};
 
-static int last_processed = 0;
-
-void video_task() {
-    Pipe *out_pipe = get_pipe(STDOUT);
-    char *video_buffer = out_pipe->buffer;
-
-    if (out_pipe->write_pos <= last_processed) {
-        // No hay nada nuevo para procesar
-        return;
-    }
-
-    for (int i = last_processed; i < out_pipe->write_pos; i++) {
-        char c = video_buffer[i];
-        if (c == '\n') {
-            nlVideo();
-        } else if (c == 0x08) {
-            deleteVideo();
-        } else {
-            charVideo(c, 1, BLANCO);
-        }
-    }
-
-    last_processed = out_pipe->write_pos;
+void putPixel(uint32_t hexColor, uint64_t x, uint64_t y)
+{
+	uint8_t *framebuffer = (uint8_t *)VBE_mode_info->framebuffer;
+	uint64_t offset = (x * ((VBE_mode_info->bpp) / 8)) + (y * VBE_mode_info->pitch);
+	framebuffer[offset] = (hexColor) & 0xFF;
+	framebuffer[offset + 1] = (hexColor >> 8) & 0xFF;
+	framebuffer[offset + 2] = (hexColor >> 16) & 0xFF;
 }
 
+void imprimirVideo(char *palabra, int size, uint32_t color)
+{
+	p_info * current_p = get_current_process();
+	if(current_p->is_foreground){	
+		for (int i = 0; i < size; i++){
+			if (palabra[i] == '\n')
+			{
+				nlVideo();
+			}
+			else
+			{
+				y = aux;
+				word vol;
+				vol.num = palabra[i];
+				vol.color = color;
+				matrix[(y / zoom) / MOV_Y][(x / zoom) / MOV_X] = vol;
+				charVideo(palabra[i], 1, color);
+			}
+		}
+	}
+}
 void charVideo(char num, char isEndLine, uint32_t color)
 {
 	if (x <= BORDER_X && y < BORDER_Y)
@@ -142,12 +146,10 @@ void charVideo(char num, char isEndLine, uint32_t color)
 		}
 		y = aux;
 	}
-	if (y >= BORDER_Y - (MOV_Y * zoom)) {
-    scrollMatrix();
-    redrawScreen();
-    y -= MOV_Y * zoom;
-    aux -= MOV_Y * zoom;
-}
+	if (x >= BORDER_X - 8 && y >= BORDER_Y - 16)
+	{
+		videoClear();
+	}
 }
 
 void nlVideo()
@@ -190,37 +192,12 @@ void deleteVideo()
 	}
 }
 
-void putPixel(uint32_t hexColor, uint64_t x, uint64_t y)
+void printHexaVideo(uint64_t value)
 {
-	uint8_t *framebuffer = (uint8_t *)VBE_mode_info->framebuffer;
-	uint64_t offset = (x * ((VBE_mode_info->bpp) / 8)) + (y * VBE_mode_info->pitch);
-	framebuffer[offset] = (hexColor) & 0xFF;
-	framebuffer[offset + 1] = (hexColor >> 8) & 0xFF;
-	framebuffer[offset + 2] = (hexColor >> 16) & 0xFF;
+	char buffer[16] = {0};
+	uintToBase(value, buffer, 16);
+	imprimirVideo(buffer, 16, BLANCO);
 }
-
-void imprimirVideo(char *palabra, int size, uint32_t color)
-{
-	p_info * current_p = get_current_process();
-	if(current_p->is_foreground){	
-		for (int i = 0; i < size; i++){
-			if (palabra[i] == '\n')
-			{
-				nlVideo();
-			}
-			else
-			{
-				y = aux;
-				word vol;
-				vol.num = palabra[i];
-				vol.color = color;
-				matrix[(y / zoom) / MOV_Y][(x / zoom) / MOV_X] = vol;
-				charVideo(palabra[i], 1, color);
-			}
-		}
-	}
-}
-
 void clearScreen()
 {
 	for (int i = 0; i < BORDER_Y; i++)
@@ -234,7 +211,22 @@ void clearScreen()
 	y = 0;
 	aux = 0;
 }
-
+void rePrint()
+{ // 1 zoomIN, 0 zoomOUT
+	clearScreen();
+	for (int i = 0; i < (BORDER_Y / MOV_Y) / zoom; i++)
+	{
+		for (int j = 0; j < (BORDER_X / MOV_X) / zoom; j++)
+		{
+			charVideo(matrix[i][j].num, 1, matrix[i][j].color);
+		}
+		if (matrix[i + 1][0].num == 0)
+		{
+			break;
+		}
+	}
+	return;
+}
 
 void videoClear()
 { // funcion que devuelve la pantalla a su estado "incial"
@@ -251,63 +243,29 @@ void videoClear()
 	aux = 0;
 }
 
-void scrollMatrix() {
-    // Desplaza cada fila hacia arriba
-    for (int i = 1; i < (BORDER_Y / MOV_Y); i++) {
-        for (int j = 0; j < (BORDER_X / MOV_X); j++) {
-            matrix[i - 1][j] = matrix[i][j];
-        }
-    }
-
-    // Limpia la última fila
-    for (int j = 0; j < (BORDER_X / MOV_X); j++) {
-        matrix[(BORDER_Y / MOV_Y) - 1][j].num = 0;
-        matrix[(BORDER_Y / MOV_Y) - 1][j].color = BLANCO;
-    }
+void zoomIN()
+{
+	if (zoom < 2)
+	{
+		zoom++;
+	}
+	else
+	{
+		return;
+	}
+}
+void zoomOUT()
+{
+	if (zoom > 1)
+	{
+		zoom--;
+	}
+	else
+	{
+		return;
+	}
 }
 
-void redrawScreen() {
-    clearScreen();
-    x = 0;
-    y = 0;
-    aux = 0;
-
-    for (int i = 0; i < (BORDER_Y / MOV_Y); i++) {
-        x = 0;
-        for (int j = 0; j < (BORDER_X / MOV_X); j++) {
-            if (matrix[i][j].num != 0) {
-                charVideo(matrix[i][j].num, 0, matrix[i][j].color);
-            }
-            x += MOV_X * zoom;
-        }
-        aux += MOV_Y * zoom;
-        y = aux;
-    }
+uint64_t goMiddle(){
+	x = BORDER_X/2;
 }
-
-// void zoomIN()
-// {
-// 	if (zoom < 2)
-// 	{
-// 		zoom++;
-// 	}
-// 	else
-// 	{
-// 		return;
-// 	}
-// }
-// void zoomOUT()
-// {
-// 	if (zoom > 1)
-// 	{
-// 		zoom--;
-// 	}
-// 	else
-// 	{
-// 		return;
-// 	}
-// }
-
-// uint64_t goMiddle(){
-// 	x = BORDER_X/2;
-//}

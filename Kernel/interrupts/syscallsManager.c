@@ -102,22 +102,22 @@ uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
     char *letter = (char *) rdx;
     size_t count = (size_t) rcx;
 
-    _sti();
-    if(current_proc->stdin == STDIN){
-        Pipe * in_pipe = get_pipe(STDIN);
-        while(in_pipe->write_pos == 0);
-        *letter = in_pipe->buffer[0];
-        in_pipe->write_pos;
-        if(*letter == 0 && count > 0){
-            //deleteVideo();
+        _sti();
+        if(current_proc->stdin == STDIN){
+            Pipe * in_pipe = get_pipe(STDIN);
+            while(in_pipe->write_pos == 0);
+            *letter = in_pipe->buffer[0];
+            in_pipe->write_pos;
+            if(*letter == 0 && count > 0){
+                //deleteVideo();
+            }
+            if (*letter == 1) {
+                nlVideo();
+            }
+            if(*letter != 0 && *letter != 1){
+                //imprimirVideo(letter, 1, BLANCO);
+            }
         }
-        if (*letter == 1) {
-            nlVideo();
-        }
-        if(*letter != 0 && *letter != 1){
-            //imprimirVideo(letter, 1, BLANCO);
-        }
-    }
     return 0;
 }
 
@@ -125,19 +125,9 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     unsigned int fd = (unsigned int) rsi;
     char *buffer = (char *) rdx;
     size_t count = (size_t) rcx;
+    p_info* current_proc = get_current_process();
 
-    if(fd == STDIN){
-        if(isBufferEmpty()) {
-            return 0;
-        }
-        int current = getCurr();
-        for(int i = 0; i < count && i <= current ; i++) {
-            buffer[i] = getFromBuffer(i);
-        }
-    } else if (fd >= PIPE_FD_START) {
-        pipe_read(fd,buffer,count);
-    }
-
+    pipe_read(current_proc->stdout,buffer,count);
     return 0;
 }
 
@@ -146,10 +136,10 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
     size_t count = (size_t) rdx;
 
     p_info* current_proc = get_current_process();
-
-    pipe_write(current_proc->stdin,buffer,count);
+    imprimirVideo(buffer,count, BLANCO);
+    //pipe_write(current_proc->stdin,buffer,count);
     //pipe_read(current_proc->stdout,buffer,count);
-    video_task();
+    //video_task();
     return 0;
 }
 
@@ -226,10 +216,11 @@ uint64_t sys_getKey(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint6
     p_info * current_proc = get_current_process();
     char *letter = (char *) rsi;
     int aux = 0;
-    _sti();
+    //_sti();
+    //block_process(current_proc->pid);
+    //callScheduler();
     pipe_read(current_proc->stdout,letter,1);
-    
-    video_task();
+    //video_task();
 }
 
 uint64_t seed_changer() {

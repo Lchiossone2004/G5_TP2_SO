@@ -22,8 +22,9 @@ void shell() {
             ultimaLetra = 0;
         }
 
-        getKey(&letra);
-
+        getletter(&letra);
+        print(&letra);
+        print(NEW_LINE);
         if (letra == 0 && index > 0) {
             // Retroceso (borrar)
             index -= 1;
@@ -51,8 +52,8 @@ void shell() {
     }
 }
 
-int getKey(char *letra) {
-    return syscall(14,letra,1);
+int getletter(char *letra) {
+    return syscall(3,STDOUT,letra,1);
 }
 
 void chekCommand(Command aux)
