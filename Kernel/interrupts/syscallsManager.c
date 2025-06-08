@@ -6,7 +6,6 @@
 #include <lib.h>
 #include <time.h>
 #include <interrupts.h>
-#include <sound.h>
 #include <syscallsManager.h>
 #include "../include/process.h"
 #include "../include/scheduler.h"
@@ -351,7 +350,7 @@ uint64_t sys_get_foreground(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r
     return  toRet->pid;
 }
 uint64_t sys_sem_open(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    return sem_open(rsi, rdx);
+    return sem_open(rsi);
 }
 uint64_t sys_sem_close(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return sem_close(rsi);
