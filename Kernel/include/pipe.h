@@ -21,6 +21,8 @@ typedef struct {
     int is_read_open;   
     int is_write_open;
     int size;
+    int16_t sem_free_space;
+    int16_t sem_data_available;
     //Podria faltar algo de bloqueo  
 } Pipe;
 

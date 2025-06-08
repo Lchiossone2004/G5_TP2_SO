@@ -148,7 +148,7 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
     p_info* current_proc = get_current_process();
 
     pipe_write(current_proc->stdin,buffer,count);
-    pipe_read(current_proc->stdout,buffer,count);
+    //pipe_read(current_proc->stdout,buffer,count);
     video_task();
     return 0;
 }
@@ -227,10 +227,8 @@ uint64_t sys_getKey(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint6
     char *letter = (char *) rsi;
     int aux = 0;
     _sti();
-    while(aux == 0){
-        aux = pipe_read(current_proc->stdout,letter,1);
-    }
-
+    pipe_read(current_proc->stdout,letter,1);
+    
     video_task();
 }
 
@@ -348,7 +346,7 @@ uint64_t sys_get_foreground(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r
     return  toRet->pid;
 }
 uint64_t sys_sem_open(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    return sem_open(rsi, rdx);
+    return sem_open(rsi);
 }
 uint64_t sys_sem_close(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return sem_close(rsi);

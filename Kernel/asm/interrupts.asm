@@ -265,19 +265,7 @@ _irq02Handler:
 
 ;Serial Port 2 and 4
 _irq03Handler:
-	pushState
-	
-	mov rdi, rsp
-	call scheduler
-	mov rsp, rax
-
-	; signal pic EOI (End of Interrupt)
-	mov al, 20h
-	out 20h, al
-
-	popState
-	iretq
-
+	irqHandlerMaster 3
 ;Serial Port 1 and 3
 _irq04Handler:
 	irqHandlerMaster 4

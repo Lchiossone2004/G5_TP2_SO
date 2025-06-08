@@ -88,28 +88,28 @@ int pipe_init(Pipe *pipe) {
     pipe->initialized = 1;
     pipe->index = 0;
     pipe->size = MAX_BUFF;
+    pipe->sem_data_available = sem_open(0);
+    pipe->sem_free_space = sem_open(MAX_BUFF);
     return 0;
 }
 
-int pipe_write(int fd, const char *buffer, int count) {                                         //FALTA VERIFICAION PARA QUE SE USE DE A 1
+int pipe_write(int fd, const char *buffer, int count) {
     if (fd < 0 || fd >= MAX_FDS || !fd_table[fd].in_use || fd_table[fd].type != FD_WRITE) {
         return -1;
     }
     Pipe *pipe = fd_table[fd].pipe;
-    if(!pipe->is_write_open){
+    if (!pipe->is_write_open) {
         return -1;
     }
-    int written = 0;
 
+    int written = 0;
     for (int i = 0; i < count; i++) {
-        size_t next_pos = (pipe->write_pos + 1) % BUFFER_SIZE;
-        if (next_pos == pipe->read_pos) {
-            break;
-        }
+        sem_wait(pipe->sem_free_space);  // espera espacio libre
         pipe->buffer[pipe->write_pos] = buffer[i];
-        pipe->write_pos = next_pos;
+        pipe->write_pos = (pipe->write_pos + 1) % BUFFER_SIZE;
         written++;
         pipe->index++;
+        sem_post(pipe->sem_data_available);  // notifica que hay dato disponible
     }
     return written;
 }
@@ -119,15 +119,18 @@ int pipe_read(int fd, char *buffer, int count) {
         return -1;
     }
     Pipe *pipe = fd_table[fd].pipe;
-    if(!pipe->is_read_open){
+    if (!pipe->is_read_open) {
         return -1;
     }
+
     int read = 0;
-    
-    while (read < count && pipe->read_pos != pipe->write_pos) {
-        buffer[read++] = pipe->buffer[pipe->read_pos];
+    for (int i = 0; i < count; i++) {
+        sem_wait(pipe->sem_data_available);  // espera dato disponible
+        buffer[i] = pipe->buffer[pipe->read_pos];
         pipe->read_pos = (pipe->read_pos + 1) % BUFFER_SIZE;
+        read++;
         pipe->index--;
+        sem_post(pipe->sem_free_space);  // notifica que hay espacio libre
     }
     return read;
 }

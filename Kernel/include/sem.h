@@ -4,21 +4,21 @@
 #include <stdint.h>
 #include "defs.h"
 #include "scheduler.h"
-#define SEM_MAX 32
+#define SEM_MAX 127
 
 #define pid_t int16_t
 typedef struct semaphore {
-    int8_t value;
+    int16_t value;
     int8_t lock;
     pid_t waiting[MAX_PROCESSES];
     int head, tail, count;
 } semaphore;
 
 void init_semaphores(void);
-int8_t sem_open(int8_t id, int8_t initial_value);
-int8_t sem_close(int8_t id);
-int8_t sem_wait(int8_t id);
-int8_t sem_post(int8_t id);
-int8_t sem_get_value(int8_t id);
+int16_t sem_open(int16_t initial_value);
+int16_t sem_close(int16_t id);
+int16_t sem_wait(int16_t id);
+int16_t sem_post(int16_t id);
+int16_t sem_get_value(int16_t id);
 
 #endif

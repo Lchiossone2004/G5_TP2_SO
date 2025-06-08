@@ -8,6 +8,7 @@
 #include "memory/memory_manager.h"
 #include "include/sem.h"
 #include "include/pipe.h"
+#include "process.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -85,6 +86,11 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
+void inactive(){
+	while(1);
+	_hlt();
+}
+
 int main()
 {	
 	load_idt(); 									//Cargo las interrupciones
@@ -98,6 +104,7 @@ int main()
 	//Inicializo stdin y stdout
 	int *pipe_fd[2];
 	create_pipe(&pipe_fd[0], &pipe_fd[1]);
+	createProcess(inactive,0,NULL,"idle",3,0);
 	((EntryPoint)sampleCodeModuleAddress)();		// Llamo al userland
 	return 0;
 }

@@ -28,7 +28,6 @@ void load_idt() {
   setup_IDT_entry (0x06, (uint64_t)&_exception06Handler);  //maneja las excepciones de invalid op code 
   setup_IDT_entry (0x20, (uint64_t)&_irq00Handler); //esto para el timer 
   setup_IDT_entry (0x21, (uint64_t)&_irq01Handler); //esto es para el teclado 
-  setup_IDT_entry (0x22, (uint64_t)&_irq03Handler); 
   setup_IDT_entry (0x80, (uint64_t)&_irq08Handler);
 
 

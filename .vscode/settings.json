@@ -26,6 +26,7 @@
         "stddef.h": "c",
         "pipe.h": "c",
         "naiveconsole.h": "c",
-        "shell-lib.h": "c"
+        "shell-lib.h": "c",
+        "idtloader.h": "c"
     }
 }

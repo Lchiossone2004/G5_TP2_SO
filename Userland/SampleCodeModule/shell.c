@@ -6,9 +6,9 @@ static int ultimaLetra;
 static int index = 0;
 static int last = 0;
 
-void fetch_command(){
-    syscall(41,buffer);
-}
+// void fetch_command(){
+//     syscall(41,buffer);
+// }
 
 void shell() {
     print(NEW_LINE);
@@ -31,10 +31,10 @@ void shell() {
         }
         else if (letra == '\n') {
             // Enter
-            fetch_command();
-            chekCommand(aux);
+            // fetch_command();
+            //chekCommand(aux);
             print(NEW_LINE);
-            clearBuffer();
+            //clearBuffer();
             index = 0;
             ultimaLetra = 0;
         }
