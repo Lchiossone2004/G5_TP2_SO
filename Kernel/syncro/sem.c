@@ -1,8 +1,8 @@
 #include "../include/sem.h"
 #include <stddef.h>
 #include "../include/process.h"
-extern void lock_acquire(int16_t *lock);
-extern void lock_release(int16_t *lock);
+extern void lock_acquire(uint8_t *lock);
+extern void lock_release(uint8_t *lock);
 
 static semaphore semaphores[SEM_MAX];
 
