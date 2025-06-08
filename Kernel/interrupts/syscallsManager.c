@@ -385,3 +385,4 @@ uint64_t sys_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
     p_info* current_proc = get_current_process();
     pipe_write(current_proc->stdout,buffer,count);
 }
+

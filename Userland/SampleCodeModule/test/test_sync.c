@@ -65,8 +65,8 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = usr_create_process((void*)my_process_inc, 3, argvDec,"my_process_inc",2,1);
-    pids[i + TOTAL_PAIR_PROCESSES] = usr_create_process((void*)my_process_inc, 3, argvInc, "my_process_inc",2,1);
+    pids[i] = usr_create_process((void*)my_process_inc, 3, argvDec,"my_process_inc",2,0);
+    pids[i + TOTAL_PAIR_PROCESSES] = usr_create_process((void*)my_process_inc, 3, argvInc, "my_process_inc",2,0);
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {

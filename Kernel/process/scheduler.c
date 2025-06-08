@@ -152,7 +152,10 @@ p_info* find_process_by_stack(void* sp) {
 }
 
 p_info* get_current_process() {
-    return current_process;
+    if (current_process) {
+        return current_process;
+    }
+    return NULL;
 }
 
 int kill_process(int pid) {
@@ -314,13 +317,14 @@ int remove_from_processes_list(p_info* process) {
 }
 
 
-p_info* get_foreground_process(){
-    for(int i = 0; i <MAX_PROCESSES; i++){
-        if(processes_list[i]->is_foreground){
-            return processes_list[i];
+p_info* get_foreground_process(void) {
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        p_info *p = processes_list[i];
+        if (p && p->is_foreground) {
+            return p;
         }
-    }   
-    return NULL;
+    }
+    return NULL;  
 }
 
 p_info* get_process_by_pid(uint16_t pid) {

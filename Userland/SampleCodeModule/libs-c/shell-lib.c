@@ -111,7 +111,9 @@ void test(uint64_t argc, char *argv[], char* command, int is_foregorund){
 
     }
     else if(strCompare(argv[0],"Sync")){
-        
+        argc = 2;
+        argv[0] = argv[1];
+        argv[1] = argv[2];
         usr_create_process((void*)test_sync,argc,argv, "sync test", PRIORITY_LOW, is_foregorund);
     }
 }
