@@ -31,7 +31,10 @@ static shell_fn shell_table[] = {
     [14] = ps,
     [15] = loop,
     [16] = mem,
-    [17] = pipeCommand
+    [17] = pipeCommand,
+    [18] = cat,
+    [19] = wc,
+    [20] = filter
 };
 
 typedef struct {

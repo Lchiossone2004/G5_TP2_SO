@@ -2,7 +2,7 @@
 #include "string-lib.h"
 #include "test.h"
 #include "c-lib.h"
-
+#define EOF -1
 void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
 
     if(argc == 0){
@@ -211,6 +211,50 @@ void loop(uint64_t argc, char *argv[], char* command, int is_foregorund){
         for(int i = 0; i <100000000; i++);
     }
 }
+void cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
+    char buffer[128];
+    int bytesRead;
+
+    while((bytesRead = readLine(buffer, sizeof(buffer))) > 0){
+        write(buffer, STDOUT, bytesRead);
+    }
+
+    nlPrint();
+}
+
+void wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
+    char buffer[128];
+    int line_count = 0;
+    int bytesRead;
+
+    while ((bytesRead = readLine(buffer, sizeof(buffer))) > 0) {
+        line_count++;
+    }
+    char result[16];
+    intToString(line_count, result, sizeof(result));
+    print(result);
+    nlPrint();
+}
+void filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
+    char buffer[128];
+    int bytesRead;
+
+    while ((bytesRead = readLine(buffer, sizeof(buffer))) > 0) {
+        for (int i = 0; i < bytesRead; i++) {
+            char c = buffer[i];
+            if (c == '\n') 
+            break;
+            if (isVowel(c)) {
+            char temp[2] = {c, '\0'}; 
+            print(temp);
+            }
+           
+        }
+         
+        nlPrint();  
+    }
+}
+
 
 void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund){
     print(TAB);

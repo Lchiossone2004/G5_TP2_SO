@@ -7,12 +7,14 @@
 
 //Other
 void print(char *buffer);
-void read(char *buffer, int fd, int size);
+int read(char *buffer, int fd, int size);
 void write(char *word, int fd,int size);
 void printRegisters();
 void nlPrint();
 void printErr(char *buffer);
 void sleep(int ticks);
+char get_char();
+int readLine(char *buffer, size_t size);
 
 //Proc
 int32_t usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground);

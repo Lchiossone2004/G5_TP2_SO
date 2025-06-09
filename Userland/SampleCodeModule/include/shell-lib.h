@@ -9,7 +9,7 @@
 #include <c-lib.h>
 
 #define WORD_BUFFER_SIZE 1024
-#define NUMBER_OF_COMMANDS 18
+#define NUMBER_OF_COMMANDS 20
 #define TAB "     "
 #define NEW_LINE "shell: >"
 #define STDIN 0
@@ -25,7 +25,7 @@ typedef enum {
 
 static char *commands[] = {
     "help", "time", "zoom", "clear", "regs", "div cero", "invalid op", "test", "block", 
-    "unblock", "nice", "yeild", "kill", "ps", "loop", "mem", "pipe" 
+    "unblock", "nice", "yeild", "kill", "ps", "loop", "mem", "pipe", "cat", "wc", "filter" 
 };
 
 static char *commandDescrition[] = {
@@ -45,11 +45,14 @@ static char *commandDescrition[] = {
     "Shows a list of the existing processes.",
     "Loops and shows it PID and a special message",
     "Shows the current state of allocated memory.",
-    "Creates a pipe between two commands."  
+    "Creates a pipe between two commands.",  
+    "Reads from STDIN and writes to STDOUT.",
+    "Counts the number of lines in the input.",
+    "Filters the vowels in the input."
 };
 
 
-static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none"};
+static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none", "none", "none", "none"};
 
 
 extern uint64_t syscall(__uint64_t rdi, ...);
@@ -76,5 +79,8 @@ void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void pipeCommand(uint64_t argc, char *argv[], char *command);
 void argsError(uint64_t argc, char *argv[]);
 void commandInfo(int i, int j);
+void cat(uint64_t argc, char *argv[], char* command, int is_foreground);
+void wc(uint64_t argc, char *argv[], char* command, int is_foreground);
+void filter(uint64_t argc, char *argv[], char* command, int is_foreground);
 
 #endif
