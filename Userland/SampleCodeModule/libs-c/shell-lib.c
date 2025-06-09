@@ -216,8 +216,7 @@ void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund){
     print(TAB);
     printErr("command: [");
     printErr(command);
-    printErr("] not found.");
-    nlPrint();
+    printErr("] not found.\n");
 }
 
 void argsError(uint64_t argc, char *argv[]){
