@@ -67,12 +67,19 @@ static void *group_init(void *start, size_t size) {
     initial->size      = ALIGN_UP(size - HEADER_SIZE);
     initial->user_size = 0;
     initial->is_free   = true;
-    initial->next      = NULL;
-    initial->prev      = NULL;
+    initial->next = initial;
+    initial->prev = initial;
+
     free_list = NULL;
     insert_into_free_list(initial);
 
     return start;
+}
+
+static void group_destroy(void) {
+    free_list = NULL;
+    memory_start = NULL;
+    total_size = current_blocks = total_allocated = total_freed = 0;
 }
 
 static void *group_malloc(size_t size) {
@@ -83,17 +90,14 @@ static void *group_malloc(size_t size) {
         if (cur->size >= req) {
             size_t rem = cur->size - req;
             if (rem > HEADER_SIZE + MIN_BLOCK_SIZE) {
-                // Split block
                 block_header_t *nb = (void *)((char *)cur + HEADER_SIZE + req);
                 nb->size      = ALIGN_UP(rem - HEADER_SIZE);
                 nb->user_size = 0;
                 nb->is_free   = true;
-                // Link physical
-                nb->next      = cur->next;
-                nb->prev      = cur;
-                if (cur->next) cur->next->prev = nb;
+                nb->next = cur->next;
+                nb->prev = cur;
+                cur->next->prev = nb;
                 cur->next = nb;
-                // Insert new free
                 insert_into_free_list(nb);
                 cur->size = req;
             }
@@ -119,20 +123,19 @@ static size_t group_free(void *ptr) {
 
     size_t freed_size = b->user_size;
     b->user_size = 0;
-
     if (b->next && b->next->is_free) {
         remove_from_free_list(b->next);
         block_header_t *n = b->next;
         b->size += HEADER_SIZE + n->size;
         b->next = n->next;
-        if (n->next) n->next->prev = b;
+        n->next->prev = b;
     }
     if (b->prev && b->prev->is_free) {
         remove_from_free_list(b->prev);
         block_header_t *pblock = b->prev;
         pblock->size += HEADER_SIZE + b->size;
         pblock->next = b->next;
-        if (b->next) b->next->prev = pblock;
+        b->next->prev = pblock;
         b = pblock;
     }
     insert_into_free_list(b);
@@ -143,10 +146,10 @@ static size_t group_free(void *ptr) {
 
 static void group_get_info(memory_info_t *info) {
     if (!info) return;
-    info->total_memory     = total_size;
-    info->total_allocated  = total_allocated;
-    info->total_freed      = total_freed;
-    info->memory_leak      = (total_allocated != total_freed);
+    info->total_memory    = total_size;
+    info->total_allocated = total_allocated;
+    info->total_freed     = total_freed;
+    info->memory_leak     = (total_allocated != total_freed);
 
     size_t free_mem = 0;
     size_t free_blocks = 0;
@@ -164,7 +167,7 @@ static void group_get_info(memory_info_t *info) {
     info->block_count      = free_blocks + current_blocks;
 }
 
-memory_manager_t group_manager = {
+static memory_manager_t group_manager = {
     .init     = group_init,
     .malloc   = group_malloc,
     .free     = group_free,
