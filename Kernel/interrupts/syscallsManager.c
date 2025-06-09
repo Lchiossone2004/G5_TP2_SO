@@ -103,9 +103,9 @@ uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
     size_t count = (size_t) rcx;
 
     _sti();    
-    block_process(3);
-    callScheduler();
-    //pipe_read(STDOUT,letter,1);
+    //block_process(3);
+    //callScheduler();
+    pipe_read(STDOUT,letter,1);
     // if(fd == STDIN){
     //     while(isBufferEmpty());
     //     *letter = getBuffer();

@@ -21,6 +21,7 @@ void shell()
         }
         //while(1);
         getKey();
+        print(&letra);
         if (*letra == 0 && index > 0)
         {
             index -= 1;

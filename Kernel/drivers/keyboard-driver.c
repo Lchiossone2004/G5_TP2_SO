@@ -34,8 +34,8 @@ void loadBuffer(uint8_t key){
     }
     if(!specialKey(key)){
         char letter = toLetter(key); 
-        unblock_process(3);
-        //pipe_write(STDIN,&letter,1);    
+        //unblock_process(3);
+        pipe_write(STDIN,&letter,1);    
         //buffer[curr++] = letter;
 
     }
