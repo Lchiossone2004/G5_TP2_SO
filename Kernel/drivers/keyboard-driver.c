@@ -38,11 +38,6 @@ void loadBuffer(uint8_t key){
         pipe_write(STDIN,&letter,1);    
         //buffer[curr++] = letter;
 
-    if (fg_proc && fg_proc->stdin >= 3) {  // si stdin es un pipe
-        pipe_write(fg_proc->stdin, &letter, 1);
-    } else {
-        buffer[curr++] = letter;
-    }
     if(key == 14){      //Borrado  
         char aux = '\1';
         pipe_write(STDIN, &aux, 1);
@@ -61,7 +56,7 @@ void loadBuffer(uint8_t key){
         buffer[curr++] = ' ';
     }
 }
-
+}
 int isBufferEmpty(){
     if(curr == 0){
         return 1;
