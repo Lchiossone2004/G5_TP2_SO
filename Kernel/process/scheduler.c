@@ -214,6 +214,7 @@ void get_processes() {
     printFixed("Stack Pointer");
     printFixed("State");
     printFixed("Foreground");
+    printFixed("Fd_Table");
     nlVideo();
 
     for (int i = 0; i < MAX_PROCESSES; i++) {

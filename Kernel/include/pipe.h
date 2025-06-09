@@ -18,8 +18,8 @@ typedef struct {
     size_t write_pos;
     int initialized;
     int index;
-    int is_read_open;   
-    int is_write_open;
+    int read_open;   
+    int write_open;
     int size;
     int16_t sem_free_space;
     int16_t sem_data_available;
@@ -31,14 +31,12 @@ typedef struct {
     int in_use;
 } FDEntry;
 
-
-
 int create_pipe(int* fd_read, int*fd_write);
 int pipe_init(Pipe *pipe);
 int pipe_write(int fd, const char *buffer, int count);
 int pipe_read(int fd, char *buffer, int count);
-int pipe_close(int end, int fd);
-Pipe* get_pipe(int fd);
-char * get_pipe_buffer(int fd);
+int pipe_close(int fd);
+void pipe_destroy(int fd);
+int can_accsess(int fd);
 
 #endif  // PIPE_H

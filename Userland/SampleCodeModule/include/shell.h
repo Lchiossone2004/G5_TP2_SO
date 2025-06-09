@@ -8,7 +8,7 @@
 #include <shell-lib.h>
 
 #define NEW_LINE "shell: >"
-#define MAX_ARG_LEN 124
+#define MAX_ARG_LEN 64
 #define MAX_ARGS 5
 
 typedef void (*shell_fn)(uint64_t, char*[], char*,int);
@@ -48,7 +48,6 @@ typedef struct {
 #define SHELL_TABLE_SIZE (sizeof(shell_table) / sizeof(shell_fn))
 
 void shell();
-void getKey();
 void chekCommand(Command aux);
 int processCommand(char *input);
 void clearBuffer();

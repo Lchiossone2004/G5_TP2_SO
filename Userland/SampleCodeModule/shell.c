@@ -19,9 +19,7 @@ void shell()
             index = 0;
             ultimaLetra = 0;
         }
-        //while(1);
-        getKey();
-
+        read(letra,STDOUT,1);
         if (*letra == '\1' && index > 0)
 
         {
@@ -32,6 +30,7 @@ void shell()
         else if (*letra == '\n')
         {
             print("\n");
+            buffer[index++] = '\0';
             chekCommand(aux);
             print(NEW_LINE);
             index = 0;
@@ -54,14 +53,9 @@ void shell()
     }
 }
 
-void getKey()
-{
-    syscall(2, STDIN, letra, index);
-}
-
 void chekCommand(Command aux)
 {
-    deleteSpaces(buffer);
+    //deleteSpaces(buffer);
     aux = parseCommand(buffer);
     int command = processCommand(aux.command);
     int is_foreground = 1;
@@ -143,7 +137,7 @@ Command parseCommand(char *input) {
 
 
     i = 0;
-    while (index < len && input[index] != ' ' && i < MAX_ARG_LEN - 1) {
+    while (index < len && input[index] != ' ' && i < MAX_ARG_LEN -1) {
         toRet.command[i++] = input[index++];
     }
     toRet.command[i] = '\0';

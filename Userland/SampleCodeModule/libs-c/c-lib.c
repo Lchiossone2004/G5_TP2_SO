@@ -78,7 +78,6 @@ void usr_nice(int pid, int newPrio){
         syscall(26,pid,newPrio); //FALTA
     }
 }
-
 //Sems
 
 int usr_sem_open(int id, int initial_value) {

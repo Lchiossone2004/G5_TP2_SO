@@ -81,47 +81,6 @@ int get_pid() {
     return current->pid;
 }
 
-int fork() {
-    p_info* current = get_current_process();
-    if (current->children_length >= MAX_CHILDREN)
-        return -1;
-
-    void* stack_base = mm_malloc(STACK_SIZE);
-    if (!stack_base) return -1;
-
-    void* stack_top = stack_base + STACK_SIZE;
-    p_stack* new_stack = stack_top - sizeof(p_stack);
-
-    p_info* new_process = mm_malloc(sizeof(p_info));
-    if (!new_process) {
-        mm_free(stack_base);
-        return -1;
-    }
-
-    copy_context(new_process, current->name, stack_base, new_stack, stack_top, current->priority, current->is_foreground);
-
-    new_process->argc = current->argc;
-    if (current->argc > 0 && current->argv) {
-        new_process->argv = mm_malloc((current->argc + 1) * sizeof(char*));
-        for (int i = 0; i < current->argc; i++) {
-            uint64_t len = strSize(current->argv[i]) + 1;
-            new_process->argv[i] = mm_malloc(len * sizeof(char));
-            memcpy(new_process->argv[i], current->argv[i], len);
-        }
-        new_process->argv[current->argc] = NULL;
-    } else {
-        new_process->argv = NULL;
-    }
-
-
-    current->children[current->children_length] = new_process->pid;
-    current->children_length++;
-
-    add_to_process_list(new_process);
-    add_to_ready_list(new_process);
-
-    return new_process->pid;
-}
 
 
 void copy_context(p_info* new_process, char *name, void *stack_base, void *stack_pointer, void *stack_top, int prio, int is_foreground) {
@@ -130,7 +89,6 @@ void copy_context(p_info* new_process, char *name, void *stack_base, void *stack
     size_t nameLen = strSize(name) + 1;
     new_process->name = mm_malloc(nameLen);
     memcpy(new_process->name, name, nameLen);
-
     new_process->stack_base = stack_base;
     new_process->stack_pointer = stack_pointer;
     new_process->stack_top = stack_top;
@@ -147,17 +105,13 @@ void copy_context(p_info* new_process, char *name, void *stack_base, void *stack
     p_info *parent = get_current_process();
   
     if (parent) {
-        for (int i = 0; i < MAX_PIPES; i++) {
-            new_process->buffers[i] = parent->buffers[i];
+        for (int i = 0; i < MAX_BUFF*2; i++) {
+            new_process->fd_table[i] = parent->fd_table[i];
         }
-        new_process->stdin  = parent->stdin;
-        new_process->stdout = parent->stdout;
     } else {
-        for (int i = 0; i < MAX_PIPES; i++) {
-            new_process->buffers[i] = NULL;
+        for (int i = 0; i < MAX_BUFF*2; i++) {
+            new_process->fd_table[i] = -1;
         }
-        new_process->stdin  = STDIN;
-        new_process->stdout = STDOUT;
     }
 }
 
@@ -226,26 +180,5 @@ void assignPid(p_info* new_process){
 void freePid(int pid){
     if(pid>0 && pid< MAX_PROCESSES){
         pids[pid-1] = 0;
-    }
-}
-
-int Dup(int pid,int newFd, int oldFd){
-    if(oldFd>MAX_BUFF*2 || oldFd < 0){
-        return;
-    }
-    p_info * proc = get_process_by_pid(pid);
-    if(oldFd == 0){
-        proc->stdin = newFd;
-    }
-    else if(oldFd == 1){
-        proc->stdout = newFd;
-    }
-    else{
-        for(int i = 0; i < MAX_BUFF * 2; i++){
-            if(proc->buffers[i] == oldFd){
-                proc->buffers[i] = newFd;
-                break;
-            }
-        }
     }
 }

@@ -70,6 +70,7 @@ static syscall_fn syscall_table[] = {
     [29] = sys_sem_get_value,
     [30] = sys_go_middle,
     [31] = sys_create_pipe,
+    [32] = sys_pipe_close
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -221,7 +222,6 @@ uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
     return 0;
 }
 
-
 uint64_t sys_create(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return createProcess((void (*)(uint8_t, char**))rsi, (uint8_t)rdx, (char**)rcx, (char*)r8, (int)r9, (int)r10);
 }
@@ -297,5 +297,8 @@ uint64_t sys_create_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
     return 0;
 }
 
-
+uint64_t sys_pipe_close(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
+    int fd = (int) rsi;
+    return pipe_close(fd);
+}
 

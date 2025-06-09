@@ -88,7 +88,6 @@ void deleteSpaces(char * input){
     if (j > 0 && input[j - 1] == ' ') {
         j--;
     }
-
     input[j] = '\0'; 
 }
 
