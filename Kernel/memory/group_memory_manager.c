@@ -29,6 +29,7 @@ static size_t total_freed = 0;
 static const size_t HEADER_SIZE = ALIGN_UP(sizeof(block_header_t));
 
 static void insert_into_free_list(block_header_t *b) {
+    b->free_next = b->free_prev = NULL;
     b->is_free = true;
     b->user_size = 0;
     if (!free_list) {
@@ -45,6 +46,7 @@ static void insert_into_free_list(block_header_t *b) {
 }
 
 static void remove_from_free_list(block_header_t *b) {
+    if (!b || !b->is_free) return;
     if (b->free_next == b) {
         free_list = NULL;
     } else {
@@ -57,9 +59,9 @@ static void remove_from_free_list(block_header_t *b) {
 }
 
 static void *group_init(void *start, size_t size) {
-    memory_start    = start;
-    total_size      = size;
-    current_blocks  = total_allocated = total_freed = 0;
+    memory_start   = start;
+    total_size     = size;
+    current_blocks = total_allocated = total_freed = 0;
 
     block_header_t *initial = (block_header_t *)start;
     initial->size      = ALIGN_UP(size - HEADER_SIZE);
@@ -67,9 +69,8 @@ static void *group_init(void *start, size_t size) {
     initial->is_free   = true;
     initial->next      = NULL;
     initial->prev      = NULL;
-    initial->free_next = initial;
-    initial->free_prev = initial;
-    free_list = initial;
+    free_list = NULL;
+    insert_into_free_list(initial);
 
     return start;
 }
@@ -82,15 +83,17 @@ static void *group_malloc(size_t size) {
         if (cur->size >= req) {
             size_t rem = cur->size - req;
             if (rem > HEADER_SIZE + MIN_BLOCK_SIZE) {
+                // Split block
                 block_header_t *nb = (void *)((char *)cur + HEADER_SIZE + req);
                 nb->size      = ALIGN_UP(rem - HEADER_SIZE);
                 nb->user_size = 0;
                 nb->is_free   = true;
+                // Link physical
                 nb->next      = cur->next;
                 nb->prev      = cur;
                 if (cur->next) cur->next->prev = nb;
                 cur->next = nb;
-                nb->free_next = nb->free_prev = NULL;
+                // Insert new free
                 insert_into_free_list(nb);
                 cur->size = req;
             }
@@ -101,31 +104,36 @@ static void *group_malloc(size_t size) {
             return (char *)cur + HEADER_SIZE;
         }
         cur = cur->free_next;
-    } while (cur != free_list);
+    } while (cur && cur != free_list);
     return NULL;
 }
 
 static size_t group_free(void *ptr) {
     if (!ptr) return 0;
-    if (ptr < memory_start || ptr >= (char *)memory_start + total_size) return 0;
+    char *base = (char *)memory_start;
+    char *p = (char *)ptr;
+    if (p < base + HEADER_SIZE || p >= base + total_size) return 0;
 
-    block_header_t *b = (block_header_t *)((char *)ptr - HEADER_SIZE);
+    block_header_t *b = (block_header_t *)(p - HEADER_SIZE);
+    if (b->is_free || b->user_size == 0) return 0;
+
     size_t freed_size = b->user_size;
     b->user_size = 0;
-    b->is_free = true;
 
     if (b->next && b->next->is_free) {
         remove_from_free_list(b->next);
-        b->size += HEADER_SIZE + b->next->size;
-        b->next = b->next->next;
-        if (b->next) b->next->prev = b;
+        block_header_t *n = b->next;
+        b->size += HEADER_SIZE + n->size;
+        b->next = n->next;
+        if (n->next) n->next->prev = b;
     }
     if (b->prev && b->prev->is_free) {
         remove_from_free_list(b->prev);
-        b->prev->size += HEADER_SIZE + b->size;
-        b->prev->next = b->next;
-        if (b->next) b->next->prev = b->prev;
-        b = b->prev;
+        block_header_t *pblock = b->prev;
+        pblock->size += HEADER_SIZE + b->size;
+        pblock->next = b->next;
+        if (b->next) b->next->prev = pblock;
+        b = pblock;
     }
     insert_into_free_list(b);
     current_blocks--;
