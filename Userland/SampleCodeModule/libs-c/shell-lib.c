@@ -215,7 +215,7 @@ void cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
     char buffer[128];
     int bytesRead;
 
-    while((bytesRead = readLine(buffer, sizeof(buffer))) > 0){
+    while((bytesRead = read(buffer, STDIN, sizeof(buffer))) > 0){
         write(buffer, STDOUT, bytesRead);
     }
 
@@ -227,7 +227,7 @@ void wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
     int line_count = 0;
     int bytesRead;
 
-    while ((bytesRead = readLine(buffer, sizeof(buffer))) > 0) {
+    while ((bytesRead = read(buffer, STDIN, sizeof(buffer))) > 0) {
         line_count++;
     }
     char result[16];
@@ -239,7 +239,7 @@ void filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
     char buffer[128];
     int bytesRead;
 
-    while ((bytesRead = readLine(buffer, sizeof(buffer))) > 0) {
+    while ((bytesRead = read(buffer, STDIN, sizeof(buffer))) > 0) {
         for (int i = 0; i < bytesRead; i++) {
             char c = buffer[i];
             if (c == '\n') 

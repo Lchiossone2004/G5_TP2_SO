@@ -30,7 +30,8 @@ void loadBuffer(uint8_t key){
         return;
     }
     if(ctrl_pressed && key == 0x20){ 
-        //Comportamiento del ctrl+d
+         buffer[curr++] = EOF;  
+        return;
     }
     if(!specialKey(key)){
         char letter = toLetter(key); 
