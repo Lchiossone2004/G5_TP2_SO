@@ -142,15 +142,15 @@ uint64_t sys_clear(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
     return 0;
 }
 
-uint64_t sys_sleep(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    int ticks = (int) rsi;
+uint64_t sys_sleep(uint64_t rsi,uint64_t rdx, uint64_t rcx,uint64_t r8,uint64_t r9,uint64_t current_sp){
+    p_info *proc = get_current_process();
+    if (!proc)
+        return (uint64_t)-1;
 
-    _sti();
-    int max = ticks_elapsed() + ticks;
-    while(max > ticks_elapsed()){
-        _hlt();
-    }
-    return 0;
+    uint64_t deadline = ticks_elapsed() + rsi;
+    sleep_queue_add(proc, deadline);
+    block_process(proc->pid);
+    return (uint64_t)scheduler((void*)current_sp);
 }
 
 uint64_t sys_getTime(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {

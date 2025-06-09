@@ -92,7 +92,7 @@ int main()
 	init_semaphores();
 	size_t memory_size = 0x200000;         // 2MB de memoria disponible
 	init_memory_manager(memory_start, memory_size);
-
+	sleep_queue_init();
 	char *argv[] = {0};
 	createProcess((void*)sampleCodeModuleAddress,0,argv,"first_process",3,0);
 	_sti();
