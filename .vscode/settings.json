@@ -25,6 +25,8 @@
         "sem.h": "c",
         "stddef.h": "c",
         "pipe.h": "c",
-        "naiveconsole.h": "c"
+        "naiveconsole.h": "c",
+        "ostream": "c",
+        "print": "c"
     }
 }

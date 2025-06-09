@@ -25,6 +25,7 @@
 
 #define PARA_ALEATORIOS_1 1664525
 #define PARA_ALEATORIOS_2 1013904223   
+#define EOF 4
 
 static size_t total_allocated = 0;
 static size_t total_freed = 0;
@@ -77,7 +78,8 @@ static syscall_fn syscall_table[] = {
     [38] = sys_sem_get_value,
     [39] = sys_go_middle,
     [40] = sys_create_pipe,
-    [41] = sys_print
+    [41] = sys_print,
+    [42] = sys_readLine
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -103,20 +105,19 @@ uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
     size_t count = (size_t) rcx;
 
     _sti();
-    pipe_read(STDOUT,letter,1);
-    // if(fd == STDIN){
-    //     while(isBufferEmpty());
-    //     *letter = getBuffer();
-    //     if(*letter == 0 && count > 0){
-    //         deleteVideo();
-    //     }
-    //     if (*letter == 1) {
-    //         nlVideo();
-    //     }
-    //     if(*letter != 0 && *letter != 1){
-    //         imprimirVideo(letter, 1, BLANCO);
-    //     }
-    // }
+    if(fd == STDIN){
+        while(isBufferEmpty());
+        *letter = getBuffer();
+        if(*letter == 0 && count > 0){
+            deleteVideo();
+        }
+        if (*letter == 1) {
+            nlVideo();
+        }
+        if(*letter != 0 && *letter != 1){
+            imprimirVideo(letter, 1, BLANCO);
+        }
+    }
     return 0;
 }
 
@@ -125,20 +126,31 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     char *buffer = (char *) rdx;
     size_t count = (size_t) rcx;
 
-    if(fd == STDIN){
-        if(isBufferEmpty()) {
-            return 0;
+    if (fd == STDIN) {
+        if (isBufferEmpty()) {
+            return 0;  
         }
+
         int current = getCurr();
-        for(int i = 0; i < count && i <= current ; i++) {
+        size_t bytesToRead = (count <= current + 1) ? count : current + 1;
+
+        for (size_t i = 0; i < bytesToRead; i++) {
             buffer[i] = getFromBuffer(i);
         }
-    } else if (fd >= PIPE_FD_START) {
-        pipe_read(fd,buffer,count);
+
+       while(!isBufferEmpty()){
+        getBuffer();
     }
 
-    return 0;
+        return bytesToRead;  
+    } 
+    else if (fd >= PIPE_FD_START) {
+        return pipe_read(fd, buffer, count);  
+    }
+
+    return -1;  
 }
+
 
 uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     unsigned int fd = (unsigned int) rsi;
@@ -232,10 +244,9 @@ uint64_t sys_getKey(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint6
     char *buffer = (char *) rdx;
 
     _sti();
-    pipe_read(STDOUT,buffer,1);
-    // if(fd == STDIN && !isBufferEmpty()){
-    //     *buffer = getBuffer();
-    // }
+    if(fd == STDIN && !isBufferEmpty()){
+        *buffer = getBuffer();
+    }
     return 0;
 }
 
@@ -353,7 +364,7 @@ uint64_t sys_get_foreground(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r
     return  toRet->pid;
 }
 uint64_t sys_sem_open(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    return sem_open(rsi);
+    return sem_open(rsi, rdx);
 }
 uint64_t sys_sem_close(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return sem_close(rsi);
@@ -387,4 +398,42 @@ uint64_t sys_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
     p_info* current_proc = get_current_process();
     pipe_write(current_proc->stdout,buffer,count);
 }
+uint64_t sys_readLine(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
+    unsigned int fd = (unsigned int) rsi;
+    char *buffer = (char *) rdx;
+    size_t count = (size_t) rcx;
+
+    _sti();
+    size_t index = 0;
+
+    if(fd == STDIN){
+        char letter;
+        do {
+            while(isBufferEmpty());
+            letter = getBuffer();
+
+            if (letter == '\b') { 
+                if (index > 0) index--;
+                deleteVideo();
+            }
+            else if (letter == 1 || letter == '\n') { 
+                buffer[index++] = '\n';
+                nlVideo();
+                break;
+            } else if (letter == EOF) {  
+                if (index == 0) {
+                    return 0; 
+                } 
+            } else if(letter != 0) {
+                buffer[index++] = letter;
+                imprimirVideo(&letter, 1, BLANCO); 
+            }
+        } while (index < count - 1);
+
+        buffer[index] = '\0'; 
+    }
+
+    return index;  
+}
+
 

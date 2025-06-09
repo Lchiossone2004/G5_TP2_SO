@@ -16,4 +16,5 @@ char *strchr(const char *str, int c);
 char* strdup(const char* str);
 size_t strlen(const char *s); 
 int isBlank(char c); 
+int isVowel(char c);
 #endif

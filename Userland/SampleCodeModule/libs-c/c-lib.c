@@ -22,9 +22,9 @@ void write(char *word, int fd, int size){
     syscall(4, fd, word, strSize(word));
 }
 
-void read(char *buffer,int fd ,int size){
-    syscall(3, fd, buffer, size);
-    return;
+int read(char *buffer,int fd ,int size){
+    int ret = (int) syscall(3, fd, buffer, size);
+    return ret;
 }
 
 void printErr(char *word){
@@ -38,6 +38,14 @@ void nlPrint(){
 void sleep(int ticks){
     syscall(8, ticks);
     return;
+}
+char get_char() {
+    char letter;
+    syscall(2, STDIN, &letter, 1, 0, 0, 0);
+    return letter;
+}
+int readLine(char *buffer, size_t size){
+    return syscall(42, STDIN, buffer, size, 0, 0, 0);
 }
 
 //Proc
