@@ -1,7 +1,10 @@
 #include <shell-lib.h>
 #include "string-lib.h"
+#include <stdint.h>
 #include "test.h"
 #include "c-lib.h"
+#include "phylo.h"
+
 #define EOF -1
 void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
 
@@ -116,6 +119,10 @@ void test(uint64_t argc, char *argv[], char* command, int is_foregorund){
         argv[1] = argv[2];
         usr_create_process((void*)test_sync,argc,argv, "sync test", PRIORITY_LOW, is_foregorund);
     }
+}
+
+void phylo(uint64_t argc, char *argv[], char* command, int is_foregorund){
+    usr_create_process((void*)phylo_main,argc,argv, "phylosofers", PRIORITY_LOW,is_foregorund);
 }
 
 void block(uint64_t argc, char *argv[], char* command, int is_foregorund){
@@ -278,7 +285,7 @@ void argsError(uint64_t argc, char *argv[]){
     print("\n");
 }
 
-#include <stdint.h>
+
 
 
 static void remove_blanks(char *s) {

@@ -9,7 +9,7 @@
 #include <c-lib.h>
 
 #define WORD_BUFFER_SIZE 1024
-#define NUMBER_OF_COMMANDS 20
+#define NUMBER_OF_COMMANDS 21
 #define TAB "     "
 #define NEW_LINE "shell: >"
 #define STDIN 0
@@ -25,7 +25,7 @@ typedef enum {
 
 static char *commands[] = {
     "help", "time", "zoom", "clear", "regs", "div cero", "invalid op", "test", "block", 
-    "unblock", "nice", "yeild", "kill", "ps", "loop", "mem", "pipe", "cat", "wc", "filter" 
+    "unblock", "nice", "yeild", "kill", "ps", "loop", "mem", "pipe", "cat", "wc", "filter", "phylo"
 };
 
 static char *commandDescrition[] = {
@@ -48,7 +48,8 @@ static char *commandDescrition[] = {
     "Creates a pipe between two commands.",  
     "Reads from STDIN and writes to STDOUT.",
     "Counts the number of lines in the input.",
-    "Filters the vowels in the input."
+    "Filters the vowels in the input.",
+    "The problem of phylosofers that eat and think."
 };
 
 
@@ -82,5 +83,5 @@ void commandInfo(int i, int j);
 void cat(uint64_t argc, char *argv[], char* command, int is_foreground);
 void wc(uint64_t argc, char *argv[], char* command, int is_foreground);
 void filter(uint64_t argc, char *argv[], char* command, int is_foreground);
-
+void philo_process(uint64_t argc, char *argv[],char* command, int is_foreground);
 #endif
