@@ -2,7 +2,7 @@
 #include <lib.h>
 
 #define BUFFER_SIZE 12
-#define EOF 4
+#define EOF -1
 
 char toLetter(uint8_t hexa);
 // uint64_t buffer_has_next();

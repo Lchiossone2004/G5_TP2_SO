@@ -7,7 +7,7 @@
 
 //Other
 void print(char *buffer);
-int read(char *buffer, int fd, int size);
+int read( int fd,char *buffer, int size);
 void write(char *word, int fd,int size);
 void printRegisters();
 void nlPrint();

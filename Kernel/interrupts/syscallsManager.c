@@ -25,7 +25,7 @@
 
 #define PARA_ALEATORIOS_1 1664525
 #define PARA_ALEATORIOS_2 1013904223   
-#define EOF 4
+#define EOF -1
 
 static size_t total_allocated = 0;
 static size_t total_freed = 0;

@@ -25,6 +25,7 @@ void loadBuffer(uint8_t key){
     }
 
     if(ctrl_pressed && key == 0x2E){
+         buffer[curr++] = EOF; 
         p_info * foreground_proc = get_foreground_process();
         kill_process(foreground_proc->pid);
         return;

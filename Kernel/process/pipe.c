@@ -129,7 +129,7 @@ int pipe_read(int fd, char *buffer, int count) {
 
     int read = 0;
     for (int i = 0; i < count; i++) {
-        sem_wait(pipe->sem_data_available); 
+        sem_wait(pipe->sem_data_available);
         buffer[i] = pipe->buffer[pipe->read_pos];
         pipe->read_pos = (pipe->read_pos + 1) % BUFFER_SIZE;
         read++;
