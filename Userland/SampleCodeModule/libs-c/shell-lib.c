@@ -213,47 +213,74 @@ void loop(uint64_t argc, char *argv[], char* command, int is_foregorund){
 }
 void cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
     char buffer[128];
-    int bytesRead;
+    int pos = 0;
+    char c;
+    int n;
 
-    while((bytesRead = read(buffer, STDIN, sizeof(buffer))) > 0){
-        write(buffer, STDOUT, bytesRead);
+    while ((n = read(STDOUT, &c, 1)) > 0) {
+        char temp[2] = {c, '\0'}; 
+        print(temp);
+        buffer[pos++] = c;
+     
+       if(c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF) {
+            print(buffer);
+            return;
+        }
+    } 
+    if (pos > 0) {
+        print(buffer);
     }
-
-    print("\n");
 }
 
 void wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
     char buffer[128];
     int line_count = 0;
-    int bytesRead;
-
-    while ((bytesRead = read(buffer, STDIN, sizeof(buffer))) > 0) {
-        line_count++;
+    char c;
+    int n;
+    int pos = 0;
+    char num[10];
+     while ((n = read(STDOUT, &c, 1)) > 0) {
+        char temp[2] = {c, '\0'}; 
+        print(temp);
+        buffer[pos++] = c;
+            if (c == '\n') {
+                line_count++;
+            }
+            if(c == EOF || pos >= sizeof(buffer) - 1) {
+                break;
+            }
+        }
+        intToString(line_count, num, sizeof(buffer));
+        print(buffer);
+        print("\n");
     }
-    char result[16];
-    intToString(line_count, result, sizeof(result));
-    print(result);
-    print("\n");
-}
+
 void filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
     char buffer[128];
-    int bytesRead;
+    char c;
+    int n;
+    int pos = 0;
+    
 
-    while ((bytesRead = read(buffer, STDIN, sizeof(buffer))) > 0) {
-        for (int i = 0; i < bytesRead; i++) {
-            char c = buffer[i];
-            if (c == '\n') 
+      while ((n = read(STDOUT, &c, 1)) > 0) {
+        char temp[2] = {c, '\0'}; 
+        print(temp);
+        buffer[pos++] = c;
+            if (c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF) 
             break;
-            if (isVowel(c)) {
-            char temp[2] = {c, '\0'}; 
+      }
+      for(int i = 0; i < pos; i++) {
+            if (isVowel(buffer[i])) {
+            char temp[2] = {buffer[i], '\0'}; 
             print(temp);
             }
-           
+             print("\n");  
         }
-         
-        print("\n");  
-    }
 }
+         
+
+    
+
 
 
 void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund){

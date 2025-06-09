@@ -19,12 +19,12 @@ void print(char *word){
 }
 
 void write(char *word, int fd, int size){
-    syscall(4, fd, word, strSize(word));
+    syscall(4, fd, word, size);
 }
 
-int read(char *buffer,int fd ,int size){
-    int ret = (int) syscall(3, fd, buffer, size);
-    return ret;
+int read(int fd, char *buffer, int size){
+
+    return (int)syscall(3, fd, buffer, size);
 }
 
 void printErr(char *word){
