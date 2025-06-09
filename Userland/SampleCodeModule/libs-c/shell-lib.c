@@ -9,13 +9,13 @@ void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
         print("     Here is a list of the commands:");
         for (int i = 0; i < NUMBER_OF_COMMANDS; i++)
         {
-            nlPrint();
+            print("\n");
             print("     #) ");
             print(commands[i]);
         }
-        nlPrint();
+        print("\n");
         print("To know more about any command type [command] -info");
-        nlPrint();
+        print("\n");
     }
     else if(argc == 1 && strCompare(argv[0], "all")){
         for(int i = 0; i < NUMBER_OF_COMMANDS; i++){
@@ -26,7 +26,7 @@ void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
             else{
                 commandInfo(i,-1);
             }
-            nlPrint();
+            print("\n");
         }
     }
     else{
@@ -57,19 +57,19 @@ void zoom(uint64_t argc, char *argv[], char* command, int is_foregorund){
         argsError(argc,argv);
     }
     if(strCompare(argv[0],"IN")){
-        syscall(6, STDOUT);
+        syscall(5, STDOUT);
     }
     if(strCompare(argv[0],"OUT")){
-        syscall(7, STDOUT);
+        syscall(5, STDOUT);
     }
-    nlPrint();
+    print("\n");
 }
 
 void clear(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc > 0){
         argsError(argc,argv);
     }
-    syscall(9, STDOUT);
+    syscall(6, STDOUT);
 }
 
 void printReg(uint64_t argc, char *argv[], char* command, int is_foregorund){
@@ -176,7 +176,7 @@ void kill(uint64_t argc, char *argv[], char* command, int is_foregorund){
         else{
             printErr("Invalid PID");
         }
-        nlPrint();
+        print("\n");
     }
 }
 
@@ -185,7 +185,7 @@ void ps(uint64_t argc, char *argv[], char* command, int is_foregorund){
         argsError(argc,argv);
     }
     else{
-        syscall(29);
+        syscall(21);
     }
 }
 
@@ -199,15 +199,15 @@ void mem(uint64_t argc, char *argv[], char* command, int is_foregorund){
 }
 
 void loop(uint64_t argc, char *argv[], char* command, int is_foregorund){
-    int pid = syscall(33);
+    int pid = syscall(16);
     int len = 124;
     char buffer[len];
     intToString(pid,buffer,len);
     while(1){
         print(buffer);
-        nlPrint();
+        print("\n");
         print("These Aren't the Droids Your Looking For");
-        nlPrint();
+        print("\n");
         for(int i = 0; i <100000000; i++);
     }
 }
@@ -219,7 +219,7 @@ void cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
         write(buffer, STDOUT, bytesRead);
     }
 
-    nlPrint();
+    print("\n");
 }
 
 void wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
@@ -233,7 +233,7 @@ void wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
     char result[16];
     intToString(line_count, result, sizeof(result));
     print(result);
-    nlPrint();
+    print("\n");
 }
 void filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
     char buffer[128];
@@ -251,7 +251,7 @@ void filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
            
         }
          
-        nlPrint();  
+        print("\n");  
     }
 }
 
@@ -275,7 +275,7 @@ void argsError(uint64_t argc, char *argv[]){
                 printErr(argv[i]);
         }
     }
-    nlPrint();
+    print("\n");
 }
 
 #include <stdint.h>
@@ -317,7 +317,7 @@ void pipeCommand(uint64_t argc, char *argv[], char *command) {
     char buffer2[25];
     read(buffer2,pipe_fd[0],strSize(buffer));
     write(buffer2,STDOUT,strSize(buffer));
-    nlPrint();
+    print("\n");
     // char *full_command = argv[0];
     // char *pipe_pos = strchr(full_command, '|');
 
@@ -374,7 +374,7 @@ void commandInfo(int i,int j){
                 print(commands[j]);
                 print("] command.");
             }
-            nlPrint();
+            print("\n");
             print(TAB);
             print("- ");
             print(commandDescrition[i]);
@@ -383,7 +383,7 @@ void commandInfo(int i,int j){
                 print("- ");
                 print(commandDescrition[j]);
             }
-            nlPrint();
+            print("\n");
             print(TAB);
             print("- Possible arguments: ");
             print(commandArgs[i]);
@@ -392,5 +392,5 @@ void commandInfo(int i,int j){
                 print("- Possible arguments: ");
                 print(commandArgs[j]);
             }
-            nlPrint();
+            print("\n");
 }  

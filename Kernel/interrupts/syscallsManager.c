@@ -43,43 +43,33 @@ static syscall_fn syscall_table[] = {
     [2] = sys_getChar,
     [3] = sys_read,
     [4] = sys_write,
-    [5] = sys_newLine,
-    [6] = sys_zoomIn, //UNIR
-    [7] = sys_zoomOut,
-    [8] = sys_sleep,
-    [9] = sys_clear,
-    [10] = sys_putPixel,
-    [12] = sys_getTime,
-    [13] = sys_getTime,
-    [14] = sys_getKey, //SACAR
-    [15] = sys_ranN,
-    [16] = sys_clearBuffer,
-    [17] = sys_delete_video,
-    [18] = sys_test_mm, //SACAR
-    [19] = sys_malloc,
-    [20] = sys_free,
-    [21] = sys_get_memory_info,
-    [22] = sys_create,
-    [23] = sys_kill,
-    [24] = sys_getPid,
-    [25] = sys_endProcess,
-    [26] = sys_modifyPriority,
-    [27] = sys_block,
-    [28] = sys_unblock,
-    [29] = sys_getProcesses,
-    [30] = sys_fork, //SACAR
-    [31] = sys_quitCPU,
-    [32] = sys_wait,
-    [33] = sys_get_foreground,
-    [34] = sys_sem_open,
-    [35] = sys_sem_close,
-    [36] = sys_sem_wait,
-    [37] = sys_sem_post,
-    [38] = sys_sem_get_value,
-    [39] = sys_go_middle,
-    [40] = sys_create_pipe,
-    [41] = sys_print, //SACAR
-    [42] = sys_readLine
+    [5] = sys_zoom, //implementar
+    [6] = sys_clear,
+    [7] = sys_sleep,
+    [8] = sys_getTime,
+    [9] = sys_ranN,
+    [10] = sys_test_mm, 
+    [11] = sys_malloc,
+    [12] = sys_free,
+    [13] = sys_get_memory_info,
+    [14] = sys_create,
+    [15] = sys_kill,
+    [16] = sys_getPid,
+    [17] = sys_endProcess,
+    [18] = sys_modifyPriority,
+    [19] = sys_block,
+    [20] = sys_unblock,
+    [21] = sys_getProcesses,
+    [22] = sys_quitCPU,
+    [23] = sys_wait,
+    [24] = sys_get_foreground,
+    [25] = sys_sem_open,
+    [26] = sys_sem_close,
+    [27] = sys_sem_wait,
+    [28] = sys_sem_post,
+    [29] = sys_sem_get_value,
+    [30] = sys_go_middle,
+    [31] = sys_create_pipe,
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -100,27 +90,11 @@ uint64_t sys_registers_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
 }
 
 uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    unsigned int fd = (unsigned int) rsi;
     char *letter = (char *) rdx;
     size_t count = (size_t) rcx;
-
     _sti();    
-    //block_process(3);
-    //callScheduler();
     pipe_read(STDOUT,letter,1);
-    // if(fd == STDIN){
-    //     while(isBufferEmpty());
-    //     *letter = getBuffer();
-    //     if(*letter == 0 && count > 0){
-    //         deleteVideo();
-    //     }
-    //     if (*letter == 1) {
-    //         nlVideo();
-    //     }
-    //     if(*letter != 0 && *letter != 1){
-    //         imprimirVideo(letter, 1, BLANCO);
-    //     }
-    // }
+
     return 0;
 }
 
@@ -129,36 +103,7 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     char *buffer = (char *) rdx;
     size_t count = (size_t) rcx;
 
-    if (fd == STDIN) {
-    p_info *proc = get_current_process();
-    int actual_stdin = proc ? proc->stdin : STDIN;
-
-    if (actual_stdin >= PIPE_FD_START) {
-        return pipe_read(actual_stdin, buffer, count);
-    }
-
-    // Si no está redirigido, seguir leyendo del buffer del teclado
-    if (isBufferEmpty()) return 0;
-
-    int current = getCurr();
-    size_t bytesToRead = (count <= current + 1) ? count : current + 1;
-
-    for (size_t i = 0; i < bytesToRead; i++) {
-        buffer[i] = getFromBuffer(i);
-    }
-
-    while (!isBufferEmpty()) {
-        getBuffer();
-    }
-
-    return bytesToRead;
-}
-
-    else if (fd >= PIPE_FD_START) {
-        return pipe_read(fd, buffer, count);  
-    }
-
-    return -1;  
+    pipe_read(fd,buffer,count);
 }
 
 
@@ -180,39 +125,11 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
     return 0;
 }
 
-uint64_t sys_zoomIn(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){ 
+uint64_t sys_zoom(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){ 
     unsigned int fd = (unsigned int) rsi;
     if(fd == STDOUT) {
         zoomIN();
         rePrint();
-    }
-    return 0;
-}
-
-uint64_t sys_zoomOut(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    unsigned int fd = (unsigned int) rsi;
-    if(fd == STDOUT) {
-        zoomOUT();
-        rePrint();
-    }
-    return 0;
-}
-
-uint64_t sys_newLine(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    unsigned int fd = (unsigned int) rsi;
-    if(fd == STDOUT){
-        nlVideo();
-    }
-    return 0;
-}
-
-uint64_t sys_sleep(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    int ticks = (int) rsi;
-
-    _sti();
-    int max = ticks_elapsed() + ticks;
-    while(max > ticks_elapsed()){
-        _hlt();
     }
     return 0;
 }
@@ -225,14 +142,13 @@ uint64_t sys_clear(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
     return 0;
 }
 
-uint64_t sys_putPixel(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    int posx = (int) rsi;
-    int posy = (int) rdx;
-    uint32_t color = (uint32_t) rcx;
-    unsigned int fd = (unsigned int) r8;
+uint64_t sys_sleep(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
+    int ticks = (int) rsi;
 
-    if(fd == STDOUT) {
-        putPixel(color, posx, posy);
+    _sti();
+    int max = ticks_elapsed() + ticks;
+    while(max > ticks_elapsed()){
+        _hlt();
     }
     return 0;
 }
@@ -249,23 +165,6 @@ uint64_t sys_getTime(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint
     return 0;
 }
 
-uint64_t sys_getKey(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    unsigned int fd = (unsigned int) rsi;
-    char *buffer = (char *) rdx;
-
-    _sti();
-
-    block_process(3);
-    //pipe_read(STDOUT,buffer,1);
-
-
-    // if(fd == STDIN && !isBufferEmpty()){
-    //     *buffer = getBuffer();
-    // }
-
-    return 0;
-}
-
 uint64_t seed_changer() {
     seed = (getHours() * 3600 + getMins() * 60 + getSec());
     return 0;
@@ -277,21 +176,6 @@ uint64_t sys_ranN(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     *toRan = (PARA_ALEATORIOS_1 * seed + PARA_ALEATORIOS_2);
     if(*toRan < 0){
         *toRan = -*toRan;
-    }
-    return 0;
-}
-
-uint64_t sys_clearBuffer(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    while(!isBufferEmpty()){
-        getBuffer();
-    }
-    return 0;
-}
-
-uint64_t sys_delete_video(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    unsigned int cant = (unsigned int) rsi;
-    for(int i = 0; i < cant - 1; i++){
-        deleteVideo();
     }
     return 0;
 }
@@ -341,32 +225,37 @@ uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
 uint64_t sys_create(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return createProcess((void (*)(uint8_t, char**))rsi, (uint8_t)rdx, (char**)rcx, (char*)r8, (int)r9, (int)r10);
 }
+
 uint64_t sys_kill(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return kill_process(rsi);
 }
+
 uint64_t sys_getPid(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return get_pid();
 }
+
 uint64_t sys_endProcess(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     exit_process();
     return 0;
 }
+
 uint64_t sys_modifyPriority(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     return modify_priority((uint16_t)rsi, (int)rdx);
 }
+
 uint64_t sys_block(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return block_process((uint16_t)rsi);
 }
+
 uint64_t sys_unblock(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return unblock_process((uint16_t)rsi);
 }
+
 uint64_t sys_getProcesses(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     get_processes();
     return 0;
 }
-uint64_t sys_fork(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    return 1;//fork();
-}
+
 uint64_t sys_quitCPU(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return quitCPU();
 
@@ -401,8 +290,6 @@ uint64_t sys_go_middle(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, ui
     return goMiddle();
 }
 
-
-
 uint64_t sys_create_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     if(create_pipe((int*)rsi, (int*)rdx) == -1){
         return -1;
@@ -410,48 +297,5 @@ uint64_t sys_create_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
     return 0;
 }
 
-uint64_t sys_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    char *buffer = (char *) rsi;
-    size_t count = (size_t) rdx;
-    p_info* current_proc = get_current_process();
-    pipe_write(current_proc->stdout,buffer,count);
-}
-uint64_t sys_readLine(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    unsigned int fd = (unsigned int) rsi;
-    char *buffer = (char *) rdx;
-    size_t count = (size_t) rcx;
-
-    _sti();
-    size_t index = 0;
-
-    if(fd == STDIN){
-        char letter;
-        do {
-            while(isBufferEmpty());
-            letter = getBuffer();
-
-            if (letter == '\b') { 
-                if (index > 0) index--;
-                deleteVideo();
-            }
-            else if (letter == 1 || letter == '\n') { 
-                buffer[index++] = '\n';
-                nlVideo();
-                break;
-            } else if (letter == EOF) {  
-                if (index == 0) {
-                    return 0; 
-                } 
-            } else if(letter != 0) {
-                buffer[index++] = letter;
-                imprimirVideo(&letter, 1, BLANCO); 
-            }
-        } while (index < count - 1);
-
-        buffer[index] = '\0'; 
-    }
-
-    return index;  
-}
 
 

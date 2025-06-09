@@ -31,12 +31,8 @@ void printErr(char *word){
     syscall(4, STDERR, word, strSize(word));
 }
 
-void nlPrint(){
-    syscall(5, STDOUT);
-}
-
 void sleep(int ticks){
-    syscall(8, ticks);
+    syscall(7, ticks);
     return;
 }
 char get_char() {
@@ -51,42 +47,42 @@ int readLine(char *buffer, size_t size){
 //Proc
 
 int32_t usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground){
-    int32_t pid = (int32_t)syscall(22,fn,argc,argv, name, prio, is_foreground);
+    int32_t pid = (int32_t)syscall(14,fn,argc,argv, name, prio, is_foreground);
     return pid;
 }
 
 int usr_block_process(int pid){
-    return syscall(27,pid);
+    return syscall(19,pid);
 }
 
 int usr_unblock_process(int pid){
-    return syscall(28,pid);
+    return syscall(20,pid);
 
 }
 
 int usr_kill(int pid){
     int toRet = -1;
     if(pid >0){
-        toRet = syscall(23, pid);
+        toRet = syscall(15, pid);
     }
     return toRet;
 
 }
 
 void usr_yield(){
-    syscall(31);
+    syscall(22);
 }
 
 void usr_nice(int pid, int newPrio){
     if(pid > 0 && newPrio > 0){
-        syscall(26,pid,newPrio);
+        syscall(26,pid,newPrio); //FALTA
     }
 }
 
 //Sems
 
 int usr_sem_open(int id, int initial_value) {
-    int ret = syscall(34, id, initial_value);
+    int ret = syscall(25, id, initial_value);
     if (ret >= 0 && id >= 0 && id < SEM_MAX) {
         is_semaphore[id] = true;
     }
@@ -94,7 +90,7 @@ int usr_sem_open(int id, int initial_value) {
 }
 
 int usr_sem_close(int id) {
-    int ret = syscall(35, id);
+    int ret = syscall(26, id);
     if (ret >= 0 && id >= 0 && id < SEM_MAX) {
         is_semaphore[id] = false;
     }
@@ -103,24 +99,24 @@ int usr_sem_close(int id) {
 
 int usr_sem_wait(int id) {
     if (id >= 0 && id < SEM_MAX && is_semaphore[id]) {
-        return syscall(36, id);        
+        return syscall(36, id);     //QUE?    
     } else {
-        return syscall(24, id);      
+        return syscall(24, id);      //QUE?
     }
 }
 int usr_sem_post(int id) {
     if (id >= 0 && id < SEM_MAX && is_semaphore[id]) {
-        return syscall(37, id);        
+        return syscall(28, id);        
     }
     return -1;                      
 }
 
 int usr_sem_getvalue(int id){
-    return syscall(38, id);
+    return syscall(29, id);
 }
 
 //Pipes
 
 int usr_open_pipe(int *fd_read, int* fd_write){
-    return syscall(40,fd_read, fd_write); 
+    return syscall(31,fd_read, fd_write); 
 }

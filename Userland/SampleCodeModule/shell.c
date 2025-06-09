@@ -70,7 +70,7 @@ void chekCommand(Command aux)
         if(strCompare(aux.args[i],"&")){
             if(i != 0){
                 printErr("Invalid & must be placed after the command");
-                nlPrint();
+                print("\n");
                 command = -1;
             }
             else{
@@ -82,7 +82,7 @@ void chekCommand(Command aux)
     if(command >= 0 && command <=NUMBER_OF_COMMANDS){
         if(aux.arg_count == 1 && strCompare(aux.args[0],"-info")){
             commandInfo(command - 1, -1);
-            nlPrint();
+         
         }
         else{
         shell_table[command](aux.arg_count - offset, aux.args + offset, aux.command,is_foreground);

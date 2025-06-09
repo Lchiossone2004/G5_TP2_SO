@@ -48,10 +48,10 @@ void printTime(int area)
 		print("(ARG): ");
 	}
 	print(toPrint);
-	nlPrint();
+	print("\n");
 }
 
 void getTime()
 {
-	syscall(12, STDIN, Timepo);
+	syscall(8, STDIN, Timepo);
 }

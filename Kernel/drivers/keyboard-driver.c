@@ -40,12 +40,10 @@ void loadBuffer(uint8_t key){
     if(key == 14){      //Borrado  
         char aux = '\1';
         pipe_write(STDIN, &aux, 1);
-        buffer[curr++] = 0;
     }
     if(key == 28){      //Enter
         char * aux = "\n";
         pipe_write(STDIN,aux,1);      
-        buffer[curr++] = 1;
     }
     if(key == 0x0F){   //TAB
         char * aux = ' ';
@@ -54,11 +52,7 @@ void loadBuffer(uint8_t key){
         pipe_write(STDIN,aux,1); 
         pipe_write(STDIN,aux,1); 
         pipe_write(STDIN,aux,1);     
-        buffer[curr++] = ' ';
-        buffer[curr++] = ' ';
-        buffer[curr++] = ' ';
-        buffer[curr++] = ' ';
-        buffer[curr++] = ' ';
+
     }
 }
 

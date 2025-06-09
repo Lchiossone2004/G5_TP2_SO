@@ -27,6 +27,7 @@
         "pipe.h": "c",
         "naiveconsole.h": "c",
         "ostream": "c",
-        "print": "c"
+        "print": "c",
+        "syscallsmanager.h": "c"
     }
 }
