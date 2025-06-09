@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "defs.h"
 #include "scheduler.h"
-#define SEM_MAX 32
+#define SEM_MAX 127
 
 #define pid_t int16_t
 typedef struct semaphore {
