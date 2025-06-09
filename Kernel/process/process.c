@@ -4,7 +4,6 @@
 #include "../include/lib.h"
 
 #define STACK_SIZE 4096
-#define MAX_PROCESSES 20
 
 
 extern void callScheduler();

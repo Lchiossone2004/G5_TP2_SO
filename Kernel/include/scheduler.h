@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "./pcb.h"
 
-#define MAX_PROCESSES 10
+#define MAX_PROCESSES 20
 #define MAX_PRIORITY 10
 #define BLANCO  0xFFFFFF
 #define COL_WIDTH 15
