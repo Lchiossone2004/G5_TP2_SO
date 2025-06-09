@@ -23,7 +23,6 @@ void write(char *word, int fd, int size){
 }
 
 int read(int fd, char *buffer, int size){
-
     return (int)syscall(3, fd, buffer, size);
 }
 

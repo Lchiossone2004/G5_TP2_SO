@@ -19,7 +19,8 @@ void shell()
             index = 0;
             ultimaLetra = 0;
         }
-        read(letra,STDOUT,1);
+        getKey();
+
         if (*letra == '\1' && index > 0)
 
         {
@@ -51,6 +52,11 @@ void shell()
             buffer[index] = 0;
         }
     }
+}
+
+void getKey()
+{
+    syscall(2, STDIN, letra, index);
 }
 
 void chekCommand(Command aux)
