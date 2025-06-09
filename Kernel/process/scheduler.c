@@ -102,9 +102,7 @@ int block_process(int pid) {
     int idx = foundprocess(pid);
     if (idx != -1 && (processes_list[idx]->state == RUNNING || processes_list[idx]->state == READY)) {
         processes_list[idx]->state = BLOCKED;
-        if(current_process->pid == pid){  //Solo llamamos inmediatamente al scheduler si hay que blpquear al propio proceso, osea que tena efeto inmediato
-            callScheduler();                
-        }                                                                     
+        remove_from_ready_list(processes_list[idx]);
         return 1;
     }
     return -1;
@@ -114,20 +112,7 @@ int unblock_process(int pid) {
     int idx = foundprocess(pid);
     if (idx != -1 && processes_list[idx]->state == BLOCKED) {
         processes_list[idx]->state = READY;
-        ReadyNode* node = ready_list;
-        int already_in_list = 0;
-        if (node) {
-            do {
-                if (node->process_info == processes_list[idx]) {
-                    already_in_list = 1;
-                    break;
-                }
-                node = node->next;
-            } while (node != ready_list);
-        }
-        if (!already_in_list) {
-            add_to_ready_list(processes_list[idx]);
-        }  
+        add_to_ready_list(processes_list[idx]);
         return 1;
     }
     return -1;

@@ -34,8 +34,9 @@ void loadBuffer(uint8_t key){
     }
     if(!specialKey(key)){
         char letter = toLetter(key); 
-        pipe_write(STDIN,&letter,1);    
-        buffer[curr++] = letter;
+        unblock_process(3);
+        //pipe_write(STDIN,&letter,1);    
+        //buffer[curr++] = letter;
 
     }
     if(key == 14){      //Borrado  

@@ -139,37 +139,9 @@ SECTION .text
 %endmacro
 
 %macro irqHandlerMaster 1
-	pushStateNoRax
-	mov rdi, %1 ; pasaje de parametro
-	call irqDispatcher
-
-	; signal pic EOI (End of Interrupt)
-	mov al, 20h
-	out 20h, al
-
-	popStateNoRax
-	iretq
-%endmacro
-
-%macro irqHandlerMaster 2
-	pushStateNoRax
-	mov rdi, %1 ; pasaje de parametro
-	call irqDispatcher
-
-	; signal pic EOI (End of Interrupt)
-	mov al, 20h
-	out 20h, al
-
-	popStateNoRax
-	iretq
-%endmacro
-
-%macro irqHandlerMaster 0
 	pushState
-
-	mov rdi, rsp
-	call scheduler
-	mov rsp, rax
+	mov rdi, %1 ; pasaje de parametro
+	call irqDispatcher
 
 	; signal pic EOI (End of Interrupt)
 	mov al, 20h
@@ -178,7 +150,6 @@ SECTION .text
 	popState
 	iretq
 %endmacro
-
 
 %macro exceptionHandler 1
 	push rax
@@ -240,6 +211,9 @@ picSlaveMask:
 _irq00Handler:
 	pushState
 	
+	mov rdi, 0
+	call irqDispatcher
+
 	mov rdi, rsp
 	call scheduler
 	mov rsp, rax
@@ -265,18 +239,7 @@ _irq02Handler:
 
 ;Serial Port 2 and 4
 _irq03Handler:
-	pushState
-	
-	mov rdi, rsp
-	call scheduler
-	mov rsp, rax
-
-	; signal pic EOI (End of Interrupt)
-	mov al, 20h
-	out 20h, al
-
-	popState
-	iretq
+	irqHandlerMaster 2
 
 ;Serial Port 1 and 3
 _irq04Handler:
@@ -343,8 +306,9 @@ clearRegs:
 	pop rax
 	pop rcx
 	ret
-section .rodata
-userland equ 0x400000
 SECTION .bss
 regBuffer resq 17
 auxRIP resq 1
+
+section .rodata
+userland equ 0x400000

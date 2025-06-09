@@ -83,10 +83,6 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-void inactive(){
-	while(1);
-}
-
 int main()
 {	
 	load_idt(); 									//Cargo las interrupciones
@@ -96,11 +92,10 @@ int main()
 	init_semaphores();
 	size_t memory_size = 0x200000;         // 2MB de memoria disponible
 	init_memory_manager(memory_start, memory_size);
-
-	//Inicializo stdin y stdout
-	int *pipe_fd[2];
-	create_pipe(&pipe_fd[0], &pipe_fd[1]);
-	createProcess(inactive,0,NULL,"idle",3,0);
-	((EntryPoint)sampleCodeModuleAddress)();		// Llamo al userland
+	char *argv[] = {0};
+	createProcess((void*)sampleCodeModuleAddress,0,argv,"first_process",3,0);
+	_sti();
+	while(1);
+	//((EntryPoint)sampleCodeModuleAddress)();		// Llamo al userland
 	return 0;
 }

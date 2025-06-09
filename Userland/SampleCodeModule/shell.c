@@ -19,6 +19,7 @@ void shell()
             index = 0;
             ultimaLetra = 0;
         }
+        //while(1);
         getKey();
         if (*letra == 0 && index > 0)
         {

@@ -8,11 +8,17 @@ char * v = (char*)0xB8000 + 79 * 2;
 
 extern uint64_t syscall(uint64_t rdi, ...);
 
-int main() {
-	usr_create_process((void*)shell,NULL,NULL, "shell", PRIORITY_HIGH,1);
-	while (1) {
-    syscall(8, 5);  // el main no interfiere, solo espera
+void idle(){
+	while(1);
 }
+int main() {
+		//Inicializo stdin y stdout
+	int *pipe_fd[2];
+	usr_open_pipe(&pipe_fd[0], &pipe_fd[1]);
+	char *argv[] = {0};
+	usr_create_process((void*)idle,0,argv, "idle", PRIORITY_LOW,1);
+	usr_create_process((void*)shell,0,argv, "shell", PRIORITY_HIGH,1);
+	while (1) {}
 
 	return 0xDEADBEEF;
 }
