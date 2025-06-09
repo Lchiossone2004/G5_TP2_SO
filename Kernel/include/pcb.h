@@ -27,6 +27,8 @@ typedef struct{
     uint16_t children[MAX_CHILDREN];
     uint16_t children_length;
     int fd_table[MAX_BUFF * 2];
+    int stdin;
+    int stdout;
 }p_info;
 
 typedef struct ReadyNode {

@@ -344,12 +344,13 @@ void pipeCommand(uint64_t argc, char *argv[], char *command) {
         }
     }
     int new_pipe[2];
-    usr_open_pipe(&new_pipe[0], &new_pipe[1]);
+    usr_open_pipe(&new_pipe[0], &new_pipe[1]);  //int* fd_read, int*fd_write
 
     if (pipe_pos != 1) {
         printErr("Pipe symbol '|' must be in middle.\n");
         return;
     }
+    
     char *cmd1 = argv[0];
     char *cmd2 = argv[2]; 
     return; 

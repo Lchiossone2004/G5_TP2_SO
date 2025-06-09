@@ -48,5 +48,6 @@ uint64_t sys_go_middle(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, ui
 uint64_t sys_create_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10);
 uint64_t sys_dup(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10);
 uint64_t sys_pipe_close(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10);
+uint64_t sys_dup(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10);
 
 #endif // SYSCALLS_H
