@@ -112,22 +112,30 @@ int block_process(int pid) {
 
 int unblock_process(int pid) {
     int idx = foundprocess(pid);
+    imprimirVideo("Unblocking process ", 20, BLANCO);
     if (idx != -1 && processes_list[idx]->state == BLOCKED) {
+        imprimirVideo("Unblocking process ", 20, BLANCO);
         processes_list[idx]->state = READY;
         ReadyNode* node = ready_list;
         int already_in_list = 0;
         if (node) {
             do {
+                imprimirVideo("Checking if process is in ready list", 30, BLANCO);
                 if (node->process_info == processes_list[idx]) {
+                    imprimirVideo("Process already in ready list", 30, BLANCO);
                     already_in_list = 1;
                     break;
                 }
+                imprimirVideo("Process not in ready list", 30, BLANCO);
                 node = node->next;
             } while (node != ready_list);
         }
+        imprimirVideo("Adding process to ready list", 30, BLANCO);
         if (!already_in_list) {
             add_to_ready_list(processes_list[idx]);
+            imprimirVideo("Process added to ready list", 30, BLANCO);
         }  
+        
         return 1;
     }
     return -1;

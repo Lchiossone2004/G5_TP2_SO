@@ -32,12 +32,17 @@ void loadBuffer(uint8_t key){
         buffer[curr++] = EOF;  
         return;
     }
-    if(!specialKey(key)){
-        char letter = toLetter(key); 
+   if(!specialKey(key)){
+    char letter = toLetter(key); 
+    p_info *fg_proc = get_foreground_process();
 
-            buffer[curr++] = letter;
-
+    if (fg_proc && fg_proc->stdin >= 3) {  // si stdin es un pipe
+        pipe_write(fg_proc->stdin, &letter, 1);
+    } else {
+        buffer[curr++] = letter;
     }
+}
+
     if(key == 14){      //Borrado      
         buffer[curr++] = 0;
     }

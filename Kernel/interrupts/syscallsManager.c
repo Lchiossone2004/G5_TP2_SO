@@ -127,23 +127,30 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     size_t count = (size_t) rcx;
 
     if (fd == STDIN) {
-        if (isBufferEmpty()) {
-            return 0;  
-        }
+    p_info *proc = get_current_process();
+    int actual_stdin = proc ? proc->stdin : STDIN;
 
-        int current = getCurr();
-        size_t bytesToRead = (count <= current + 1) ? count : current + 1;
+    if (actual_stdin >= PIPE_FD_START) {
+        return pipe_read(actual_stdin, buffer, count);
+    }
 
-        for (size_t i = 0; i < bytesToRead; i++) {
-            buffer[i] = getFromBuffer(i);
-        }
+    // Si no está redirigido, seguir leyendo del buffer del teclado
+    if (isBufferEmpty()) return 0;
 
-       while(!isBufferEmpty()){
+    int current = getCurr();
+    size_t bytesToRead = (count <= current + 1) ? count : current + 1;
+
+    for (size_t i = 0; i < bytesToRead; i++) {
+        buffer[i] = getFromBuffer(i);
+    }
+
+    while (!isBufferEmpty()) {
         getBuffer();
     }
 
-        return bytesToRead;  
-    } 
+    return bytesToRead;
+}
+
     else if (fd >= PIPE_FD_START) {
         return pipe_read(fd, buffer, count);  
     }

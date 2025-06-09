@@ -20,6 +20,7 @@ void shell()
             ultimaLetra = 0;
         }
         getKey();
+        print("hola");
         if (*letra == 0 && index > 0)
         {
             index -= 1;
