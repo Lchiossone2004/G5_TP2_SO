@@ -5,6 +5,7 @@
 #include <videoDriver.h>
 #include <lib.h>
 #include "scheduler.h"
+#include "pipe.h"
 
 static uint64_t shift_pressed = 0;
 static uint64_t ctrl_pressed = 0;
@@ -33,17 +34,27 @@ void loadBuffer(uint8_t key){
     }
     if(!specialKey(key)){
         char letter = toLetter(key); 
-
-            buffer[curr++] = letter;
+        pipe_write(STDIN,&letter,1);    
+        buffer[curr++] = letter;
 
     }
-    if(key == 14){      //Borrado      
+    if(key == 14){      //Borrado  
+        char * aux = 0;
+        pipe_write(STDIN,aux,1);        
         buffer[curr++] = 0;
     }
     if(key == 28){      //Enter
+        char * aux = 1;
+        pipe_write(STDIN,aux,1);      
         buffer[curr++] = 1;
     }
     if(key == 0x0F){   //TAB
+        char * aux = ' ';
+        pipe_write(STDIN,aux,1);  
+        pipe_write(STDIN,aux,1); 
+        pipe_write(STDIN,aux,1); 
+        pipe_write(STDIN,aux,1); 
+        pipe_write(STDIN,aux,1);     
         buffer[curr++] = ' ';
         buffer[curr++] = ' ';
         buffer[curr++] = ' ';

@@ -29,13 +29,13 @@ int create_pipe(int* fd_read, int*fd_write) {
     if (pipe_index == -1) return -1;
 
     int fd_r = -1, fd_w = -1;
-    for (int i = 3; i < MAX_FDS && (fd_r == -1 || fd_w == -1); i++) {
+    for (int i = 0; i < MAX_FDS && (fd_r == -1 || fd_w == -1); i++) {
         if (!fd_table[i].in_use) {
-            if (fd_r == -1){
-                fd_r = i;
+            if (fd_w == -1){
+                fd_w = i;
             }
             else{
-            fd_w = i;
+            fd_r = i;
             }
         }
     }
@@ -86,28 +86,32 @@ int pipe_init(Pipe *pipe) {
     pipe->is_read_open = 1;
     pipe->is_write_open = 1; 
     pipe->initialized = 1;
-    pipe->size = MAX_BUFF;
+    pipe->index = 0;
+    pipe->size = BUFFER_SIZE;
+    pipe->sem_data_available = 1;
+    sem_open(pipe->sem_data_available,0);
+    pipe->sem_free_space = 2;
+    sem_open(pipe->sem_free_space,BUFFER_SIZE);
     return 0;
 }
 
-int pipe_write(int fd, const char *buffer, int count) {                                         //FALTA VERIFICAION PARA QUE SE USE DE A 1
+int pipe_write(int fd, const char *buffer, int count) {
     if (fd < 0 || fd >= MAX_FDS || !fd_table[fd].in_use || fd_table[fd].type != FD_WRITE) {
         return -1;
     }
     Pipe *pipe = fd_table[fd].pipe;
-    if(!pipe->is_write_open){
+    if (!pipe->is_write_open) {
         return -1;
     }
-    int written = 0;
 
+    int written = 0;
     for (int i = 0; i < count; i++) {
-        size_t next_pos = (pipe->write_pos + 1) % BUFFER_SIZE;
-        if (next_pos == pipe->read_pos) {
-            break;
-        }
+        sem_wait(pipe->sem_free_space);  
         pipe->buffer[pipe->write_pos] = buffer[i];
-        pipe->write_pos = next_pos;
+        pipe->write_pos = (pipe->write_pos + 1) % BUFFER_SIZE;
         written++;
+        pipe->index++;
+        sem_post(pipe->sem_data_available);  
     }
     return written;
 }
@@ -117,19 +121,23 @@ int pipe_read(int fd, char *buffer, int count) {
         return -1;
     }
     Pipe *pipe = fd_table[fd].pipe;
-    if(!pipe->is_read_open){
+    if (!pipe->is_read_open) {
         return -1;
     }
-    int read = 0;
 
-    while (read < count && pipe->read_pos != pipe->write_pos) {
-        buffer[read++] = pipe->buffer[pipe->read_pos];
+    int read = 0;
+    for (int i = 0; i < count; i++) {
+        sem_wait(pipe->sem_data_available); 
+        buffer[i] = pipe->buffer[pipe->read_pos];
         pipe->read_pos = (pipe->read_pos + 1) % BUFFER_SIZE;
+        read++;
+        pipe->index--;
+        sem_post(pipe->sem_free_space); 
     }
     return read;
 }
 
-void pipe_close(int end, int fd){
+int pipe_close(int end, int fd){
         if (fd < 0 || fd >= MAX_FDS || !fd_table[fd].in_use || fd_table[fd].type != FD_READ) {
         return -1;
     }
@@ -141,4 +149,12 @@ void pipe_close(int end, int fd){
         pipe->is_write_open = 1;
     }
     return 0;
+}
+
+Pipe* get_pipe(int fd){
+    return fd_table[fd].pipe;
+}
+
+char * get_pipe_buffer(int fd){
+    return fd_table[fd].pipe->buffer;
 }
