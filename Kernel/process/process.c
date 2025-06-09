@@ -111,8 +111,6 @@ void copy_context(p_info* new_process, char *name, void *stack_base, void *stack
         for (int i = 0; i < MAX_BUFF*2; i++) {
             new_process->fd_table[i] = -1;
         }
-        new_process->fd_table[0] = STDIN;
-        new_process->fd_table[1] = STDOUT;
     }
     new_process->stdin = STDIN;
     new_process->stdout = STDOUT;

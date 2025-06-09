@@ -350,14 +350,12 @@ void pipeCommand(uint64_t argc, char *argv[], char *command) {
         printErr("Pipe symbol '|' must be in middle.\n");
         return;
     }
-    
+    usr_dup(4,STDOUT);
+    usr_dup(4,new_pipe[0]);
     char *cmd1 = argv[0];
     char *cmd2 = argv[2]; 
     return; 
-
 }
-
-
 
 void commandInfo(int i,int j){
     (void) commandDescrition;   //Bilardeada para sacar el warning

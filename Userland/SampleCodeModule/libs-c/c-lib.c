@@ -77,6 +77,10 @@ void usr_nice(int pid, int newPrio){
         syscall(26,pid,newPrio); //FALTA
     }
 }
+
+int usr_dup(int newFd, int oldFd){
+    syscall(33,newFd,oldFd);
+}
 //Sems
 
 int usr_sem_open(int id, int initial_value) {

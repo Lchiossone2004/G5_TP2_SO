@@ -129,7 +129,13 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
         }
     }
     else if(fd == STDERR){
-        imprimirVideo(buffer, count, ROJO);
+        p_info * proc = get_current_process();
+        if(proc->stdout == STDOUT){ 
+            imprimirVideo(buffer, count, ROJO);
+        }
+        else{
+            pipe_write(proc->stdout,buffer,count);
+        }
     } 
     else if (fd >= PIPE_FD_START) {
         pipe_write(fd,buffer,count);
@@ -332,7 +338,7 @@ uint64_t sys_dup(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t
     else{
         for(int i = 0; i <MAX_BUFF*2; i++){
             if(curr->fd_table[i] == oldFd){
-                curr->fd_table[i] == newFd;
+                curr->fd_table[i] = newFd;
                 return 0;
             }
         }
