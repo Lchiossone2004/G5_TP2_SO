@@ -102,6 +102,7 @@ int16_t sem_wait(int16_t id) {
         s->count++;
         lock_release(&s->lock);
         block_process(pid);
+        callScheduler();
     } else {
         s->value--;
         lock_release(&s->lock);

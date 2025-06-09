@@ -19,22 +19,27 @@ void shell()
             index = 0;
             ultimaLetra = 0;
         }
+        //while(1);
         getKey();
-        print("hola");
-        if (*letra == 0 && index > 0)
+
+        if (*letra == '\1' && index > 0)
+
         {
+            print("\1");
             index -= 1;
             buffer[index] = 0;
         }
-        if (*letra == 1)
+        else if (*letra == '\n')
         {
+            print("\n");
             chekCommand(aux);
             print(NEW_LINE);
             index = 0;
             ultimaLetra = 0;
         }
-        if (*letra != 0 && *letra != 1)
+        else
         {
+            print(letra);
             if (*letra == ' ')
             {
                 buffer[index++] = ' ';

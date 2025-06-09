@@ -30,11 +30,11 @@ typedef struct {
 } p_stack;
 
 int32_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority, int is_foreground);
+int create_idle_process(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int prio, int is_foreground);
 void load_args(p_stack *new_stack, p_info * new_process, uint8_t argc, char* argv[]);
 void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv) ;
 void exit_process();  
 int get_pid();
-int fork();
 void copy_context(p_info* new_process, char *name, void * stack_base, void * stack_pointer,void * stack_top ,int priority, int is_foreground);
 int wait_pid(int pid);
 int wait();

@@ -91,6 +91,9 @@ void imprimirVideo(char *palabra, int size, uint32_t color)
 			{
 				nlVideo();
 			}
+			else if(palabra[i] == '\1'){
+				deleteVideo();
+			}
 			else
 			{
 				y = aux;
