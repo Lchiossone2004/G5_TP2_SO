@@ -97,7 +97,7 @@ int usr_sem_close(int id) {
 
 int usr_sem_wait(int id) {
     if (id >= 0 && id < SEM_MAX && is_semaphore[id]){
-        return syscall(37, id);
+        return syscall(27, id);
     }
     return-1;
 }
