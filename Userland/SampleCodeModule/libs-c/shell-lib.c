@@ -122,10 +122,6 @@ void test(uint64_t argc, char *argv[], char* command, int is_foregorund){
     }
 }
 
-void phylo(uint64_t argc, char *argv[], char* command, int is_foregorund){
-    usr_create_process((void*)phylo_main,argc,argv, "phylosofers", PRIORITY_LOW, is_foregorund);
-}
-
 void block(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc != 1){
         argsError(argc,argv);
@@ -379,4 +375,12 @@ void newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
     char * aux[1] = {"hola"};
    usr_create_process((void*)shell,1,aux, "shell", PRIORITY_HIGH,1);
    usr_wait_children();
+}
+
+void phylosophers(uint64_t argc, char *argv[], char *command, int is_foregorund) {
+    if (argc > 0) {
+        argsError(argc, argv);
+        return;
+    }
+    usr_create_process((void*)phylo_main, argc, argv, "phylosophers", PRIORITY_LOW, is_foregorund);
 }

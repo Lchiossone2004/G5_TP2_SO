@@ -33,14 +33,14 @@ static char *commandDescrition[] = {
     "It prints the actual time.",
     "Zooms in or out dependng on the argument.",
     "Clears the screen.",
-    "Prints the saved cpu registers/",
-    "Causes a division by cero to show the error handeling.",
-    "Causes a invalid operation to show the error handeling.",
+    "Prints the saved CPU registers.",
+    "Causes a division by cero to show the error handling.",
+    "Causes a invalid operation to show the error handling.",
     "Allows to run tests on diferent functionalities.",
-    "Blocks a specific process",
-    "Unblock a sprecific process",
-    "Changes a process priority",
-    "Gives up the Cpu",
+    "Blocks a specific process.",
+    "Unblock a sprecific process.",
+    "Changes a process priority.",
+    "Gives up the CPU.",
     "Kills the selected process.",
     "Shows a list of the existing processes.",
     "Loops and shows it PID and a special message",
@@ -50,11 +50,11 @@ static char *commandDescrition[] = {
     "Counts the number of lines in the input.",
     "Filters the vowels in the input.",
     "Opens a new shell.",
-    "The problem of the phylosofers that eat and think"
+    "The problem of the phylosofers that eat and think."
 };
 
 
-static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none", "none", "none", "none","none", "none"};
+static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none", "none", "none", "none","none", "none", "none", "none", "none"};
 
 
 
@@ -86,6 +86,6 @@ void wc(uint64_t argc, char *argv[], char* command, int is_foreground);
 void filter(uint64_t argc, char *argv[], char* command, int is_foreground);
 void pipeCommand(uint64_t argc, char *argv[], char *command, int is_foregorund);
 void newShell(uint64_t argc, char *argv[], char *command, int is_foregorund);
-void phylo(uint64_t argc, char *argv[], char *command, int is_foregorund);
+void phylosophers(uint64_t argc, char *argv[], char *command, int is_foregorund);
 
 #endif
