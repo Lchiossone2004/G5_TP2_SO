@@ -1,3 +1,0 @@
-[submodule "tests/cunit"]
-	path = tests/cunit
-	url = https://github.com/alejoaquili/c-unit-testing-example.git
