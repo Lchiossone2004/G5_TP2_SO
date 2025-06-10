@@ -1,7 +1,7 @@
 #include "../include/c-lib.h"
 #include "../include/memory-lib.h"
 #include "../include/phylo.h"
-
+#include "../include/shell-lib.h"
 #define NO_PID -1
 
 typedef enum { NONE = 0, THINKING, WAITING, EATING } PHYLO_STATE;
@@ -19,13 +19,11 @@ static void print_status() {
         if (phylo_states[i] != NONE) {
             any = 1;
             char buf[2] = { state_chars[phylo_states[i]], '\0' };
-            write(buf, 1, 2);
-            write(" ", 1, 1);
+            write(buf, STDOUT, 2);
+            write(" ", STDOUT, 1);
         }
     }
-    if (any) {
-        write("\n", 1, 1);
-    }
+    if (any) write("\n", STDOUT, 1);
 }
 
 static void leave_forks(int idx) {
@@ -83,13 +81,11 @@ static int new_phylo(int idx) {
         usr_sem_post(SEM_GLOBAL);
         return -1;
     }
-
     char **argv = usr_malloc(sizeof(char*) * 2);
     argv[0] = usr_malloc(2);
     argv[0][0] = '0' + idx;
     argv[0][1] = '\0';
     argv[1] = NULL;
-
     phylo_pids[idx] = usr_create_process((void*)phylo_process, 1, argv, phylo_names[idx], 0, 1);
     if (phylo_pids[idx] < 0) {
         usr_sem_close(SEM_FORK(idx));
@@ -106,8 +102,7 @@ static int new_phylo(int idx) {
 
 static void remove_phylo(int idx) {
     usr_sem_wait(SEM_GLOBAL);
-    print(phylo_names[idx]);
-    print(" lefts.\n");
+    print(phylo_names[idx]); write(" leaves the table.\n", STDOUT, 19);
     int left = (idx + phylo_count - 1) % phylo_count;
     int right = (idx + 1) % phylo_count;
     while (phylo_states[left] == EATING && phylo_states[right] == EATING) {
@@ -130,7 +125,9 @@ static void remove_all(int max) {
 }
 
 int phylo_main(void) {
-    print("The problem of the phylosofers that eat.\n");
+    print("Dining Philosophers Problem.\n");
+    print("Each philosopher needs two forks to eat.\n");
+    print("Press 'a' to add one, 'r' to remove one, or 'q' to quit.\n");
     if (usr_sem_open(SEM_GLOBAL, 1) < 0) {
         printErr("Could not start global semaphore.\n");
         return -1;
@@ -151,15 +148,14 @@ int phylo_main(void) {
         print("\n");
         if (cmd == ADD_VALUE) {
             if (phylo_count < MAX_DINER) new_phylo(phylo_count);
-            else printErr("Max phylosofers reached.\n");
+            else printErr("Max philosophers reached.\n");
         } else if (cmd == REMOVE_VALUE) {
             if (phylo_count > MIN_DINER) remove_phylo(phylo_count - 1);
-            else printErr("Min phylosofers reached.\n");
+            else printErr("Min philosophers reached.\n");
         }
     }
     remove_all(phylo_count);
     usr_sem_close(SEM_GLOBAL);
-    print("\n");
+    write("\n", STDOUT, 1);
     return 0;
 }
-
