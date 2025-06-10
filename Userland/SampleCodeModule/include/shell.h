@@ -53,5 +53,6 @@ int processCommand(char *input);
 void clearBuffer();
 Command parseCommand(char * input);
 void freeCommand(Command *cmd);
+void getKey();
 
 

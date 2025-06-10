@@ -5,7 +5,10 @@ static char letra[1] = {0};
 static int ultimaLetra;
 static int index = 0;
 
-
+void getKey()
+{
+    syscall(2, STDIN, letra, index);
+}
 void shell()
 {
     print(NEW_LINE);
@@ -54,10 +57,6 @@ void shell()
     }
 }
 
-void getKey()
-{
-    syscall(2, STDIN, letra, index);
-}
 
 void chekCommand(Command aux)
 {

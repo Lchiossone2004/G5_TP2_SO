@@ -8,7 +8,7 @@
 extern uint64_t syscall(uint64_t rdi, ...);
 
 void* usr_malloc(int size){
-    void *aux = syscall(11, size);
+    void *aux = (void*) syscall(11, size);
     return aux;
 }
 

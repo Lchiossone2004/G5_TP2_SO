@@ -1,4 +1,5 @@
 #include <shell-lib.h>
+#include <stdint.h>
 #include "string-lib.h"
 #include "test.h"
 #include "c-lib.h"
@@ -310,34 +311,11 @@ void argsError(uint64_t argc, char *argv[]){
     print("\n");
 }
 
-#include <stdint.h>
 
 
-static void remove_blanks(char *s) {
-    size_t len = strlen(s);
-    if (len > 0) {
-        char *end = s + len - 1;
-        while (len > 0 && isBlank(*end)) {
-            *end = '\0';
-            end--;
-            len--;
-        }
-    }
-    char *src = s;
-    while (*src && isBlank(*src)) {
-        src++;
-    }
-    if (src != s) {
-        char *dst = s;
-        while (*src) {
-            *dst++ = *src++;
-        }
-        *dst = '\0';
-    }
-}
 
 
-void pipeCommand(uint64_t argc, char *argv[], char *command) {
+void pipeCommand(uint64_t argc, char *argv[], char *command, int is_foregorund) {
     if(argc != 3){
         argsError(argc, argv);
         return;
@@ -356,9 +334,7 @@ void pipeCommand(uint64_t argc, char *argv[], char *command) {
         return;
     }
     usr_dup(4,STDOUT);
-    usr_dup(4,new_pipe[0]);
-    char *cmd1 = argv[0];
-    char *cmd2 = argv[2]; 
+    usr_dup(4,new_pipe[0]); 
     return; 
 }
 

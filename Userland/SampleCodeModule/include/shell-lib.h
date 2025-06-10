@@ -76,11 +76,11 @@ void ps(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void loop(uint64_t argc, char *argv[], char* command, int is_foregorund); //Falta hacer
 void mem(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void pipeCommand(uint64_t argc, char *argv[], char *command);
 void argsError(uint64_t argc, char *argv[]);
 void commandInfo(int i, int j);
 void cat(uint64_t argc, char *argv[], char* command, int is_foreground);
 void wc(uint64_t argc, char *argv[], char* command, int is_foreground);
 void filter(uint64_t argc, char *argv[], char* command, int is_foreground);
+void pipeCommand(uint64_t argc, char *argv[], char *command, int is_foregorund);
 
 #endif

@@ -271,4 +271,5 @@ void zoomOUT()
 
 uint64_t goMiddle(){
 	x = BORDER_X/2;
+	return x;
 }

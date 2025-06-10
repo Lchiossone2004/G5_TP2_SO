@@ -49,7 +49,7 @@ void loadBuffer(uint8_t key){
         pipe_write(STDIN,aux,1);      
     }
     if(key == 0x0F){   //TAB
-        char * aux = ' ';
+        char  *aux = ' ';
         pipe_write(STDIN,aux,1);  
         pipe_write(STDIN,aux,1); 
         pipe_write(STDIN,aux,1); 

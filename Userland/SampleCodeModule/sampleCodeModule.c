@@ -13,7 +13,7 @@ void idle(){
 }
 int main() {
 		//Inicializo stdin y stdout
-	int *pipe_fd[2];
+	int pipe_fd[2];
 	usr_open_pipe(&pipe_fd[0], &pipe_fd[1]);
 	char *argv[] = {0};
 	usr_create_process((void*)idle,0,argv, "idle", PRIORITY_LOW,1);

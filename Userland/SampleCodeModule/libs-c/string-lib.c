@@ -100,8 +100,6 @@ void intToString(int value, char *buffer, size_t bufferSize){
             buffer[0] = '\0';
         return;
     }
-
-    size_t i = 0;
     int isNegative = 0;
 
     if (value < 0) {
