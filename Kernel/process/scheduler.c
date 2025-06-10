@@ -263,18 +263,10 @@ int remove_from_processes_list(p_info* process) {
     if (idx < 0 || idx >= MAX_PROCESSES || processes_list[idx] == NULL) {
         return -1;
     }
-
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-        p_info *p = processes_list[i];
-        if (p && p->waiting_on_child == process->pid) {
-            p->waiting_on_child = 0;
-            unblock_process(p->pid);
-        }
-    }
-
     if (process->parent_pid > 0) {
+        p_info *parent;
         for (int i = 0; i < MAX_PROCESSES; i++) {
-            p_info *parent = processes_list[i];
+            parent = processes_list[i];
             if (parent && parent->pid == process->parent_pid) {
                 for (int j = 0; j < parent->children_length; j++) {
                     if (parent->children[j] == process->pid) {
@@ -284,6 +276,14 @@ int remove_from_processes_list(p_info* process) {
                         break;
                     }
                 }
+            parent->waiting_on_child--;
+            if(parent->waiting_on_child == 0){
+                unblock_process(parent->pid);
+            }
+            if(process->is_foreground){
+            parent->is_foreground = 1;
+            imprimirPrograma(parent->name,strSize(parent->name));
+            }
                 break;
             }
         }
@@ -300,7 +300,6 @@ int remove_from_processes_list(p_info* process) {
 
     processes_list[idx] = NULL;
     n_processes--;
-
     return 0;
 }
 
@@ -323,4 +322,6 @@ p_info* get_process_by_pid(uint16_t pid) {
     }
     return NULL;  
 }
+
+
 

@@ -9,7 +9,7 @@ char * v = (char*)0xB8000 + 79 * 2;
 extern uint64_t syscall(uint64_t rdi, ...);
 
 void idle(){
-	while(1);
+	while(1){}
 }
 int main() {
 	char *argv[] = {0};
