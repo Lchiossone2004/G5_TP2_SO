@@ -146,21 +146,29 @@ int phylo_main() {
 
     char letter = '0';
   
-    while (letter == QUIT_VALUE != 0) {
+    while (letter != QUIT_VALUE ) {
+        print("en el while");
         read(STDIN, &letter, 1);
         print("\n");
+        print("leyo");
+        print(letter);
         if (letter == ADD_VALUE) {
+            print("Adding philosopher...\n");
             if (phylo_count < MAX_DINER){
+                print("Adding philosopher...\n");
                 new_phylo(phylo_count);
             } 
             else printErr("Max philosophers reached.\n");
         } else if (letter == REMOVE_VALUE) {
+            print("Removing philosopher...\n");
             if (phylo_count > MIN_DINER){
+                print("Removing philosopher...\n");
                 remove_phylo(phylo_count - 1);
             } 
             else printErr("Min philosophers reached.\n");
         }
     }
+    print("Exiting Dining Philosophers Problem.\n");
     remove_all(phylo_count);
     usr_sem_close(SEM_GLOBAL);
     write("\n", STDOUT, 1);
