@@ -7,7 +7,7 @@
 typedef enum { NONE = 0, THINKING, WAITING, EATING } PHYLO_STATE;
 
 static char state_chars[] = {'0', '.', '.', 'E'};
-static char *phylo_names[MAX_DINER] = {"Mati", "Prado", "Buela","Lolo","Lu", "Tito","Fraga","Choe","Nicky", "Caro"};
+static char *phylo_names[MAX_DINER] = {"Socrates","Plato","Aristoteles", "St. Agustine", "St. Thomas Aquina","Descartes", "Rousseau","Nietzche","Hegel", "Marx"};
 static int phylo_pids[MAX_DINER];
 static PHYLO_STATE phylo_states[MAX_DINER];
 static int phylo_count = 0;
@@ -99,18 +99,18 @@ static int new_phylo(int idx) {
 
 static void remove_phylo(int idx) {
     usr_sem_wait(SEM_GLOBAL);
-    print(phylo_names[idx]); write(" leaves the table.\n", STDOUT, 19);
-    while (phylo_states[idx] == EATING) {
+    print(phylo_names[idx]);
+    write(" leaves the table.\n", STDOUT, 19);
+    do {
         usr_sem_post(SEM_GLOBAL);
         sleep(1);
         usr_sem_wait(SEM_GLOBAL);
-    }
+    } while (phylo_states[idx] == EATING);
     usr_kill(phylo_pids[idx]);
     usr_sem_close(SEM_FORK(idx));
     for (int i = idx; i < phylo_count - 1; i++) {
-        phylo_pids[i] = phylo_pids[i + 1];
+        phylo_pids[i]   = phylo_pids[i + 1];
         phylo_states[i] = phylo_states[i + 1];
-        phylo_names[i]  = phylo_names[i + 1];
     }
     phylo_pids[phylo_count - 1]   = NO_PID;
     phylo_states[phylo_count - 1] = NONE;
@@ -125,7 +125,7 @@ static void remove_all(int max) {
     }
 }
 
-int phylo_main(void) {
+int phylo_main() {
     print("Dining Philosophers Problem.\n");
     print("Each philosopher needs two forks to eat.\n");
     print("Press 'a' to add one, 'r' to remove one, or 'q' to quit.\n");
