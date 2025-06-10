@@ -6,6 +6,7 @@ typedef struct{
 }word;
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y);
 void imprimirVideo(char * palabra, int size, uint32_t color);
+void imprimirPrograma(char *palabra, int size);
 void charVideo(char num,char isEndLine, uint32_t color);
 void nlVideo();
 void deleteVideo();

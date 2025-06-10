@@ -2,6 +2,7 @@
 #include "../include/scheduler.h"
 #include "../memory/memory_manager.h"
 #include "../include/lib.h"
+#include "../include/videoDriver.h"
 
 #define STACK_SIZE 4096
 
@@ -107,6 +108,7 @@ void copy_context(p_info* new_process, char *name, void *stack_base, void *stack
         for (int i = 0; i < MAX_BUFF*2; i++) {
             new_process->fd_table[i] = parent->fd_table[i];
         }
+        parent->waiting_on_child++;
     } else {
         for (int i = 0; i < MAX_BUFF*2; i++) {
             new_process->fd_table[i] = -1;
@@ -122,11 +124,9 @@ int wait_pid(int pid) {
     p_info *current = get_current_process();
 
 
-    if (foundprocess(pid) != -1) {
-        current->waiting_on_child = pid;
+    if (foundprocess(pid) != -1 && current->waiting_on_child > 0) {
         block_process(current->pid);
         quitCPU();               
-        current->waiting_on_child = 0;
     }
     for (int i = 0; i < current->children_length; i++) {
         if (current->children[i] == pid) {
@@ -161,6 +161,7 @@ void assignForeground(p_info* new_p, int is_fg) {
     if (is_fg) {
         p_info *current_fg = get_foreground_process();
         current_fg->is_foreground = 0;
+        imprimirPrograma(new_p->name,strSize(new_p->name));
     }
 }
 

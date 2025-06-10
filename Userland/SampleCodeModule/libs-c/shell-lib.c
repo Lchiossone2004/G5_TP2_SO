@@ -6,6 +6,8 @@
 #include "shell.h"
 #include "command-lib.h"
 #define EOF -1
+
+static int shellCounter = 0;
 void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc == 0){
         print("     Here is a list of the commands:");
@@ -318,7 +320,10 @@ void commandInfo(int i,int j){
 }  
 
 void newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
-    char * aux[1] = {"hola"};
-   usr_create_process((void*)shell,1,aux, "shell", PRIORITY_HIGH,1);
-   usr_wait_children();
+    char * aux[] = {};
+    char * number[4];
+    usr_create_process((void*)shell,1,aux,"shell'", PRIORITY_HIGH,1);
+    usr_wait_children();
+    shellCounter--;
+
 }

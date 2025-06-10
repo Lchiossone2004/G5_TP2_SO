@@ -69,8 +69,8 @@ VBEInfoPtr VBE_mode_info = (VBEInfoPtr)0x0000000000005C00;
 uint8_t new_font[MAX_ZOOM + 1][WIDTH * (MAX_ZOOM + 2)][HEIGHT * (MAX_ZOOM + 2)];
 static int zoom = 1; // zoom inicial
 static int x = 0;
-static int y = 0;
-static int aux = 0;
+static int y = MOV_Y;
+static int aux = MOV_Y;
 static word matrix[BORDER_Y / MOV_Y][BORDER_X / MOV_X] = {0};
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y)
@@ -83,29 +83,34 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y)
 	framebuffer[offset + 2] = (hexColor >> 16) & 0xFF;
 }
 
-void imprimirVideo(char *palabra, int size, uint32_t color)
-{
-	p_info * current_p = get_current_process();
-	if(current_p->is_foreground){	
-		for (int i = 0; i < size; i++){
-			if (palabra[i] == '\n')
-			{
-				nlVideo();
-			}
-			else if(palabra[i] == '\1'){
-				deleteVideo();
-			}
-			else
-			{
-				y = aux;
-				word vol;
-				vol.num = palabra[i];
-				vol.color = color;
-				matrix[(y / zoom) / MOV_Y][(x / zoom) / MOV_X] = vol;
-				charVideo(palabra[i], 1, color);
-			}
+void imprimirVideo(char *palabra, int size, uint32_t color) {
+
+	for (int i = 0; i < size; i++){
+		if (palabra[i] == '\n')
+		{
+			nlVideo();
+		}
+		else if(palabra[i] == '\1'){
+			deleteVideo();
+		}
+		else
+		{
+			y = aux;
+			word vol;
+			vol.num = palabra[i];
+			vol.color = color;
+			matrix[(y / zoom) / MOV_Y][(x / zoom) / MOV_X] = vol;
+			charVideo(palabra[i], 1, color);
 		}
 	}
+}
+
+void imprimirPrograma(char *palabra, int size){
+	y = aux = 0;
+	x = MOV_X * 50 * zoom;
+	imprimirVideo("FOREGROUND: ",13,BLANCO);
+	imprimirVideo(palabra,size,BLANCO);
+	clearScreen();
 }
 void charVideo(char num, char isEndLine, uint32_t color)
 {
@@ -205,7 +210,7 @@ void printHexaVideo(uint64_t value)
 }
 void clearScreen()
 {
-	for (int i = 0; i < BORDER_Y; i++)
+	for (int i = MOV_Y; i < BORDER_Y; i++)
 	{
 		for (int j = 0; j < BORDER_X; j++)
 		{
@@ -213,8 +218,8 @@ void clearScreen()
 		}
 	}
 	x = 0;
-	y = 0;
-	aux = 0;
+	y = MOV_Y;
+	aux = MOV_Y;
 }
 void rePrint()
 { // 1 zoomIN, 0 zoomOUT
