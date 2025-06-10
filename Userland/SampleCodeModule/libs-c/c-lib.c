@@ -81,6 +81,10 @@ void usr_nice(int pid, int newPrio){
 int usr_dup(int newFd, int oldFd){
     return syscall(33,newFd,oldFd);
 }
+
+void usr_wait_children(){
+    return syscall(23);
+}
 //Sems
 
 int usr_sem_open(int id, int initial_value) {

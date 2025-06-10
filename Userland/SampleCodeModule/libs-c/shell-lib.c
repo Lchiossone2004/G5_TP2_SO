@@ -3,6 +3,7 @@
 #include "string-lib.h"
 #include "test.h"
 #include "c-lib.h"
+#include "shell.h"
 #define EOF -1
 void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
 
@@ -370,3 +371,9 @@ void commandInfo(int i,int j){
             }
             print("\n");
 }  
+
+void newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
+    char * aux[1] = {"hola"};
+   usr_create_process((void*)shell,1,aux, "shell", PRIORITY_HIGH,1);
+   usr_wait_children();
+}

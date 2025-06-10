@@ -72,7 +72,7 @@ static syscall_fn syscall_table[] = {
     [30] = sys_go_middle,
     [31] = sys_create_pipe,
     [32] = sys_pipe_close,
-    [33] = sys_dup
+    [33] = sys_dup,
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -135,7 +135,7 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
     }
     else if(fd == STDERR){
         p_info * proc = get_current_process();
-        if(proc->stdout == STDOUT){ 
+        if(proc->stdout == STDOUT && proc->is_foreground){ 
             imprimirVideo(buffer, count, ROJO);
         }
         else{
