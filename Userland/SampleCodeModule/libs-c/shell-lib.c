@@ -4,9 +4,9 @@
 #include "test.h"
 #include "c-lib.h"
 #include "shell.h"
+#include "command-lib.h"
 #define EOF -1
 void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
-
     if(argc == 0){
         print("     Here is a list of the commands:");
         for (int i = 0; i < NUMBER_OF_COMMANDS; i++)
@@ -196,94 +196,39 @@ void mem(uint64_t argc, char *argv[], char* command, int is_foregorund){
         argsError(argc,argv);
     }
     else{
-        print_usr_mem_info();
+        usr_create_process((void*)mem_command, argc, argv, "mem", PRIORITY_LOW, is_foregorund);
     }
 }
 
 void loop(uint64_t argc, char *argv[], char* command, int is_foregorund){
-    int pid = syscall(16);
-    int len = 124;
-    char buffer[len];
-    intToString(pid,buffer,len);
-    while(1){
-        print(buffer);
-        print("\n");
-        print("These Aren't the Droids Your Looking For");
-        print("\n");
-        for(int i = 0; i <100000000; i++);
+   if(argc > 0) {
+        argsError(argc,argv);
+    } else {
+        usr_create_process((void*)loop_command, argc, argv, "loop", PRIORITY_LOW, is_foregorund);
     }
-}
-void cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
-    char buffer[128];
-    int pos = 0;
-    char c;
-    int n;
+   }
 
-    while ((n = read(STDOUT, &c, 1)) > 0) {
-        char temp[2] = {c, '\0'}; 
-        print(temp);
-        buffer[pos++] = c;
-     
-       if(c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF) {
-            print("\n");
-            buffer[pos] = '\0';  
-            print(buffer);
-            print("\n");
-            return;
-        }
-    } 
-    if (pos > 0) {
-        print(buffer);
-    }
+void cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
+    if(argc != 1){
+        argsError(argc,argv);
+    } else 
+    usr_create_process((void*)cat_command, argc, argv, "cat", PRIORITY_LOW, is_foreground);
 }
 
 void wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
-    char buffer[128];
-    int line_count = 0;
-    char c;
-    int n;
-    int pos = 0;
-    char num[10];
-     while ((n = read(STDOUT, &c, 1)) > 0) {
-        char temp[2] = {c, '\0'}; 
-        print(temp);
-        buffer[pos++] = c;
-            if (c == '\n') {
-                line_count++;
-            }
-            if(c == EOF || pos >= sizeof(buffer) - 1) {
-                line_count++;
-                print("\n");
-                break;
-            }
-        }
-        intToString(line_count, num, sizeof(num));
-        print(num);
-        print("\n");
+     if(argc != 1){
+        argsError(argc,argv);
+    } else 
+    usr_create_process((void*)wc_command, argc, argv, "wc", PRIORITY_LOW, is_foreground);
     }
 
 void filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
-    char buffer[128];
-    char c;
-    int n;
-    int pos = 0;
-    
+     if(argc != 1){
+        argsError(argc,argv);
+    } else 
+    usr_create_process((void*)filter_command, argc, argv, "filter", PRIORITY_LOW, is_foreground);
+    }
 
-      while ((n = read(STDOUT, &c, 1)) > 0) {
-        char temp[2] = {c, '\0'}; 
-        print(temp);
-        buffer[pos++] = c;
-            if (c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF) 
-            break;
-      }
-      for(int i = 0; i < pos; i++) {
-            if (isVowel(buffer[i])) {
-            char temp[2] = {buffer[i], '\0'}; 
-            print(temp);
-            }
-             print("\n");  
-        }
-}
          
 
     
