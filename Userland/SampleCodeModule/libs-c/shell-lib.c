@@ -333,8 +333,6 @@ void pipeCommand(uint64_t argc, char *argv[], char *command, int is_foregorund) 
         printErr("Pipe symbol '|' must be in middle.\n");
         return;
     }
-    usr_dup(4,STDOUT);
-    usr_dup(4,new_pipe[0]); 
     return; 
 }
 

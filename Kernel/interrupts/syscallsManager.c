@@ -106,7 +106,12 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     size_t count = (size_t) rcx;
     if(fd == STDIN){
         p_info * proc = get_current_process();
-        return (uint64_t) pipe_read(proc->stdin,buffer,count);
+        if(proc->stdin == STDIN && proc->is_foreground){
+            return read_keyboard(buffer,count);
+        }
+        else{
+            return (uint64_t) pipe_read(proc->stdin,buffer,count);
+        }
     }
     else{
         return (uint64_t) pipe_read(fd,buffer,count);
@@ -121,7 +126,7 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
 
     if(fd == STDOUT){
         p_info * proc = get_current_process();
-        if(proc->stdout == STDOUT){ 
+        if(proc->stdout == STDOUT && proc->is_foreground){ 
             imprimirVideo(buffer, count, BLANCO);
         }
         else{

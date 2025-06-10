@@ -10,6 +10,8 @@
 #include "include/process.h"
 #include "include/sem.h"
 #include "sleep.h"
+#include "keyboard.h"
+
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -94,6 +96,7 @@ int main()
 	// Inicializar el administrador de memoria
 	void* memory_start = (void*)0x600000;  // Dirección de inicio de la memoria disponible
 	init_semaphores();
+	init_keyboard();
 	size_t memory_size = 0x200000;         // 2MB de memoria disponible
 	init_memory_manager(memory_start, memory_size);
 	sleep_queue_init();

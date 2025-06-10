@@ -29,7 +29,7 @@ int create_pipe(int* fd_read, int*fd_write) {
     if (pipe_index == -1) return -1;
 
     int fd_r = -1, fd_w = -1;
-    for (int i = 0; i < MAX_FDS && (fd_r == -1 || fd_w == -1); i++) {
+    for (int i = 2; i < MAX_FDS && (fd_r == -1 || fd_w == -1); i++) {
         if (!fd_table[i].in_use) {
             if (fd_w == -1){
                 fd_w = i;

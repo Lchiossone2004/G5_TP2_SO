@@ -7,7 +7,7 @@ static int index = 0;
 
 void getKey()
 {
-    syscall(2, STDIN, letra, index);
+    syscall(3, STDIN, letra, 1);
 }
 void shell()
 {
