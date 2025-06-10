@@ -8,7 +8,6 @@ typedef enum { NONE = 0, THINKING, WAITING, EATING } PHYLO_STATE;
 
 static char state_chars[] = {'0', '.', '.', 'E'};
 static char *phylo_names[MAX_DINER] = {"Mati", "Prado", "Buela","Lolo","Lu", "Tito","Fraga","Choe","Nicky", "Caro"};
-
 static int phylo_pids[MAX_DINER];
 static PHYLO_STATE phylo_states[MAX_DINER];
 static int phylo_count = 0;
@@ -16,14 +15,12 @@ static int phylo_count = 0;
 static void print_status() {
     int any = 0;
     for (int i = 0; i < phylo_count; i++) {
-        if (phylo_states[i] != NONE) {
-            any = 1;
-            char buf[2] = { state_chars[phylo_states[i]], '\0' };
-            write(buf, STDOUT, 2);
-            write(" ", STDOUT, 1);
-        }
+        any = 1;
+        char buf[2] = { state_chars[phylo_states[i]], '\0' };
+        write(STDOUT, buf, 1);
+        write(STDOUT, " ", 1);
     }
-    if (any) write("\n", STDOUT, 1);
+    if (any) write(STDOUT, "\n", 1);
 }
 
 static void leave_forks(int idx) {
@@ -103,18 +100,22 @@ static int new_phylo(int idx) {
 static void remove_phylo(int idx) {
     usr_sem_wait(SEM_GLOBAL);
     print(phylo_names[idx]); write(" leaves the table.\n", STDOUT, 19);
-    int left = (idx + phylo_count - 1) % phylo_count;
-    int right = (idx + 1) % phylo_count;
-    while (phylo_states[left] == EATING && phylo_states[right] == EATING) {
+    while (phylo_states[idx] == EATING) {
         usr_sem_post(SEM_GLOBAL);
-        usr_sem_wait(SEM_FORK(idx));
+        sleep(1);
         usr_sem_wait(SEM_GLOBAL);
     }
     usr_kill(phylo_pids[idx]);
     usr_sem_close(SEM_FORK(idx));
-    phylo_pids[idx] = NO_PID;
-    phylo_states[idx] = NONE;
+    for (int i = idx; i < phylo_count - 1; i++) {
+        phylo_pids[i] = phylo_pids[i + 1];
+        phylo_states[i] = phylo_states[i + 1];
+        phylo_names[i]  = phylo_names[i + 1];
+    }
+    phylo_pids[phylo_count - 1]   = NO_PID;
+    phylo_states[phylo_count - 1] = NONE;
     phylo_count--;
+    print_status();
     usr_sem_post(SEM_GLOBAL);
 }
 
@@ -147,10 +148,14 @@ int phylo_main(void) {
     while ((cmd = get_char()) != QUIT_VALUE) {
         print("\n");
         if (cmd == ADD_VALUE) {
-            if (phylo_count < MAX_DINER) new_phylo(phylo_count);
+            if (phylo_count < MAX_DINER){
+                new_phylo(phylo_count);
+            } 
             else printErr("Max philosophers reached.\n");
         } else if (cmd == REMOVE_VALUE) {
-            if (phylo_count > MIN_DINER) remove_phylo(phylo_count - 1);
+            if (phylo_count > MIN_DINER){
+                remove_phylo(phylo_count - 1);
+            } 
             else printErr("Min philosophers reached.\n");
         }
     }

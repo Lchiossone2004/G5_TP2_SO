@@ -9,8 +9,7 @@
 extern void callScheduler();
 static int pirority[] = {8, 4,2,1}; //8 =critica, 4=alta,2=normal,1=baja
 static char* pirorityName[] = {"Critic", "High", "Normal", "Low"};
-static int pids[MAX_PROCESSES] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; //ESTO ME PARECE QUE ESTA DEMAS CON {0} ALCANZA 
-
+static int pids[MAX_PROCESSES] = {0};
 
 int createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int prio, int is_foreground) {
     void* stack_top = mm_malloc(STACK_SIZE) ;
