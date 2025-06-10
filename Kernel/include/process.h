@@ -30,7 +30,6 @@ typedef struct {
 } p_stack;
 
 int32_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority, int is_foreground);
-int create_idle_process(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int prio, int is_foreground);
 void load_args(p_stack *new_stack, p_info * new_process, uint8_t argc, char* argv[]);
 void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv) ;
 void exit_process();  
@@ -42,7 +41,7 @@ void initialize_zero(uint16_t array[], int size);
 void assignForeground(p_info* new_process, int is_foreground);
 void assignPid(p_info* new_process);
 void freePid(int pid);
-int Dup(int pid,int newFd, int oldFd);
+
 
 
 #endif

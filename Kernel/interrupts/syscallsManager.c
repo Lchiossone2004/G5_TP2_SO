@@ -25,7 +25,7 @@
 
 #define PARA_ALEATORIOS_1 1664525
 #define PARA_ALEATORIOS_2 1013904223   
-#define EOF 4
+#define EOF -1
 
 static size_t total_allocated = 0;
 static size_t total_freed = 0;
@@ -70,6 +70,8 @@ static syscall_fn syscall_table[] = {
     [29] = sys_sem_get_value,
     [30] = sys_go_middle,
     [31] = sys_create_pipe,
+    [32] = sys_pipe_close,
+    [33] = sys_dup
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -102,8 +104,13 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     unsigned int fd = (unsigned int) rsi;
     char *buffer = (char *) rdx;
     size_t count = (size_t) rcx;
-
-    return (uint64_t) pipe_read(fd,buffer,count);
+    if(fd == STDIN){
+        p_info * proc = get_current_process();
+        return (uint64_t) pipe_read(proc->stdin,buffer,count);
+    }
+    else{
+        return (uint64_t) pipe_read(fd,buffer,count);
+    }
 }
 
 
@@ -113,10 +120,22 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
     size_t count = (size_t) rcx;
 
     if(fd == STDOUT){
-        imprimirVideo(buffer, count, BLANCO);
+        p_info * proc = get_current_process();
+        if(proc->stdout == STDOUT){ 
+            imprimirVideo(buffer, count, BLANCO);
+        }
+        else{
+            pipe_write(proc->stdout,buffer,count);
+        }
     }
     else if(fd == STDERR){
-        imprimirVideo(buffer, count, ROJO);
+        p_info * proc = get_current_process();
+        if(proc->stdout == STDOUT){ 
+            imprimirVideo(buffer, count, ROJO);
+        }
+        else{
+            pipe_write(proc->stdout,buffer,count);
+        }
     } 
     else if (fd >= PIPE_FD_START) {
         pipe_write(fd,buffer,count);
@@ -221,7 +240,6 @@ uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
     return 0;
 }
 
-
 uint64_t sys_create(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     return createProcess((void (*)(uint8_t, char**))rsi, (uint8_t)rdx, (char**)rcx, (char*)r8, (int)r9, (int)r10);
 }
@@ -297,5 +315,33 @@ uint64_t sys_create_pipe(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
     return 0;
 }
 
+uint64_t sys_pipe_close(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
+    int fd = (int) rsi;
+    return pipe_close(fd);
+}
 
-
+uint64_t sys_dup(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
+    int newFd = (int *) rsi;
+    int oldFd = (int *) rdx;
+    if((newFd > MAX_BUFF*2 || newFd < 0) &&(oldFd > MAX_BUFF*2 || oldFd < 0)){
+        return -1;
+    }
+    p_info * curr = get_current_process();
+    if(oldFd == STDOUT){
+        curr->stdout = newFd;
+        return 0;
+    }
+    else if (oldFd == STDIN){
+        curr->stdin = newFd;
+        return 0;
+    }
+    else{
+        for(int i = 0; i <MAX_BUFF*2; i++){
+            if(curr->fd_table[i] == oldFd){
+                curr->fd_table[i] = newFd;
+                return 0;
+            }
+        }
+        return -1;
+    }
+}

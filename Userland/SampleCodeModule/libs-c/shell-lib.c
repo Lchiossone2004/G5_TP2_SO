@@ -220,47 +220,74 @@ void loop(uint64_t argc, char *argv[], char* command, int is_foregorund){
 }
 void cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
     char buffer[128];
-    int bytesRead;
+    int pos = 0;
+    char c;
+    int n;
 
-    while((bytesRead = read(buffer, STDIN, sizeof(buffer))) > 0){
-        write(buffer, STDOUT, bytesRead);
+    while ((n = read(STDOUT, &c, 1)) > 0) {
+        char temp[2] = {c, '\0'}; 
+        print(temp);
+        buffer[pos++] = c;
+     
+       if(c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF) {
+            print(buffer);
+            return;
+        }
+    } 
+    if (pos > 0) {
+        print(buffer);
     }
-
-    print("\n");
 }
 
 void wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
     char buffer[128];
     int line_count = 0;
-    int bytesRead;
-
-    while ((bytesRead = read(buffer, STDIN, sizeof(buffer))) > 0) {
-        line_count++;
+    char c;
+    int n;
+    int pos = 0;
+    char num[10];
+     while ((n = read(STDOUT, &c, 1)) > 0) {
+        char temp[2] = {c, '\0'}; 
+        print(temp);
+        buffer[pos++] = c;
+            if (c == '\n') {
+                line_count++;
+            }
+            if(c == EOF || pos >= sizeof(buffer) - 1) {
+                break;
+            }
+        }
+        intToString(line_count, num, sizeof(buffer));
+        print(buffer);
+        print("\n");
     }
-    char result[16];
-    intToString(line_count, result, sizeof(result));
-    print(result);
-    print("\n");
-}
+
 void filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
     char buffer[128];
-    int bytesRead;
+    char c;
+    int n;
+    int pos = 0;
+    
 
-    while ((bytesRead = read(buffer, STDIN, sizeof(buffer))) > 0) {
-        for (int i = 0; i < bytesRead; i++) {
-            char c = buffer[i];
-            if (c == '\n') 
+      while ((n = read(STDOUT, &c, 1)) > 0) {
+        char temp[2] = {c, '\0'}; 
+        print(temp);
+        buffer[pos++] = c;
+            if (c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF) 
             break;
-            if (isVowel(c)) {
-            char temp[2] = {c, '\0'}; 
+      }
+      for(int i = 0; i < pos; i++) {
+            if (isVowel(buffer[i])) {
+            char temp[2] = {buffer[i], '\0'}; 
             print(temp);
             }
-           
+             print("\n");  
         }
-         
-        print("\n");  
-    }
 }
+         
+
+    
+
 
 
 void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund){
@@ -313,59 +340,29 @@ static void remove_blanks(char *s) {
 
 
 void pipeCommand(uint64_t argc, char *argv[], char *command) {
-    // if (argc != 1) {
-    //     argsError(argc, argv);
-    //     return;
-    // }
-    int pipe_fd[2] = {NULL};
-    char *buffer = "HOLA BUENAS TESTEANDO";
-    usr_open_pipe(&pipe_fd[0], &pipe_fd[1]);      // 0= READ 1= WRITE
-    write(buffer,pipe_fd[1],strSize(buffer));
-    char buffer2[25];
-    read(buffer2,pipe_fd[0],strSize(buffer));
-    write(buffer2,STDOUT,strSize(buffer));
-    print("\n");
-    // char *full_command = argv[0];
-    // char *pipe_pos = strchr(full_command, '|');
+    if(argc != 3){
+        argsError(argc, argv);
+        return;
+    }
+    int pipe_pos = 0;
+    for(int i = 0; i < argc; i++){
+        if(strCompare(argv[i],"|")){
+            pipe_pos = i;
+        }
+    }
+    int new_pipe[2];
+    usr_open_pipe(&new_pipe[0], &new_pipe[1]);  //int* fd_read, int*fd_write
 
-    // if (pipe_pos == NULL) {
-    //     printErr("Pipe symbol '|' not found.\n");
-    //     return;
-    // }
-    // *pipe_pos = '\0';
-    // char *cmd1 = full_command;
-    // char *cmd2 = pipe_pos + 1; 
-    // remove_blanks(cmd1);
-    // remove_blanks(cmd2);
-
-    // if (!cmd1 || !cmd2) {
-    //     printErr("Invalid commands.\n");
-    //     return;
-    // }
-
-   
-    // int pipefd[2];  
-    // int pipe_index = syscall(40, cmd1, 0); 
-    // if (pipe_index < 0) {
-    //     printErr("Failed to create pipe.\n");
-    //     return;
-    // }
-
-    // if (syscall(41, cmd2, 0, pipefd) < 0) { 
-    //     printErr("Failed to open pipe.\n");
-    //     return;
-    // }
-
-   
-    // syscall(4, pipefd[1], cmd1, 0);  
-    // syscall(3, pipefd[0], cmd2, 0);  
-
-  
-    // syscall(32, 0);  
-    // syscall(32, 0);  
+    if (pipe_pos != 1) {
+        printErr("Pipe symbol '|' must be in middle.\n");
+        return;
+    }
+    usr_dup(4,STDOUT);
+    usr_dup(4,new_pipe[0]);
+    char *cmd1 = argv[0];
+    char *cmd2 = argv[2]; 
+    return; 
 }
-
-
 
 void commandInfo(int i,int j){
     (void) commandDescrition;   //Bilardeada para sacar el warning

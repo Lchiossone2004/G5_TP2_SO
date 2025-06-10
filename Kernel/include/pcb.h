@@ -26,7 +26,7 @@ typedef struct{
     int waiting_on_child;
     uint16_t children[MAX_CHILDREN];
     uint16_t children_length;
-    int buffers[MAX_BUFF * 2];
+    int fd_table[MAX_BUFF * 2];
     int stdin;
     int stdout;
 }p_info;

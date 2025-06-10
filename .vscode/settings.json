@@ -28,6 +28,8 @@
         "naiveconsole.h": "c",
         "ostream": "c",
         "print": "c",
-        "syscallsmanager.h": "c"
+        "syscallsmanager.h": "c",
+        "interrupts.h": "c",
+        "sound.h": "c"
     }
 }

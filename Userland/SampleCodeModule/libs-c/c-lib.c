@@ -19,12 +19,11 @@ void print(char *word){
 }
 
 void write(char *word, int fd, int size){
-    syscall(4, fd, word, strSize(word));
+    syscall(4, fd, word, size);
 }
 
-int read(char *buffer,int fd ,int size){
-    int ret = (int) syscall(3, fd, buffer, size);
-    return ret;
+int read(int fd, char *buffer, int size){
+    return (int)syscall(3, fd, buffer, size);
 }
 
 void printErr(char *word){
@@ -79,6 +78,9 @@ void usr_nice(int pid, int newPrio){
     }
 }
 
+int usr_dup(int newFd, int oldFd){
+    syscall(33,newFd,oldFd);
+}
 //Sems
 
 int usr_sem_open(int id, int initial_value) {
@@ -98,11 +100,10 @@ int usr_sem_close(int id) {
 }
 
 int usr_sem_wait(int id) {
-    if (id >= 0 && id < SEM_MAX && is_semaphore[id]) {
-        return syscall(36, id);     //QUE?    
-    } else {
-        return syscall(24, id);      //QUE?
+    if (id >= 0 && id < SEM_MAX && is_semaphore[id]){
+        return syscall(27, id);
     }
+    return-1;
 }
 int usr_sem_post(int id) {
     if (id >= 0 && id < SEM_MAX && is_semaphore[id]) {
