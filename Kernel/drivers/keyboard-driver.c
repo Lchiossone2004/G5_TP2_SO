@@ -6,81 +6,78 @@
 #include <lib.h>
 #include "scheduler.h"
 #include "pipe.h"
+#include "sem.h"
 
 static uint64_t shift_pressed = 0;
 static uint64_t ctrl_pressed = 0;
 static uint64_t caps_pressed = 0;
 
 
-static uint16_t buffer[BUFFER_SIZE];
-static uint64_t curr = 0; //posicion actual del buffer
+static uint16_t buffer[BUFF_SIZE];
+static uint64_t curr = 0;
+
+static uint16_t is_key;
+
+void init_keyboard(){
+    is_key = sem_open(is_key, 0);
+}
+
+int read_keyboard(char* letter,int count){
+    for(int i = 0; i<count;i++){
+        sem_wait(is_key);
+        letter[i] = buffer[curr-1];
+        curr--;
+    }
+    return 0;
+}
 
 int specialKey(uint8_t key) {
     return  (key == 0 || key == 0x01 || key == 14 || key == 75 || key == 77 || key == 28 || key == 0x1D || key == 0x3A || key == 0x2A || key == 0x36 || key == 0xAA || key == 0xB6 || key == 0x0F );
 }
 void loadBuffer(uint8_t key){
-    //updateKeyboardStatus(key,);
+
     if(curr == 12) {
         curr = 0;
     }
 
     if(ctrl_pressed && key == 0x2E){
-         buffer[curr++] = EOF; 
         p_info * foreground_proc = get_foreground_process();
         kill_process(foreground_proc->pid);
         return;
     }
     if(ctrl_pressed && key == 0x20){ 
-         buffer[curr++] = EOF;  
+        char eof = EOF;  
+        pipe_write(STDIN, &eof, 1); 
+ 
         return;
     }
     if(!specialKey(key)){
         char letter = toLetter(key); 
-        pipe_write(STDIN,&letter,1);    
+        buffer[curr] = letter; 
+        curr++;
+        sem_post(is_key); 
 
     }
-    if(key == 14){      //Borrado  
-        char aux = '\1';
-        pipe_write(STDIN, &aux, 1);
+    else if(key == 14){      //Borrado  
+        char *aux = '\1';
+        buffer[curr] = aux; 
+        curr++;
+        sem_post(is_key);
     }
-    if(key == 28){      //Enter
-        char * aux = "\n";
-        pipe_write(STDIN,aux,1);      
+    else if(key == 28){      //Enter
+        char * aux = '\n';
+        buffer[curr] = aux; 
+        curr++;
+        sem_post(is_key);  
     }
-    if(key == 0x0F){   //TAB
-        char * aux = ' ';
-        pipe_write(STDIN,aux,1);  
-        pipe_write(STDIN,aux,1); 
-        pipe_write(STDIN,aux,1); 
-        pipe_write(STDIN,aux,1); 
-        pipe_write(STDIN,aux,1);     
-
+    else if(key == 0x0F){   //TAB
+        char  *aux = (char *) ' ';
+        for(int i = 0; i < 5; i++){
+            buffer[curr] = aux; 
+            curr++;
+            sem_post(is_key);
+        }
     }
-}
-
-int isBufferEmpty(){
-    if(curr == 0){
-        return 1;
-    }
-    return 0;
-}
-
-char getBuffer(){
-    char aux = buffer[0];
-    for(int i = 0; i< curr-1; i++){
-        buffer[i] = buffer[i+1];
-    }
-    curr -= 1;
-    return aux;
-}
-uint16_t getFromBuffer(int idx) {
-    if(idx >= BUFFER_SIZE) {
-        return '0';
-    }
-    return buffer[idx];
-}
-int getCurr() {
-    return curr;
 }
 
 void updateKeyboardStatus(uint8_t scancode, uint8_t isPressed) {

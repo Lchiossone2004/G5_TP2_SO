@@ -1,7 +1,7 @@
 #include <lib.h>
 #include <stdint.h>
 #include <videoDriver.h>
-
+#include "../memory/memory_manager.h"
 #define BLANCO  0xFFFFFF
 #define VERDE   0x00FF00
 #define TAB "     "

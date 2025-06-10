@@ -1,10 +1,11 @@
 #include <shell-lib.h>
+#include <stdint.h>
 #include "string-lib.h"
 #include <stdint.h>
 #include "test.h"
 #include "c-lib.h"
 #include "phylo.h"
-
+#include "shell.h"
 #define EOF -1
 void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
 
@@ -230,7 +231,10 @@ void cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
         buffer[pos++] = c;
      
        if(c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF) {
+            print("\n");
+            buffer[pos] = '\0';  
             print(buffer);
+            print("\n");
             return;
         }
     } 
@@ -254,11 +258,13 @@ void wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
                 line_count++;
             }
             if(c == EOF || pos >= sizeof(buffer) - 1) {
+                line_count++;
+                print("\n");
                 break;
             }
         }
-        intToString(line_count, num, sizeof(buffer));
-        print(buffer);
+        intToString(line_count, num, sizeof(num));
+        print(num);
         print("\n");
     }
 
@@ -313,33 +319,7 @@ void argsError(uint64_t argc, char *argv[]){
 }
 
 
-
-
-static void remove_blanks(char *s) {
-    size_t len = strlen(s);
-    if (len > 0) {
-        char *end = s + len - 1;
-        while (len > 0 && isBlank(*end)) {
-            *end = '\0';
-            end--;
-            len--;
-        }
-    }
-    char *src = s;
-    while (*src && isBlank(*src)) {
-        src++;
-    }
-    if (src != s) {
-        char *dst = s;
-        while (*src) {
-            *dst++ = *src++;
-        }
-        *dst = '\0';
-    }
-}
-
-
-void pipeCommand(uint64_t argc, char *argv[], char *command) {
+void pipeCommand(uint64_t argc, char *argv[], char *command, int is_foregorund) {
     if(argc != 3){
         argsError(argc, argv);
         return;
@@ -357,10 +337,6 @@ void pipeCommand(uint64_t argc, char *argv[], char *command) {
         printErr("Pipe symbol '|' must be in middle.\n");
         return;
     }
-    usr_dup(4,STDOUT);
-    usr_dup(4,new_pipe[0]);
-    char *cmd1 = argv[0];
-    char *cmd2 = argv[2]; 
     return; 
 }
 
@@ -398,3 +374,9 @@ void commandInfo(int i,int j){
             }
             print("\n");
 }  
+
+void newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
+    char * aux[1] = {"hola"};
+   usr_create_process((void*)shell,1,aux, "shell", PRIORITY_HIGH,1);
+   usr_wait_children();
+}

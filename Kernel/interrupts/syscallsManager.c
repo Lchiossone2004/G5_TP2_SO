@@ -7,6 +7,7 @@
 #include <time.h>
 #include <interrupts.h>
 #include <syscallsManager.h>
+#include "../include/sleep.h"
 #include "../include/process.h"
 #include "../include/scheduler.h"
 #include "../include/sem.h"
@@ -70,7 +71,7 @@ static syscall_fn syscall_table[] = {
     [30] = sys_go_middle,
     [31] = sys_create_pipe,
     [32] = sys_pipe_close,
-    [33] = sys_dup
+    [33] = sys_dup,
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -92,7 +93,6 @@ uint64_t sys_registers_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
 
 uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     char *letter = (char *) rdx;
-    size_t count = (size_t) rcx;
     _sti();    
     pipe_read(STDOUT,letter,1);
 
@@ -105,7 +105,12 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     size_t count = (size_t) rcx;
     if(fd == STDIN){
         p_info * proc = get_current_process();
-        return (uint64_t) pipe_read(proc->stdin,buffer,count);
+        if(proc->stdin == STDIN && proc->is_foreground){
+            return read_keyboard(buffer,count);
+        }
+        else{
+            return (uint64_t) pipe_read(proc->stdin,buffer,count);
+        }
     }
     else{
         return (uint64_t) pipe_read(fd,buffer,count);
@@ -120,7 +125,7 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
 
     if(fd == STDOUT){
         p_info * proc = get_current_process();
-        if(proc->stdout == STDOUT){ 
+        if(proc->stdout == STDOUT && proc->is_foreground){ 
             imprimirVideo(buffer, count, BLANCO);
         }
         else{
@@ -129,7 +134,7 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
     }
     else if(fd == STDERR){
         p_info * proc = get_current_process();
-        if(proc->stdout == STDOUT){ 
+        if(proc->stdout == STDOUT && proc->is_foreground){ 
             imprimirVideo(buffer, count, ROJO);
         }
         else{
@@ -213,7 +218,7 @@ uint64_t sys_malloc(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint6
         total_allocated += size;
         current_blocks++;
     }
-    return ptr;
+    return (uint64_t) ptr;
 }
 
 uint64_t sys_free(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
@@ -320,8 +325,8 @@ uint64_t sys_pipe_close(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, u
 }
 
 uint64_t sys_dup(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    int newFd = (int *) rsi;
-    int oldFd = (int *) rdx;
+    int newFd = (int) rsi;
+    int oldFd = (int) rdx;
     if((newFd > MAX_BUFF*2 || newFd < 0) &&(oldFd > MAX_BUFF*2 || oldFd < 0)){
         return -1;
     }

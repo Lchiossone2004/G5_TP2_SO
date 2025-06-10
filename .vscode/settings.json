@@ -30,6 +30,7 @@
         "print": "c",
         "syscallsmanager.h": "c",
         "interrupts.h": "c",
-        "sound.h": "c"
+        "sound.h": "c",
+        "stdint.h": "c"
     }
 }

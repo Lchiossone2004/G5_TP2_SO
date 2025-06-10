@@ -76,11 +76,11 @@ static void *group_init(void *start, size_t size) {
     return start;
 }
 
-static void group_destroy(void) {
-    free_list = NULL;
-    memory_start = NULL;
-    total_size = current_blocks = total_allocated = total_freed = 0;
-}
+// static void group_destroy(void) {
+//     free_list = NULL;
+//     memory_start = NULL;
+//     total_size = current_blocks = total_allocated = total_freed = 0;
+// }
 
 static void *group_malloc(size_t size) {
     if (size == 0 || !free_list || current_blocks >= MAX_BLOCKS) return NULL;

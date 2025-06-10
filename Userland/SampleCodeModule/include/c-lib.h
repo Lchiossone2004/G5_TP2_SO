@@ -24,6 +24,7 @@ int usr_kill(int pid);
 void usr_yield();
 void usr_nice(int pid, int newPrio);
 int usr_dup(int oldFd, int newFd);
+void usr_wait_children();
 
 //Sems
 int usr_sem_open(int id, int initial_value);

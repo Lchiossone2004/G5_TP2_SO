@@ -112,9 +112,7 @@ int block_process(int pid) {
 
 int unblock_process(int pid) {
     int idx = foundprocess(pid);
-    imprimirVideo("Unblocking process ", 20, BLANCO);
     if (idx != -1 && processes_list[idx]->state == BLOCKED) {
-        imprimirVideo("Unblocking process ", 20, BLANCO);
         processes_list[idx]->state = READY;
         add_to_ready_list(processes_list[idx]);
         return 1;

@@ -75,7 +75,8 @@ static word matrix[BORDER_Y / MOV_Y][BORDER_X / MOV_X] = {0};
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y)
 {
-	uint8_t *framebuffer = (uint8_t *)VBE_mode_info->framebuffer;
+	uintptr_t framebuffer_addr = (uintptr_t)VBE_mode_info->framebuffer;  
+	uint8_t *framebuffer = (uint8_t *)framebuffer_addr;
 	uint64_t offset = (x * ((VBE_mode_info->bpp) / 8)) + (y * VBE_mode_info->pitch);
 	framebuffer[offset] = (hexColor) & 0xFF;
 	framebuffer[offset + 1] = (hexColor >> 8) & 0xFF;
@@ -112,7 +113,8 @@ void charVideo(char num, char isEndLine, uint32_t color)
 	{
 		int set;
 		char *bitmap;
-		bitmap = font[num];
+		int idx = (int)num;
+		bitmap = font[idx];
 		for (int i = 0; i < 8; i++)
 		{
 			for (int j = 0; j < 8; j++)
@@ -271,4 +273,5 @@ void zoomOUT()
 
 uint64_t goMiddle(){
 	x = BORDER_X/2;
+	return x;
 }
