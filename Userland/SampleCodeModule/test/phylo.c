@@ -144,15 +144,17 @@ int phylo_main() {
         }
     }
 
-    char cmd;
-    while ((cmd = get_char()) != QUIT_VALUE) {
+    char letter = '0';
+  
+    while (letter == QUIT_VALUE != 0) {
+        read(STDIN, &letter, 1);
         print("\n");
-        if (cmd == ADD_VALUE) {
+        if (letter == ADD_VALUE) {
             if (phylo_count < MAX_DINER){
                 new_phylo(phylo_count);
             } 
             else printErr("Max philosophers reached.\n");
-        } else if (cmd == REMOVE_VALUE) {
+        } else if (letter == REMOVE_VALUE) {
             if (phylo_count > MIN_DINER){
                 remove_phylo(phylo_count - 1);
             } 
