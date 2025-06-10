@@ -223,7 +223,10 @@ void cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
         buffer[pos++] = c;
      
        if(c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF) {
+            print("\n");
+            buffer[pos] = '\0';  
             print(buffer);
+            print("\n");
             return;
         }
     } 
@@ -247,11 +250,13 @@ void wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
                 line_count++;
             }
             if(c == EOF || pos >= sizeof(buffer) - 1) {
+                line_count++;
+                print("\n");
                 break;
             }
         }
-        intToString(line_count, num, sizeof(buffer));
-        print(buffer);
+        intToString(line_count, num, sizeof(num));
+        print(num);
         print("\n");
     }
 
