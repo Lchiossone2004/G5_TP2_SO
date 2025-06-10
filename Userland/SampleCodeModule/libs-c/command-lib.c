@@ -1,12 +1,13 @@
-
 #include <stdint.h>
+#include "c-lib.h"
+#include "test_util.h"
+
 #define STDOUT 1
 #define STDIN 0
-#define EOF -1
-#include "c-lib.h"
+#define EOF ((char)-1)
 
-void wc_command(char * fd) {
-    int fd_num = atoi(fd);
+void wc_command(char *fd) {
+    int fd_num = (int)satoi(fd);
     char buffer[128];
     int line_count = 0;
     char c;
@@ -31,8 +32,8 @@ void wc_command(char * fd) {
         print("\n");
 }
 
-void cat_command(char *fd){
-    int fd_num = atoi(fd);
+void cat_command(char *fd) {
+    int fd_num = (int)satoi(fd);
     char buffer[128];
     int pos = 0;
     char c;
@@ -42,8 +43,8 @@ void cat_command(char *fd){
         char temp[2] = {c, '\0'}; 
         print(temp);
         buffer[pos++] = c;
-     
-       if(c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF) {
+
+        if (c == '\n' || pos >= (int)sizeof(buffer) - 1 || c == EOF) {
             print("\n");
             buffer[pos] = '\0';  
             print(buffer);
@@ -56,8 +57,8 @@ void cat_command(char *fd){
     }
 }
 
-void filter_command(char * fd){
-    int fd_num = atoi(fd);
+void filter_command(char *fd) {
+    int fd_num = (int)satoi(fd);
     char buffer[128];
     char c;
     int n;
@@ -88,7 +89,7 @@ void loop_command() {
     while(1){
         print(buffer);
         print("\n");
-        print("These Aren't the Droids Your Looking For");
+        print("These Aren't the Droids You're Looking For");
         print("\n");
         for(int i = 0; i <100000000; i++);
     }
