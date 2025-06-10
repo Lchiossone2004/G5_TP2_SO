@@ -86,6 +86,6 @@ void wc(uint64_t argc, char *argv[], char* command, int is_foreground);
 void filter(uint64_t argc, char *argv[], char* command, int is_foreground);
 void pipeCommand(uint64_t argc, char *argv[], char *command, int is_foregorund);
 void newShell(uint64_t argc, char *argv[], char *command, int is_foregorund);
-void phylo(int64_t argc, char *argv[], char *command, int is_foregorund);
+void phylo(uint64_t argc, char *argv[], char *command, int is_foregorund);
 
 #endif
