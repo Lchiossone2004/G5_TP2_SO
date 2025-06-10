@@ -31,6 +31,7 @@
         "syscallsmanager.h": "c",
         "interrupts.h": "c",
         "sound.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "stdbool.h": "c"
     }
 }

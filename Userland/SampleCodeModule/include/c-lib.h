@@ -36,6 +36,6 @@ int usr_sem_getvalue(int id);
 //Pipes
 
 int usr_open_pipe(int *fd_read, int* fd_write);
-
+int usr_close_pipe(int fd_pipe);
 
 #endif

@@ -260,7 +260,22 @@ void argsError(uint64_t argc, char *argv[]){
 }
 
 
-
+void newComand(uint64_t argc,char *argv[]){
+    char * command;
+    int auxArgc = argc-1;
+    command = argv[0];
+    int is_foreground = 0;
+    if(strCompare(argv[0],"&")){
+        is_foreground = 1;
+        auxArgc--;
+    }
+    char * argv1[auxArgc];
+    for(int i = auxArgc; i <= argc; i++){
+        argv1[i] = argv[i];
+    }
+    int commandNum = processCommand(command);
+    shell_table[commandNum](auxArgc,argv1, commandNum,is_foreground);
+}
 
 
 void pipeCommand(uint64_t argc, char *argv[], char *command, int is_foregorund) {
@@ -274,13 +289,22 @@ void pipeCommand(uint64_t argc, char *argv[], char *command, int is_foregorund) 
             pipe_pos = i;
         }
     }
-    int new_pipe[2];
-    usr_open_pipe(&new_pipe[0], &new_pipe[1]);  //int* fd_read, int*fd_write
-
-    if (pipe_pos != 1) {
+    if (pipe_pos < 1) {
         printErr("Pipe symbol '|' must be in middle.\n");
         return;
     }
+    int new_pipe[2];
+    usr_open_pipe(&new_pipe[0], &new_pipe[1]);
+    usr_dup(STDIN, new_pipe[0]);
+    newComand(pipe_pos,argv);
+    pipe_pos++;
+    usr_dup(STDIN, STDIN);
+    usr_dup(STDOUT, new_pipe[1]);
+    newComand(argc - pipe_pos, argv + pipe_pos);
+    usr_dup(STDOUT, STDOUT);
+    usr_close_pipe(new_pipe[0]);
+    usr_close_pipe(new_pipe[1]);
+
     return; 
 }
 
@@ -322,8 +346,6 @@ void commandInfo(int i,int j){
 void newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
     char * aux[] = {};
     char * number[4];
-    usr_create_process((void*)shell,1,aux,"shell'", PRIORITY_HIGH,1);
+    usr_create_process((void*)shell,1,aux,"shell", PRIORITY_HIGH,1);
     usr_wait_children();
-    shellCounter--;
-
 }

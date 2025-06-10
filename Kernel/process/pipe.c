@@ -10,10 +10,11 @@ Pipe* pipes[MAX_PIPES] = { NULL };
 
 FDEntry fd_table[MAX_FDS] = { NULL};
 
-int create_pipe(int* fd_read, int*fd_write) {
+int create_pipe(int* fd_read, int* fd_write) {
     int pipe_index = -1;
 
-    for (int i = 0; i < MAX_PIPES; i++) {
+    // Buscar un slot de pipe libre
+    for (int i = 2; i < MAX_PIPES; i++) {
         if (pipes[i] == NULL) {
             pipes[i] = mm_malloc(sizeof(Pipe));
             if (!pipes[i]) return -1;
@@ -22,21 +23,18 @@ int create_pipe(int* fd_read, int*fd_write) {
                 pipes[i] = NULL;
                 return -1;
             }
+            pipes[i]->id = i;
             pipe_index = i;
             break;
         }
     }
     if (pipe_index == -1) return -1;
-
     int fd_r = -1, fd_w = -1;
-    for (int i = 2; i < MAX_FDS && (fd_r == -1 || fd_w == -1); i++) {
-        if (!fd_table[i].in_use) {
-            if (fd_w == -1){
-                fd_w = i;
-            }
-            else{
+    for (int i = 2; i < MAX_FDS; i += 2) {
+        if (!fd_table[i].in_use && !fd_table[i+1].in_use) {
             fd_r = i;
-            }
+            fd_w = i+1;
+            break;
         }
     }
     if (fd_r == -1 || fd_w == -1) {
@@ -67,11 +65,16 @@ int create_pipe(int* fd_read, int*fd_write) {
         }
     }
     if(empty1 == -1 || empty2 == -1){
+        fd_table[fd_r].in_use = 0;
+        fd_table[fd_w].in_use = 0;
+        mm_free(pipes[pipe_index]);
+        pipes[pipe_index] = NULL;
         return -1;
     }
 
     current_proc->fd_table[empty1] = fd_r;
     current_proc->fd_table[empty2] = fd_w;
+
     *fd_read = fd_r;
     *fd_write = fd_w;
 
@@ -88,7 +91,6 @@ int pipe_init(Pipe *pipe) {
     pipe->read_open = 1;
     pipe->write_open = 1; 
     pipe->initialized = 1;
-    pipe->index = 0;
     pipe->size = BUFFER_SIZE;
     pipe->sem_data_available = 1;
     sem_open(pipe->sem_data_available,0);
@@ -112,7 +114,6 @@ int pipe_write(int fd, const char *buffer, int count) {
         pipe->buffer[pipe->write_pos] = buffer[i];
         pipe->write_pos = (pipe->write_pos + 1) % BUFFER_SIZE;
         written++;
-        pipe->index++;
         sem_post(pipe->sem_data_available);  
     }
     return written;
@@ -133,7 +134,6 @@ int pipe_read(int fd, char *buffer, int count) {
         buffer[i] = pipe->buffer[pipe->read_pos];
         pipe->read_pos = (pipe->read_pos + 1) % BUFFER_SIZE;
         read++;
-        pipe->index--;
         sem_post(pipe->sem_free_space); 
     }
     return read;
@@ -148,7 +148,7 @@ int pipe_close(int fd){
 
     for(int i = 0; i < MAX_BUFF; i++){
         if(curr_proc->fd_table[i] == fd){
-            curr_proc->fd_table[i] == -1;
+            curr_proc->fd_table[i] = -1;
             if(fd_table[fd].type ==  FD_READ){   //READ
                 pipe->read_open--;
             }
@@ -169,7 +169,7 @@ void pipe_destroy(int fd){          //LIBERAR LOS PROCESOS LOCKEADOS    [FALTA]
     fd_table[fd].in_use = 0;
     fd_table[fd].pipe = NULL;
     fd_table[fd].type = FD_UNUSED;
-    mm_free(pipe);
+    mm_free(pipes[pipe->id]);
 }
 
 

@@ -17,12 +17,12 @@ typedef struct {
     size_t read_pos;
     size_t write_pos;
     int initialized;
-    int index;
     int read_open;   
     int write_open;
     int size;
     int16_t sem_free_space;
     int16_t sem_data_available;
+    int id;
 } Pipe;
 
 typedef struct {

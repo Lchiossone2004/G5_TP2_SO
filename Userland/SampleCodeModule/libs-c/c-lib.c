@@ -125,3 +125,6 @@ int usr_sem_getvalue(int id){
 int usr_open_pipe(int *fd_read, int* fd_write){
     return syscall(31,fd_read, fd_write); 
 }
+int usr_close_pipe(int fd_pipe){
+    return syscall(32, fd_pipe);
+}

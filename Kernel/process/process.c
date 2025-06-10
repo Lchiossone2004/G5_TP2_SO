@@ -109,13 +109,15 @@ void copy_context(p_info* new_process, char *name, void *stack_base, void *stack
             new_process->fd_table[i] = parent->fd_table[i];
         }
         parent->waiting_on_child++;
+        new_process->stdin = parent->stdin;
+        new_process->stdout = parent->stdout;
     } else {
         for (int i = 0; i < MAX_BUFF*2; i++) {
             new_process->fd_table[i] = -1;
         }
+        new_process->stdin = STDIN;
+        new_process->stdout = STDOUT;
     }
-    new_process->stdin = STDIN;
-    new_process->stdout = STDOUT;
 }
 
 
