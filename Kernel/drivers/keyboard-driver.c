@@ -25,13 +25,14 @@ void loadBuffer(uint8_t key){
     }
 
     if(ctrl_pressed && key == 0x2E){
-         buffer[curr++] = EOF; 
         p_info * foreground_proc = get_foreground_process();
         kill_process(foreground_proc->pid);
         return;
     }
     if(ctrl_pressed && key == 0x20){ 
-         buffer[curr++] = EOF;  
+          char eof = EOF;  
+        pipe_write(STDIN, &eof, 1); 
+ 
         return;
     }
     if(!specialKey(key)){
