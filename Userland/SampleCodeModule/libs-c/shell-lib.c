@@ -122,7 +122,7 @@ void test(uint64_t argc, char *argv[], char* command, int is_foregorund){
 }
 
 void phylo(uint64_t argc, char *argv[], char* command, int is_foregorund){
-    usr_create_process((void*)phylo_main,argc,argv, "phylosofers", PRIORITY_LOW,is_foregorund);
+    usr_create_process((void*)phylo_main,argc,argv, "phylosofers", PRIORITY_LOW,1);
 }
 
 void block(uint64_t argc, char *argv[], char* command, int is_foregorund){

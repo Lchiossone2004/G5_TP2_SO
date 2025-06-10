@@ -53,7 +53,7 @@ static char *commandDescrition[] = {
 };
 
 
-static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none", "none", "none", "none"};
+static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none", "none", "none", "none", "none"};
 
 
 extern uint64_t syscall(__uint64_t rdi, ...);
@@ -83,5 +83,5 @@ void commandInfo(int i, int j);
 void cat(uint64_t argc, char *argv[], char* command, int is_foreground);
 void wc(uint64_t argc, char *argv[], char* command, int is_foreground);
 void filter(uint64_t argc, char *argv[], char* command, int is_foreground);
-void philo_process(uint64_t argc, char *argv[],char* command, int is_foreground);
+void philo(uint64_t argc, char *argv[],char* command, int is_foreground);
 #endif
