@@ -2,16 +2,12 @@
 #include "../include/memory-lib.h"
 #include "../include/phylo.h"
 
-#define NO_PID     -1
+#define NO_PID -1
 
 typedef enum { NONE = 0, THINKING, WAITING, EATING } PHYLO_STATE;
 
 static char state_chars[] = {'0', '.', '.', 'E'};
-static char *phylo_names[MAX_DINER] = {
-    "Mati", "Prado", "Buela",     "Lolo",
-    "Lu", "Tito",     "Fraga",     "Choe",
-    "Nicky",      "Caro"
-};
+static char *phylo_names[MAX_DINER] = {"Mati", "Prado", "Buela","Lolo","Lu", "Tito","Fraga","Choe","Nicky", "Caro"};
 
 static int phylo_pids[MAX_DINER];
 static PHYLO_STATE phylo_states[MAX_DINER];

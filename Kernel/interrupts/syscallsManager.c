@@ -6,7 +6,6 @@
 #include <lib.h>
 #include <time.h>
 #include <interrupts.h>
-#include <sound.h>
 #include <syscallsManager.h>
 #include "../include/process.h"
 #include "../include/scheduler.h"
