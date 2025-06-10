@@ -5,8 +5,11 @@
 #include <naiveConsole.h>
 #include <idtLoader.h>
 #include <videoDriver.h>
+#include <interrupts.h>
 #include "memory/memory_manager.h"
+#include "include/process.h"
 #include "include/sem.h"
+#include "sleep.h"
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -15,6 +18,7 @@ extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
 
 static const uint64_t PageSize = 0x1000;
+extern void _sti();
 
 static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;

@@ -12,7 +12,7 @@ static uint64_t ctrl_pressed = 0;
 static uint64_t caps_pressed = 0;
 
 
-static uint16_t buffer[BUFFER_SIZE];
+static uint16_t buffer[BUFF_SIZE];
 static uint64_t curr = 0; //posicion actual del buffer
 
 int specialKey(uint8_t key) {
@@ -49,7 +49,7 @@ void loadBuffer(uint8_t key){
         pipe_write(STDIN,aux,1);      
     }
     if(key == 0x0F){   //TAB
-        char  *aux = ' ';
+        char  *aux = (char *) ' ';
         pipe_write(STDIN,aux,1);  
         pipe_write(STDIN,aux,1); 
         pipe_write(STDIN,aux,1); 
@@ -75,7 +75,7 @@ char getBuffer(){
     return aux;
 }
 uint16_t getFromBuffer(int idx) {
-    if(idx >= BUFFER_SIZE) {
+    if(idx >= BUFF_SIZE) {
         return '0';
     }
     return buffer[idx];

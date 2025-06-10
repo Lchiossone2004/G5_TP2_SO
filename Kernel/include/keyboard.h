@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <lib.h>
 
-#define BUFFER_SIZE 12
+#define BUFF_SIZE 12
 #define EOF -1
 
 char toLetter(uint8_t hexa);

@@ -8,6 +8,7 @@
 #include <interrupts.h>
 #include <sound.h>
 #include <syscallsManager.h>
+#include "../include/sleep.h"
 #include "../include/process.h"
 #include "../include/scheduler.h"
 #include "../include/sem.h"
@@ -93,7 +94,6 @@ uint64_t sys_registers_print(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
 
 uint64_t sys_getChar(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     char *letter = (char *) rdx;
-    size_t count = (size_t) rcx;
     _sti();    
     pipe_read(STDOUT,letter,1);
 
@@ -214,7 +214,7 @@ uint64_t sys_malloc(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint6
         total_allocated += size;
         current_blocks++;
     }
-    return ptr;
+    return (uint64_t) ptr;
 }
 
 uint64_t sys_free(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
@@ -321,8 +321,8 @@ uint64_t sys_pipe_close(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, u
 }
 
 uint64_t sys_dup(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    int newFd = (int *) rsi;
-    int oldFd = (int *) rdx;
+    int newFd = (int) rsi;
+    int oldFd = (int) rdx;
     if((newFd > MAX_BUFF*2 || newFd < 0) &&(oldFd > MAX_BUFF*2 || oldFd < 0)){
         return -1;
     }
