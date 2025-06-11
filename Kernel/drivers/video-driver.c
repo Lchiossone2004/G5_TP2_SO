@@ -111,12 +111,20 @@ void imprimirPrograma(char *palabra, int size){
 	int auxA = aux;
 	y = aux = 0;
 	x = MOV_X * 50 * zoom;
+		for (int i = 0; i < MOV_Y; i++)
+	{
+		for (int j = 0; j < BORDER_X; j++)
+		{
+			putPixel(0x0, j, i);
+		}
+	}
 	imprimirVideo("FOREGROUND: ",13,BLANCO);
 	imprimirVideo(palabra,size,BLANCO);
 	x = auxX;
 	y =auxY;
 	aux = auxA;
 }
+
 void charVideo(char num, char isEndLine, uint32_t color)
 {
 	if (x <= BORDER_X && y < BORDER_Y)
@@ -254,8 +262,8 @@ void videoClear()
 		}
 	}
 	x = 0;
-	y = 0;
-	aux = 0;
+	y = MOV_Y;
+	aux = MOV_Y;
 }
 
 void zoomIN()

@@ -5,6 +5,7 @@
 #include "c-lib.h"
 #include "shell.h"
 #include "command-lib.h"
+
 #define EOF -1
 
 static int shellCounter = 0;
@@ -296,8 +297,8 @@ void pipeCommand(uint64_t argc, char *argv[], char *command, int is_foregorund) 
     int pid1 = newComand(pipe_pos,argv);
     pipe_pos++;
     int pid2 = newComand(argc - pipe_pos, argv + pipe_pos);
-    usr_change_std(pid1,STDIN, new_pipe[1]);
-    usr_change_std(pid2,STDOUT, new_pipe[0]);
+    usr_change_std(pid1,STDOUT, new_pipe[1]);
+    usr_change_std(pid2,STDIN, new_pipe[0]);
     usr_close_pipe(new_pipe[0]);
     usr_close_pipe(new_pipe[1]);
     //usr_wait_children();
@@ -342,6 +343,5 @@ void commandInfo(int i,int j){
 int newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
     char * aux[] = {};
     char * number[4];
-    return usr_create_process((void*)shell,1,aux,"shell", PRIORITY_NORMAL,1);
-    usr_wait_children();
+    usr_create_process((void*)shell,1,aux,"shell_son", PRIORITY_NORMAL,1);
 }

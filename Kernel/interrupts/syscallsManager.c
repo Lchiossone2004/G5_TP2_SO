@@ -174,7 +174,8 @@ uint64_t sys_sleep(uint64_t rsi,uint64_t rdx, uint64_t rcx,uint64_t r8,uint64_t 
     uint64_t deadline = ticks_elapsed() + rsi;
     sleep_queue_add(proc, deadline);
     block_process(proc->pid);
-    return (uint64_t)scheduler((void*)current_sp);
+    callScheduler();
+    return;
 }
 
 uint64_t sys_getTime(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {

@@ -33,7 +33,7 @@ int read_keyboard(char* letter,int count){
 }
 
 int specialKey(uint8_t key) {
-    return  (key == 0 || key == 0x01 || key == 14 || key == 75 || key == 77 || key == 28 || key == 0x1D || key == 0x3A || key == 0x2A || key == 0x36 || key == 0xAA || key == 0xB6 || key == 0x0F );
+    return  (key == 0 || key == 0x01 || key == 14 || key == 75 || key == 77 || key == 28 || key == 0x1D || key == 0x3A || key == 0x2A || key == 0x36 || key == 0xAA || key == 0xB6 || key == 0x0F || key == 0x1D);
 }
 void loadBuffer(uint8_t key){
 
@@ -44,7 +44,6 @@ void loadBuffer(uint8_t key){
     if(ctrl_pressed && key == 0x2E){
         p_info * foreground_proc = get_foreground_process();
         kill_process(foreground_proc->pid);
-        sem_post(is_key);
         return;
     }
     if(ctrl_pressed && key == 0x20){ 

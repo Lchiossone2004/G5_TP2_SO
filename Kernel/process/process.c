@@ -120,7 +120,7 @@ void copy_context(p_info* new_process, char *name, void *stack_base, void *stack
 
 
 
-int wait_pid(int pid) {
+int wait_pid(int pid) {         //SOBRA
     p_info *current = get_current_process();
 
 

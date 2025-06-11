@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "c-lib.h"
 #include "test_util.h"
+#include "command-lib.h"
 
 #define STDOUT 1
 #define STDIN 0
@@ -87,11 +88,12 @@ void loop_command() {
     char buffer[len];
     intToString(pid,buffer,len);
     while(1){
-        print(buffer);
-        print("\n");
-        print("These Aren't the Droids You're Looking For");
-        print("\n");
-        for(int i = 0; i <1000000; i++);
+    //     print(buffer);
+    //     print("\n");
+    //print("These Aren't the Droids You're Looking For");
+    //     print("\n");
+    //     sleep(10);
+    //for(int i = 0 ; i < 10000000; i ++){}
     }
 }
 void mem_command() {

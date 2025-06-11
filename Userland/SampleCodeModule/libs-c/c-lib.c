@@ -15,7 +15,6 @@ void printRegisters(){
 
 void print(char *word){
     syscall(4, STDOUT, word, strSize(word));
-    //syscall(41, word, strSize(word));
 }
 
 void write(char *word, int fd, int size){

@@ -22,14 +22,14 @@ void sleep_queue_add(p_info *proc, uint64_t wake_tick) {
     if (!e) {
         return;
     }
-    e->proc      = proc;
+    e->proc = proc;
     e->wake_tick = wake_tick;
     sleep_entry **it = &sleep_list;
     while (*it && (*it)->wake_tick <= wake_tick) {
         it = &(*it)->next;
     }
     e->next = *it;
-    *it     = e;
+    *it = e;
 }
 
 void sleep_queue_tick_handler(void) {
