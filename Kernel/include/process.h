@@ -29,6 +29,9 @@ typedef struct {
     void* ss;
 } p_stack;
 
+static int pirority[] = {8,4,2,1}; 
+static char* pirorityName[] = {"Critic", "High", "Normal", "Low"};
+
 int32_t createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char* name, int priority, int is_foreground);
 void load_args(p_stack *new_stack, p_info * new_process, uint8_t argc, char* argv[]);
 void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv) ;

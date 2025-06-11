@@ -171,6 +171,14 @@ int modify_priority(int pid, int newPriority) {
 
     p_info* process = processes_list[idx];
     process->priority = newPriority;
+    int index = find_index(pirority, 4, newPriority);
+    if (index == -1) {
+        return 0; 
+    }
+    size_t prioNameLen = strSize(pirorityName[index]) + 1;
+    process->priorityName = mm_malloc(prioNameLen);
+    memcpy(process->priorityName, pirorityName[index], prioNameLen);
+
     ReadyNode* node = ready_list;
     if (node) {
         do {
