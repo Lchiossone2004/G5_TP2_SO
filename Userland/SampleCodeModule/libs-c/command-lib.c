@@ -5,7 +5,7 @@
 
 #define STDOUT 1
 #define STDIN 0
-#define EOF ((char)-1)
+#define EOF '\0'
 
 void wc_command(char *fd) {
     int fd_num = (int)satoi(fd);
@@ -15,22 +15,22 @@ void wc_command(char *fd) {
     int n;
     int pos = 0;
     char num[10];
-     while ((n = read(fd_num, &c, 1)) > 0) {
+    while ((n = read(fd_num, &c, 1)) > 0) {
         char temp[2] = {c, '\0'}; 
         print(temp);
         buffer[pos++] = c;
-            if (c == '\n') {
-                line_count++;
-            }
-            if(c == EOF || pos >= sizeof(buffer) - 1) {
-                line_count++;
-                print("\n");
-                break;
-            }
+        if (c == '\n') {
+            line_count++;
         }
-        intToString(line_count, num, sizeof(num));
-        print(num);
-        print("\n");
+        if(c == EOF || pos >= sizeof(buffer) - 1) {
+            line_count++;
+            print("\n");
+            break;
+        }
+    }
+    intToString(line_count, num, sizeof(num));
+    print(num);
+    print("\n");
 }
 
 void cat_command(char *fd) {
@@ -65,21 +65,20 @@ void filter_command(char *fd) {
     int n;
     int pos = 0;
     
-
-      while ((n = read(fd_num, &c, 1)) > 0) {
+    while ((n = read(fd_num, &c, 1)) > 0) {
         char temp[2] = {c, '\0'}; 
         print(temp);
         buffer[pos++] = c;
-            if (c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF) 
-            break;
-      }
-      for(int i = 0; i < pos; i++) {
-            if (isVowel(buffer[i])) {
+        if (c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF) 
+        break;
+    }
+    for(int i = 0; i < pos; i++) {
+        if (isVowel(buffer[i])) {
             char temp[2] = {buffer[i], '\0'}; 
             print(temp);
-            }
-             print("\n");  
         }
+        print("\n");  
+    }
 }
 
 void loop_command() {

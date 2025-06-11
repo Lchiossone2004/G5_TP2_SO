@@ -6,7 +6,7 @@
 #include "shell.h"
 #include "command-lib.h"
 
-#define EOF -1
+#define EOF '\0'
 
 static int shellCounter = 0;
 void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
@@ -221,14 +221,14 @@ int wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
         argsError(argc,argv);
     } else 
     return usr_create_process((void*)wc_command, argc, argv, "wc", PRIORITY_LOW, is_foreground);
-    }
+}
 
 int filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
      if(argc != 1){
         argsError(argc,argv);
     } else 
     return usr_create_process((void*)filter_command, argc, argv, "filter", PRIORITY_LOW, is_foreground);
-    }
+}
 
          
 

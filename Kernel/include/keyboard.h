@@ -2,7 +2,7 @@
 #include <lib.h>
 
 #define BUFF_SIZE 1024
-#define EOF -1
+#define EOF '\0'
 
 void init_keyboard();
 int read_keyboard(char* letter,int count);
