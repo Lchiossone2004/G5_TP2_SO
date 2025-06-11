@@ -84,14 +84,16 @@ static void *group_init(void *start, size_t size) {
 
 static void *group_malloc(size_t size) {
     if (size == 0 || !free_list || current_blocks >= MAX_BLOCKS) return NULL;
-    size_t req = ALIGN_UP(size);
+    size_t req = ALIGN_UP(size < MIN_BLOCK_SIZE ? MIN_BLOCK_SIZE : size);
+
     block_header_t *cur = free_list;
     do {
         if (cur->size >= req) {
-            size_t rem = cur->size - req;
-            if (rem > HEADER_SIZE + MIN_BLOCK_SIZE) {
-                block_header_t *nb = (void *)((char *)cur + HEADER_SIZE + req);
-                nb->size      = ALIGN_UP(rem - HEADER_SIZE);
+                size_t rem = cur->size - req;
+                size_t aligned_rem = (rem > HEADER_SIZE)? ALIGN_UP(rem - HEADER_SIZE): 0;
+                if (aligned_rem >= MIN_BLOCK_SIZE) {
+                   block_header_t *nb = (void *)((char *)cur + HEADER_SIZE + req);
+                   nb->size      = aligned_rem;
                 nb->user_size = 0;
                 nb->is_free   = true;
                 nb->next = cur->next;
