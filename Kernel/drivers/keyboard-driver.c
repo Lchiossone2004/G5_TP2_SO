@@ -23,13 +23,17 @@ void init_keyboard(){
     is_key = sem_open(is_key, 0);
 }
 
-int read_keyboard(char* letter,int count){
-    for(int i = 0; i<count;i++){
-        sem_wait(is_key);
-        letter[i] = buffer[read];
-        read = (read + 1) % BUFFER_SIZE;
+int read_keyboard(char* letter, int count) {
+    int bytes_read = 0;  
+    for (int i = 0; i < count; i++) {
+        sem_wait(is_key);  
+        letter[i] = buffer[read]; 
+        read = (read + 1) % BUFFER_SIZE; 
+
+        bytes_read++;
     }
-    return 0;
+
+    return bytes_read;  
 }
 
 int specialKey(uint8_t key) {
