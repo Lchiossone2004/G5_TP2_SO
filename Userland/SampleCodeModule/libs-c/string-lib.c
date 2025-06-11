@@ -209,3 +209,31 @@ int isVowel(char c) {
             c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U');
 }
 
+int removeRepeated(char *str) {
+    if (str == NULL || str[0] == '\0') {
+        return 0;
+    }
+
+    int len = strlen(str);
+    if (len < 2) {
+        return len;  
+    }
+    int j = 0;
+    for (int i = 0; i < len; i++) {
+        int is_repeated = 0;
+    
+        for (int k = 0; k < j; k++) {
+            if (str[i] == str[k]) {
+                is_repeated = 1;
+                break;
+            }
+        }
+        if (!is_repeated) {
+            str[j] = str[i];
+            j++;
+        }
+    }
+
+    str[j] = '\0';  
+    return j;  
+}

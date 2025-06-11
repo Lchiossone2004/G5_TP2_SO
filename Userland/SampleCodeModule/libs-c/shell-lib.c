@@ -210,21 +210,21 @@ int loop(uint64_t argc, char *argv[], char* command, int is_foregorund){
    }
 
 int cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
-    if(argc != 1){
+    if(argc > 0){
         argsError(argc,argv);
     } else 
     return usr_create_process((void*)cat_command, argc, argv, "cat", PRIORITY_LOW, is_foreground);
 }
 
 int wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
-     if(argc != 1){
+     if(argc > 0){
         argsError(argc,argv);
     } else 
     return usr_create_process((void*)wc_command, argc, argv, "wc", PRIORITY_LOW, is_foreground);
 }
 
 int filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
-     if(argc != 1){
+     if(argc > 0){
         argsError(argc,argv);
     } else 
     return usr_create_process((void*)filter_command, argc, argv, "filter", PRIORITY_LOW, is_foreground);

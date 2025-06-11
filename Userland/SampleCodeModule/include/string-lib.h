@@ -17,4 +17,5 @@ char* strdup(const char* str);
 size_t strlen(const char *s); 
 int isBlank(char c); 
 int isVowel(char c);
+int removeRepeated(char *str);
 #endif
