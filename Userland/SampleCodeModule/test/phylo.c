@@ -17,10 +17,10 @@ static void print_status() {
     for (int i = 0; i < phylo_count; i++) {
         any = 1;
         char buf[2] = { state_chars[phylo_states[i]], '\0' };
-        write(STDOUT, buf, 1);
-        write(STDOUT, " ", 1);
+        write( buf, STDOUT, 1);
+        write( " ",STDOUT, 1);
     }
-    if (any) write(STDOUT, "\n", 1);
+    if (any) write( "\n", STDOUT, 1);
 }
 
 static void leave_forks(int idx) {
@@ -62,7 +62,7 @@ static void phylo_process(int argc, char *argv[]) {
     usr_free(argv[0]);
     usr_free(argv);
     print(phylo_names[idx]);
-    print(" joined the table.\n");
+    write(" joined the table.\n", STDOUT, 19);
     phylo_states[idx] = THINKING;
     while (1) {
         sleep(20);
@@ -79,6 +79,10 @@ static int new_phylo(int idx) {
         return -1;
     }
     char **argv = usr_malloc(sizeof(char*) * 2);
+    if (argv == NULL) {
+        usr_sem_post(SEM_GLOBAL);
+        return -1;  
+    }
     argv[0] = usr_malloc(2);
     argv[0][0] = '0' + idx;
     argv[0][1] = '\0';
