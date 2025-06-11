@@ -35,6 +35,7 @@ int create_pipe(int* fd_read, int*fd_write);
 int pipe_init(Pipe *pipe);
 int pipe_write(int fd, const char *buffer, int count);
 int pipe_read(int fd, char *buffer, int count);
+int pipe_accses(int pid,int fd);
 int pipe_close(int fd);
 void pipe_destroy(int fd);
 int can_accsess(int fd);

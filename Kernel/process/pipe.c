@@ -139,6 +139,28 @@ int pipe_read(int fd, char *buffer, int count) {
     return read;
 }
 
+int pipe_accses(int pid, int fd){
+    if(fd>MAX_FDS || fd< 0){
+        return -1;
+    }
+    Pipe *pipe = fd_table[fd].pipe;
+    p_info * proc = get_process_by_pid(pid);
+
+    for(int i = 0; i < MAX_BUFF*2; i++){
+        if(proc->fd_table[i] == -1){
+            proc->fd_table[i] = fd;
+            if(fd_table[fd].type ==  FD_READ){   //READ
+                pipe->read_open++;
+            }
+            if(fd_table[fd].type == FD_WRITE ){   //Write
+                pipe->write_open++;
+            }
+    return 0;
+        }
+    }
+    return -1;
+}
+
 int pipe_close(int fd){
     if(fd>MAX_FDS || fd< 0){
         return -1;
@@ -146,7 +168,7 @@ int pipe_close(int fd){
     Pipe *pipe = fd_table[fd].pipe;
     p_info * curr_proc = get_current_process();
 
-    for(int i = 0; i < MAX_BUFF; i++){
+    for(int i = 0; i < MAX_BUFF*2; i++){
         if(curr_proc->fd_table[i] == fd){
             curr_proc->fd_table[i] = -1;
             if(fd_table[fd].type ==  FD_READ){   //READ

@@ -326,11 +326,13 @@ uint64_t sys_dup(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t
     p_info * proc = get_process_by_pid(pid);
     if(std == STDIN){
         proc->stdin = newFd;
-        return 0;
+        return pipe_accses(pid,newFd);
     }
-    if(std == STDOUT){
+    else if(std == STDOUT){
         proc->stdout = newFd;
-        return 0;
+        return pipe_accses(pid,newFd);
     }
-    return -1;
+    else{
+        return -1;
+    }
 }

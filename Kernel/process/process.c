@@ -70,6 +70,9 @@ void entry_point_wrapper(void (*fn)(uint8_t, char**), uint8_t argc, char** argv)
 void exit_process() {
     p_info* current = get_current_process();
     remove_from_processes_list(current);
+    for(int i = 0; i<MAX_BUFF*2;i++){
+        pipe_close(current->fd_table[i]);
+    }
     pids[current->pid-1] = 0;
     callScheduler();
 }
