@@ -45,48 +45,48 @@ int readLine(char *buffer, size_t size){
 //Proc
 
 int32_t usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground){
-    int32_t pid = (int32_t)syscall(14,fn,argc,argv, name, prio, is_foreground);
+    int32_t pid = (int32_t)syscall(13,fn,argc,argv, name, prio, is_foreground);
     return pid;
 }
 
 int usr_block_process(int pid){
-    return syscall(19,pid);
+    return syscall(18,pid);
 }
 
 int usr_unblock_process(int pid){
-    return syscall(20,pid);
+    return syscall(19,pid);
 
 }
 
 int usr_kill(int pid){
     int toRet = -1;
     if(pid >0){
-        toRet = syscall(15, pid);
+        toRet = syscall(14, pid);
     }
     return toRet;
 }
 
 void usr_yield(){
-    syscall(22);
+    syscall(21);
 }
 
 void usr_nice(int pid, int newPrio){
     if(pid > 0 && newPrio > 0){
-        syscall(26,pid,newPrio); //FALTA
+        syscall(17,pid,newPrio); //FALTA
     }
 }
 
 int usr_change_std(int pid, int std, int newFd){
-    return syscall(33,pid,std, newFd);
+    return syscall(31,pid,std, newFd);
 }
 
 void usr_wait_children(){
-    return syscall(23);
+    return syscall(22);
 }
 //Sems
 
 int usr_sem_open(int id, int initial_value) {
-    int ret = syscall(25, id, initial_value);
+    int ret = syscall(24, id, initial_value);
     if (ret >= 0 && id >= 0 && id < SEM_MAX) {
         is_semaphore[id] = true;
     }
@@ -94,7 +94,7 @@ int usr_sem_open(int id, int initial_value) {
 }
 
 int usr_sem_close(int id) {
-    int ret = syscall(26, id);
+    int ret = syscall(25, id);
     if (ret >= 0 && id >= 0 && id < SEM_MAX) {
         is_semaphore[id] = false;
     }
@@ -103,26 +103,26 @@ int usr_sem_close(int id) {
 
 int usr_sem_wait(int id) {
     if (id >= 0 && id < SEM_MAX && is_semaphore[id]){
-        return syscall(27, id);
+        return syscall(26, id);
     }
     return-1;
 }
 int usr_sem_post(int id) {
     if (id >= 0 && id < SEM_MAX && is_semaphore[id]) {
-        return syscall(28, id);        
+        return syscall(27, id);        
     }
     return -1;                      
 }
 
 int usr_sem_getvalue(int id){
-    return syscall(29, id);
+    return syscall(28, id);
 }
 
 //Pipes
 
 int usr_open_pipe(int *fd_read, int* fd_write){
-    return syscall(31,fd_read, fd_write); 
+    return syscall(29,fd_read, fd_write); 
 }
 int usr_close_pipe(int fd_pipe){
-    return syscall(32, fd_pipe);
+    return syscall(30, fd_pipe);
 }

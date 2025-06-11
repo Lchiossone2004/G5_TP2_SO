@@ -188,7 +188,7 @@ void ps(uint64_t argc, char *argv[], char* command, int is_foregorund){
         argsError(argc,argv);
     }
     else{
-        syscall(21);
+        syscall(20);
     }
 }
 

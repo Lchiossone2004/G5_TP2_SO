@@ -8,17 +8,17 @@
 extern uint64_t syscall(uint64_t rdi, ...);
 
 void* usr_malloc(int size){
-    void *aux = (void*) syscall(11, size);
+    void *aux = (void*) syscall(10, size);
     return aux;
 }
 
 void usr_free(void* ptr){
-    syscall(12,ptr);
+    syscall(11,ptr);
 }
 
 void print_usr_mem_info(){
     memory_info_t info;
-    syscall(13,&info);
+    syscall(12,&info);
     char buffer[100];
 
     size_t_to_str(info.current_blocks, buffer);

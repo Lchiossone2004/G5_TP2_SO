@@ -80,7 +80,7 @@ void filter_command() {
 }
 
 void loop_command() {
-    int pid = syscall(16);
+    int pid = syscall(15);
     int len = 124;
     char buffer[len];
     intToString(pid,buffer,len);

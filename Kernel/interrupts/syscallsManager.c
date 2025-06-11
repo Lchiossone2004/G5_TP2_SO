@@ -48,31 +48,29 @@ static syscall_fn syscall_table[] = {
     [6] = sys_clear,
     [7] = sys_sleep,
     [8] = sys_getTime,
-    [9] = sys_ranN,
-    [10] = sys_test_mm, 
-    [11] = sys_malloc,
-    [12] = sys_free,
-    [13] = sys_get_memory_info,
-    [14] = sys_create,
-    [15] = sys_kill,
-    [16] = sys_getPid,
-    [17] = sys_endProcess,
-    [18] = sys_modifyPriority,
-    [19] = sys_block,
-    [20] = sys_unblock,
-    [21] = sys_getProcesses,
-    [22] = sys_quitCPU,
-    [23] = sys_wait,
-    [24] = sys_get_foreground,
-    [25] = sys_sem_open,
-    [26] = sys_sem_close,
-    [27] = sys_sem_wait,
-    [28] = sys_sem_post,
-    [29] = sys_sem_get_value,
-    [30] = sys_go_middle,
-    [31] = sys_create_pipe,
-    [32] = sys_pipe_close,
-    [33] = sys_dup,
+    [9] = sys_ranN, 
+    [10] = sys_malloc,
+    [11] = sys_free,
+    [12] = sys_get_memory_info,
+    [13] = sys_create,
+    [14] = sys_kill,
+    [15] = sys_getPid,
+    [16] = sys_endProcess,
+    [17] = sys_modifyPriority,
+    [18] = sys_block,
+    [19] = sys_unblock,
+    [20] = sys_getProcesses,
+    [21] = sys_quitCPU,
+    [22] = sys_wait,
+    [23] = sys_get_foreground,
+    [24] = sys_sem_open,
+    [25] = sys_sem_close,
+    [26] = sys_sem_wait,
+    [27] = sys_sem_post,
+    [28] = sys_sem_get_value,
+    [29] = sys_create_pipe,
+    [30] = sys_pipe_close,
+    [31] = sys_dup,
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -202,11 +200,6 @@ uint64_t sys_ranN(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     if(*toRan < 0){
         *toRan = -*toRan;
     }
-    return 0;
-}
-
-uint64_t sys_test_mm(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    // aún no implementada
     return 0;
 }
 
