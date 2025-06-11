@@ -299,6 +299,7 @@ int remove_from_processes_list(p_info* process) {
     mm_free(process->argv);
 
     processes_list[idx] = NULL;
+    mm_free(process);
     n_processes--;
     return 0;
 }
