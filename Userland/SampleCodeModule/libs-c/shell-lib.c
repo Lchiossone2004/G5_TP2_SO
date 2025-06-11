@@ -96,29 +96,27 @@ void invalidOperation(uint64_t argc, char *argv[], char* command, int is_foregor
     invalidOp();
 }
 
-void test(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int test(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc == 0){
         argsError(argc,argv);
     }
     if(strCompare(argv[0],"MM")){
-        void * ptr = usr_malloc(12);
-        usr_free(ptr);
-        return;
-        //usr_create_process((void*)test_mm, argc-1,argv+1, "memory test", PRIORITY_LOW, is_foregorund);
+
+        return usr_create_process((void*)test_mm, argc-1,argv+1, "memory test", PRIORITY_LOW, is_foregorund);
     }
     else if(strCompare(argv[0],"Prio")){
 
-        usr_create_process((void*)test_prio,argc,argv, "priority test", PRIORITY_LOW,is_foregorund);
+        return usr_create_process((void*)test_prio,argc,argv, "priority test", PRIORITY_LOW,is_foregorund);
     }
     else if(strCompare(argv[0],"Proc")){
-        usr_create_process((void*)test_processes,argc -1,argv+1, "processes test", PRIORITY_LOW, is_foregorund);
+        return usr_create_process((void*)test_processes,argc -1,argv+1, "processes test", PRIORITY_LOW, is_foregorund);
 
     }
     else if(strCompare(argv[0],"Sync")){
         argc = 2;
-        argv[0] = argv[1];
+        argv[0] = argv[1];  //QUE ES ESTO?
         argv[1] = argv[2];
-        usr_create_process((void*)test_sync,argc,argv, "sync test", PRIORITY_LOW, is_foregorund);
+        return usr_create_process((void*)test_sync,argc,argv, "sync test", PRIORITY_LOW, is_foregorund);
     }
 }
 
@@ -193,42 +191,42 @@ void ps(uint64_t argc, char *argv[], char* command, int is_foregorund){
     }
 }
 
-void mem(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int mem(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc > 0){
         argsError(argc,argv);
     }
     else{
-        usr_create_process((void*)mem_command, argc, argv, "mem", PRIORITY_LOW, is_foregorund);
+        return usr_create_process((void*)mem_command, argc, argv, "mem", PRIORITY_LOW, is_foregorund);
     }
 }
 
-void loop(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int loop(uint64_t argc, char *argv[], char* command, int is_foregorund){
    if(argc > 0) {
         argsError(argc,argv);
     } else {
-        usr_create_process((void*)loop_command, argc, argv, "loop", PRIORITY_LOW, is_foregorund);
+        return usr_create_process((void*)loop_command, argc, argv, "loop", PRIORITY_LOW, is_foregorund);
     }
    }
 
-void cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
+int cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
     if(argc != 1){
         argsError(argc,argv);
     } else 
-    usr_create_process((void*)cat_command, argc, argv, "cat", PRIORITY_LOW, is_foreground);
+    return usr_create_process((void*)cat_command, argc, argv, "cat", PRIORITY_LOW, is_foreground);
 }
 
-void wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
+int wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
      if(argc != 1){
         argsError(argc,argv);
     } else 
-    usr_create_process((void*)wc_command, argc, argv, "wc", PRIORITY_LOW, is_foreground);
+    return usr_create_process((void*)wc_command, argc, argv, "wc", PRIORITY_LOW, is_foreground);
     }
 
-void filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
+int filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
      if(argc != 1){
         argsError(argc,argv);
     } else 
-    usr_create_process((void*)filter_command, argc, argv, "filter", PRIORITY_LOW, is_foreground);
+    return usr_create_process((void*)filter_command, argc, argv, "filter", PRIORITY_LOW, is_foreground);
     }
 
          
@@ -260,13 +258,13 @@ void argsError(uint64_t argc, char *argv[]){
 }
 
 
-void newComand(uint64_t argc,char *argv[]){
+int newComand(uint64_t argc,char *argv[]){
     char * command;
     int auxArgc = argc-1;
     command = argv[0];
-    int is_foreground = 0;
+    int is_foreground = 1;
     if(strCompare(argv[0],"&")){
-        is_foreground = 1;
+        is_foreground = 0;
         auxArgc--;
     }
     char * argv1[auxArgc];
@@ -274,7 +272,7 @@ void newComand(uint64_t argc,char *argv[]){
         argv1[i] = argv[i];
     }
     int commandNum = processCommand(command);
-    shell_table[commandNum](auxArgc,argv1, commandNum,is_foreground);
+    return shell_table[commandNum](auxArgc,argv1, commandNum,is_foreground);
 }
 
 
@@ -295,16 +293,14 @@ void pipeCommand(uint64_t argc, char *argv[], char *command, int is_foregorund) 
     }
     int new_pipe[2];
     usr_open_pipe(&new_pipe[0], &new_pipe[1]);
-    usr_dup(STDIN, new_pipe[0]);
-    newComand(pipe_pos,argv);
+    int pid1 = newComand(pipe_pos,argv);
     pipe_pos++;
-    usr_dup(STDIN, STDIN);
-    usr_dup(STDOUT, new_pipe[1]);
-    newComand(argc - pipe_pos, argv + pipe_pos);
-    usr_dup(STDOUT, STDOUT);
+    int pid2 = newComand(argc - pipe_pos, argv + pipe_pos);
+    usr_change_std(pid1,STDIN, new_pipe[1]);
+    usr_change_std(pid2,STDOUT, new_pipe[0]);
     usr_close_pipe(new_pipe[0]);
     usr_close_pipe(new_pipe[1]);
-
+    //usr_wait_children();
     return; 
 }
 
@@ -343,9 +339,9 @@ void commandInfo(int i,int j){
             print("\n");
 }  
 
-void newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
+int newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
     char * aux[] = {};
     char * number[4];
-    usr_create_process((void*)shell,1,aux,"shell", PRIORITY_HIGH,1);
+    return usr_create_process((void*)shell,1,aux,"shell", PRIORITY_NORMAL,1);
     usr_wait_children();
 }

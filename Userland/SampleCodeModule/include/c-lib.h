@@ -23,7 +23,7 @@ int usr_unblock_process(int pid);
 int usr_kill(int pid);
 void usr_yield();
 void usr_nice(int pid, int newPrio);
-int usr_dup(int oldFd, int newFd);
+int usr_change_std(int pid, int std, int newFd);
 void usr_wait_children();
 
 //Sems

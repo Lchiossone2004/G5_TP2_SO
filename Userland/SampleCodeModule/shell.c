@@ -5,14 +5,15 @@ static char letra[1] = {0};
 static int ultimaLetra;
 static int index = 0;
 
-void getKey()
+int getKey()
 {
-    syscall(3, STDIN, letra, 1);
+    return syscall(3, STDIN, letra, 1);
 }
 void shell()
 {
     print(NEW_LINE);
     Command aux;
+    int readed = -1;
     while (1)
     {
         if (index == WORD_BUFFER_SIZE - 1)
@@ -22,8 +23,10 @@ void shell()
             index = 0;
             ultimaLetra = 0;
         }
-        getKey();
-
+        while (readed == -1){
+            readed = getKey();
+        }
+        readed = -1;
         if (*letra == '\1' && index > 0)
 
         {

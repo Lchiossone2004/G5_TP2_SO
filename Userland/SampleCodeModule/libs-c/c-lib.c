@@ -65,7 +65,6 @@ int usr_kill(int pid){
         toRet = syscall(15, pid);
     }
     return toRet;
-
 }
 
 void usr_yield(){
@@ -78,8 +77,8 @@ void usr_nice(int pid, int newPrio){
     }
 }
 
-int usr_dup(int newFd, int oldFd){
-    return syscall(33,newFd,oldFd);
+int usr_change_std(int pid, int std, int newFd){
+    return syscall(33,pid,std, newFd);
 }
 
 void usr_wait_children(){

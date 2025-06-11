@@ -68,23 +68,23 @@ void clear(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void printReg(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void divCero(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void invalidOperation(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void test(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int test(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void block(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void unblock(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void nice(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void yeild(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void kill(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void ps(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void loop(uint64_t argc, char *argv[], char* command, int is_foregorund); //Falta hacer
-void mem(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int loop(uint64_t argc, char *argv[], char* command, int is_foregorund); //Falta hacer
+int mem(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void argsError(uint64_t argc, char *argv[]);
 void commandInfo(int i, int j);
-void cat(uint64_t argc, char *argv[], char* command, int is_foreground);
-void wc(uint64_t argc, char *argv[], char* command, int is_foreground);
-void filter(uint64_t argc, char *argv[], char* command, int is_foreground);
+int cat(uint64_t argc, char *argv[], char* command, int is_foreground);
+int wc(uint64_t argc, char *argv[], char* command, int is_foreground);
+int filter(uint64_t argc, char *argv[], char* command, int is_foreground);
 void pipeCommand(uint64_t argc, char *argv[], char *command, int is_foregorund);
-void newShell(uint64_t argc, char *argv[], char *command, int is_foregorund);
+int newShell(uint64_t argc, char *argv[], char *command, int is_foregorund);
 
 
 #endif
