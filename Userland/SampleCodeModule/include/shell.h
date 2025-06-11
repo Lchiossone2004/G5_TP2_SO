@@ -11,7 +11,7 @@
 #define MAX_ARG_LEN 64
 #define MAX_ARGS 5
 
-typedef void (*shell_fn)(uint64_t, char*[], char*,int);
+typedef int (*shell_fn)(uint64_t, char*[], char*,int);
 
 static shell_fn shell_table[] = {
     [0] = invalid,
@@ -54,7 +54,7 @@ int processCommand(char *input);
 void clearBuffer();
 Command parseCommand(char * input);
 void freeCommand(Command *cmd);
-void getKey();
+int getKey();
 
 
 

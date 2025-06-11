@@ -32,6 +32,8 @@
         "interrupts.h": "c",
         "sound.h": "c",
         "stdint.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "shell-lib.h": "c",
+        "command-lib.h": "c"
     }
 }

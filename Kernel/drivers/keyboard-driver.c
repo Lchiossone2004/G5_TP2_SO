@@ -14,7 +14,8 @@ static uint64_t caps_pressed = 0;
 
 
 static uint16_t buffer[BUFF_SIZE];
-static uint64_t curr = 0;
+static uint64_t write = 0;
+static uint64_t read = 0;
 
 static uint16_t is_key;
 
@@ -25,8 +26,8 @@ void init_keyboard(){
 int read_keyboard(char* letter,int count){
     for(int i = 0; i<count;i++){
         sem_wait(is_key);
-        letter[i] = buffer[curr-1];
-        curr--;
+        letter[i] = buffer[read];
+        read = (read + 1) % BUFFER_SIZE;
     }
     return 0;
 }
@@ -36,9 +37,9 @@ int specialKey(uint8_t key) {
 }
 void loadBuffer(uint8_t key){
 
-    if(curr == 12) {
-        curr = 0;
-    }
+    // if(curr == 12) {
+    //     curr = 0;
+    // }
 
     if(ctrl_pressed && key == 0x2E){
         p_info * foreground_proc = get_foreground_process();
@@ -53,28 +54,28 @@ void loadBuffer(uint8_t key){
     }
     if(!specialKey(key)){
         char letter = toLetter(key); 
-        buffer[curr] = letter; 
-        curr++;
+        buffer[write] = letter; 
+        write = (write + 1) % BUFFER_SIZE; 
         sem_post(is_key); 
 
     }
     else if(key == 14){      //Borrado  
         char *aux = '\1';
-        buffer[curr] = aux; 
-        curr++;
+        buffer[write] = aux;
+        write = (write + 1) % BUFFER_SIZE; 
         sem_post(is_key);
     }
     else if(key == 28){      //Enter
         char * aux = '\n';
-        buffer[curr] = aux; 
-        curr++;
+        buffer[write] = aux; 
+        write = (write + 1) % BUFFER_SIZE; 
         sem_post(is_key);  
     }
     else if(key == 0x0F){   //TAB
         char  *aux = (char *) ' ';
         for(int i = 0; i < 5; i++){
-            buffer[curr] = aux; 
-            curr++;
+            buffer[write] = aux; 
+            write = (write + 1) % BUFFER_SIZE; 
             sem_post(is_key);
         }
     }

@@ -110,7 +110,7 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
             return read_keyboard(buffer,count);
         }
         else{
-            return (uint64_t) pipe_read(proc->stdin,buffer,count);
+            return -1;//(uint64_t) pipe_read(proc->stdin,buffer,count);
         }
     }
     else{
@@ -326,27 +326,17 @@ uint64_t sys_pipe_close(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, u
 }
 
 uint64_t sys_dup(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    int newFd = (int) rsi;
-    int oldFd = (int) rdx;
-    if((newFd > MAX_BUFF*2 || newFd < 0) &&(oldFd > MAX_BUFF*2 || oldFd < 0)){
-        return -1;
-    }
-    p_info * curr = get_current_process();
-    if(oldFd == STDOUT){
-        curr->stdout = newFd;
+    int pid = (int) rsi;
+    int std = (int) rdx;
+    int newFd = (int) rcx;
+    p_info * proc = get_process_by_pid(pid);
+    if(std == STDIN){
+        proc->stdin = newFd;
         return 0;
     }
-    else if (oldFd == STDIN){
-        curr->stdin = newFd;
+    if(std == STDOUT){
+        proc->stdout = newFd;
         return 0;
     }
-    else{
-        for(int i = 0; i <MAX_BUFF*2; i++){
-            if(curr->fd_table[i] == oldFd){
-                curr->fd_table[i] = newFd;
-                return 0;
-            }
-        }
-        return -1;
-    }
+    return -1;
 }
