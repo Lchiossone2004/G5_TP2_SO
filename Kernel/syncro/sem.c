@@ -53,9 +53,10 @@ int16_t sem_close(int16_t id) {
     lock_release(&s->lock);
 
     for (int i = 0; i < n; i++) {
-        unblock_process(to_wake[i]);
+        if(foundprocess(i) !=-1){
+            unblock_process(to_wake[i]);
+        }
     }
-
     return 0;
 }
 
