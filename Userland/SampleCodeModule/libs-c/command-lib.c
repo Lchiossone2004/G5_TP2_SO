@@ -30,6 +30,8 @@ void wc_command() {
     intToString(line_count, num, sizeof(num));
     print(num);
     print("\n");
+    printShell();
+    return;
 }
 
 void cat_command() {
@@ -54,6 +56,8 @@ void cat_command() {
     if (pos > 0) {
         print(buffer);
     }
+    printShell();
+    return;
 }
 
 void filter_command() {
@@ -77,6 +81,8 @@ void filter_command() {
             print(temp);
         }
     }
+    printShell();
+    return;
 }
 
 void loop_command() {
@@ -95,4 +101,9 @@ void loop_command() {
 }
 void mem_command() {
     print_usr_mem_info();
+}
+void printShell(){
+    print("\n");
+    print("shell: >");
+    return;
 }
