@@ -52,8 +52,15 @@ void loadBuffer(uint8_t key){
     }
     if(ctrl_pressed && key == 0x20){ 
         char eof = EOF;  
-        pipe_write(STDIN, &eof, 1); 
-        read = (read + 1) % BUFFER_SIZE;
+        p_info * foreground_proc = get_foreground_process();
+        if(foreground_proc->stdin==STDIN){
+            buffer[write] = EOF; 
+            write = (write + 1) % BUFFER_SIZE; 
+            sem_post(is_key); 
+        }
+        else{
+            pipe_write(foreground_proc->stdin, &eof, 1);
+        } 
         return;
     }
     if(!specialKey(key)){
