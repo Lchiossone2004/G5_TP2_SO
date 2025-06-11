@@ -50,6 +50,7 @@ void cat_command() {
             buffer[pos] = '\0';  
             print(buffer);
             print("\n");
+            printShell();
             return;
         }
     } 
@@ -101,6 +102,7 @@ void loop_command() {
 }
 void mem_command() {
     print_usr_mem_info();
+    return;
 }
 void printShell(){
     print("\n");
