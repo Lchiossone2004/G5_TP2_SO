@@ -60,36 +60,47 @@ void shell()
     }
 }
 
+int newComand(uint64_t argc,char *argv[]){
+    char * command;
+    int auxArgc = argc-1;
+    command = argv[0];
+    int is_foreground = 1;
+    if(strCompare(argv[0],"&")){
+        is_foreground = 0;
+        auxArgc--;
+    }
+    char * argv1[auxArgc];
+    for(int i = auxArgc; i < argc; i++){
+        argv1[i] = argv[i];
+    }
+    int commandNum = processCommand(command);
+    return shell_table[commandNum](auxArgc,argv1, commandNum,is_foreground);
+}
 
 void chekCommand(Command aux)
 {
-    //deleteSpaces(buffer);
     aux = parseCommand(buffer);
-    int command = processCommand(aux.command);
-    int is_foreground = 1;
-    int offset = 0;
+    int pipe_pos = 0;
     for(int i = 0; i<aux.arg_count; i++){
-        if(strCompare(aux.args[i],"&")){
-            if(i != 0){
-                printErr("Invalid & must be placed after the command");
-                print("\n");
-                command = -1;
-            }
-            else{
-            is_foreground = 0;
-            offset = 1;
-            }
+        if(strCompare(aux.args[i],"|")){
+            pipe_pos = i;
         }
     }
-    if(command >= 0 && command <=NUMBER_OF_COMMANDS){
-        if(aux.arg_count == 1 && strCompare(aux.args[0],"-info")){
-            commandInfo(command - 1, -1);
-         
-        }
-        else{
-        shell_table[command](aux.arg_count - offset, aux.args + offset, aux.command,is_foreground);
-        }
+    if(pipe_pos == 0){
+        newComand(aux.arg_count,aux.args);
     }
+    else{
+        int new_pipe[2];
+        usr_open_pipe(&new_pipe[0], &new_pipe[1]);
+        int pid1 = newComand(pipe_pos,aux.args);
+        pipe_pos++;
+        int pid2 = newComand(aux.arg_count - pipe_pos,aux.args + pipe_pos);
+        usr_change_std(pid1,STDOUT, new_pipe[1]);
+        usr_change_std(pid2,STDIN, new_pipe[0]);
+        usr_close_pipe(new_pipe[0]);
+        usr_close_pipe(new_pipe[1]);
+    }
+
     clearBuffer();
     index = 0;
     freeCommand(&aux);
@@ -105,8 +116,6 @@ int processCommand(char *input) {
             return j + 1; 
         }
     }
-
-   
     char commandPart[WORD_BUFFER_SIZE] = {0};
     int i = 0;
     while (input[i] != ' ' && input[i] != 0 && i < WORD_BUFFER_SIZE - 1) {
@@ -142,14 +151,6 @@ Command parseCommand(char *input) {
 
 
     while (index < len && input[index] == ' ') index++;
-
-
-    i = 0;
-    while (index < len && input[index] != ' ' && i < MAX_ARG_LEN -1) {
-        toRet.command[i++] = input[index++];
-    }
-    toRet.command[i] = '\0';
-
 
     while (index < len && toRet.arg_count < MAX_ARGS) {
 

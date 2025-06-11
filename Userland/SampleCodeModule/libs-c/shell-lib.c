@@ -230,12 +230,6 @@ int filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
     return usr_create_process((void*)filter_command, argc, argv, "filter", PRIORITY_LOW, is_foreground);
 }
 
-         
-
-    
-
-
-
 void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund){
     print(TAB);
     printErr("command: [");
@@ -256,53 +250,6 @@ void argsError(uint64_t argc, char *argv[]){
         }
     }
     print("\n");
-}
-
-
-int newComand(uint64_t argc,char *argv[]){
-    char * command;
-    int auxArgc = argc-1;
-    command = argv[0];
-    int is_foreground = 1;
-    if(strCompare(argv[0],"&")){
-        is_foreground = 0;
-        auxArgc--;
-    }
-    char * argv1[auxArgc];
-    for(int i = auxArgc; i <= argc; i++){
-        argv1[i] = argv[i];
-    }
-    int commandNum = processCommand(command);
-    return shell_table[commandNum](auxArgc,argv1, commandNum,is_foreground);
-}
-
-
-void pipeCommand(uint64_t argc, char *argv[], char *command, int is_foregorund) {
-    if(argc != 3){
-        argsError(argc, argv);
-        return;
-    }
-    int pipe_pos = 0;
-    for(int i = 0; i < argc; i++){
-        if(strCompare(argv[i],"|")){
-            pipe_pos = i;
-        }
-    }
-    if (pipe_pos < 1) {
-        printErr("Pipe symbol '|' must be in middle.\n");
-        return;
-    }
-    int new_pipe[2];
-    usr_open_pipe(&new_pipe[0], &new_pipe[1]);
-    int pid1 = newComand(pipe_pos,argv);
-    pipe_pos++;
-    int pid2 = newComand(argc - pipe_pos, argv + pipe_pos);
-    usr_change_std(pid1,STDOUT, new_pipe[1]);
-    usr_change_std(pid2,STDIN, new_pipe[0]);
-    usr_close_pipe(new_pipe[0]);
-    usr_close_pipe(new_pipe[1]);
-    //usr_wait_children();
-    return; 
 }
 
 void commandInfo(int i,int j){
@@ -343,5 +290,5 @@ void commandInfo(int i,int j){
 int newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
     char * aux[] = {};
     char * number[4];
-    usr_create_process((void*)shell,1,aux,"shell_son", PRIORITY_NORMAL,1);
+    return usr_create_process((void*)shell,1,aux,"shell_son", PRIORITY_NORMAL,1);
 }

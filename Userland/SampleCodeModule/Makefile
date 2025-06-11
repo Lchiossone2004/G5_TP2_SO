@@ -26,6 +26,6 @@ $(MODULE_ELF): $(OBJECTS) $(OBJECTS_ASM) $(OBJECTS) $(OBJECTS_C) $(OBJECTS_TEST)
 	$(ASM) $(ASMFLAGS) $< -o $@
 
 clean:
-	rm -rf asm/*.o libs-c/*.o *.o
+	rm -rf asm/*.o libs-c/*.o *.o test/*.o
 
 .PHONY: all clean print
