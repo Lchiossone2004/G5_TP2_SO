@@ -71,11 +71,16 @@ int16_t sem_post(int16_t id) {
         return -1;
     }
     if (s->count > 0) {
-        pid = s->waiting[s->head];
-        s->head = (s->head + 1) % MAX_PROCESSES;
-        s->count--;
-        lock_release(&s->lock);
-        unblock_process(pid);
+
+        for(int i = 0; i<s->count; i++){
+            pid = s->waiting[s->head - i];
+            if(get_process_by_pid(pid) != NULL){
+                s->head = (s->head + 1) % MAX_PROCESSES;
+                s->count--;
+                lock_release(&s->lock);
+                unblock_process(pid);
+            }
+        }        
     } else {
         s->value++;
         lock_release(&s->lock);

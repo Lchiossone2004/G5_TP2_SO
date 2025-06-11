@@ -26,25 +26,32 @@ void shell()
         while (readed == -1){
             readed = getKey();
         }
+        if(index == 0 && *letra == '\n'){
+            print(letra);
+            print(NEW_LINE);
+            index = 0;
+            readed = -1;
+            continue;
+        }
         readed = -1;
         if (*letra == '\1' && index > 0)
 
         {
             print("\1");
             index -= 1;
+            readed = -1;
             buffer[index] = 0;
         }
-        else if (*letra == '\n')
+        else if (*letra == '\n' && index > 0)
         {
             print("\n");
             buffer[index++] = '\0';
             chekCommand(aux);
             print(NEW_LINE);
             index = 0;
-            ultimaLetra = 0;
+            readed = -1;
         }
-        else
-        {
+        else {
             print(letra);
             if (*letra == ' ')
             {

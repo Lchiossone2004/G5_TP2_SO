@@ -48,14 +48,12 @@ void loadBuffer(uint8_t key){
     if(ctrl_pressed && key == 0x2E){
         p_info * foreground_proc = get_foreground_process();
         kill_process(foreground_proc->pid);
-        sem_post(is_key);
         return;
     }
     if(ctrl_pressed && key == 0x20){ 
         char eof = EOF;  
         pipe_write(STDIN, &eof, 1); 
         read = (read + 1) % BUFFER_SIZE;
-        sem_post(is_key);
         return;
     }
     if(!specialKey(key)){
