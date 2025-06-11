@@ -29,6 +29,7 @@ void wc_command() {
     }
     intToString(line_count, num, sizeof(num));
     print(num);
+    print(" lines");
     print("\n");
     printShell();
     return;
