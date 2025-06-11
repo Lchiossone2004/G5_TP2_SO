@@ -110,7 +110,7 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
             return read_keyboard(buffer,count);
         }
         else{
-            return -1;//(uint64_t) pipe_read(proc->stdin,buffer,count);
+            return (uint64_t) pipe_read(proc->stdin,buffer,count);
         }
     }
     else{

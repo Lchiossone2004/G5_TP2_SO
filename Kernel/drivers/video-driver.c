@@ -106,11 +106,16 @@ void imprimirVideo(char *palabra, int size, uint32_t color) {
 }
 
 void imprimirPrograma(char *palabra, int size){
+	int auxX = x;
+	int auxY = y;
+	int auxA = aux;
 	y = aux = 0;
 	x = MOV_X * 50 * zoom;
 	imprimirVideo("FOREGROUND: ",13,BLANCO);
 	imprimirVideo(palabra,size,BLANCO);
-	clearScreen();
+	x = auxX;
+	y =auxY;
+	aux = auxA;
 }
 void charVideo(char num, char isEndLine, uint32_t color)
 {
