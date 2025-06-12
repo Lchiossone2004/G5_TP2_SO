@@ -83,6 +83,7 @@ int cat(uint64_t argc, char *argv[], char* command, int is_foreground);
 int wc(uint64_t argc, char *argv[], char* command, int is_foreground);
 int filter(uint64_t argc, char *argv[], char* command, int is_foreground);
 int newShell(uint64_t argc, char *argv[], char *command, int is_foregorund);
+void phylosophers(uint64_t argc, char *argv[], char *command, int is_foregorund);
 
 
 #endif

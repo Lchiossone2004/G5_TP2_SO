@@ -34,7 +34,8 @@ static shell_fn shell_table[] = {
     [17] = cat,
     [18] = wc,
     [19] = filter,
-    [20] = newShell
+    [20] = newShell,
+    [21] = phylosophers
 };
 
 typedef struct {

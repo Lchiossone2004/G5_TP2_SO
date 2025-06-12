@@ -3,7 +3,7 @@
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
-#define SEM_MAX 10
+#define SEM_MAX 127
 
 extern uint64_t syscall(uint64_t rdi, ...);
 static bool is_semaphore[SEM_MAX] = { false };

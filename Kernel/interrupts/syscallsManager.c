@@ -204,7 +204,7 @@ uint64_t sys_ranN(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
 }
 
 uint64_t sys_malloc(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
-    size_t size = (size_t) rdx;
+    size_t size = (size_t) rsi;
 
     if (size == 0) return 0;
 

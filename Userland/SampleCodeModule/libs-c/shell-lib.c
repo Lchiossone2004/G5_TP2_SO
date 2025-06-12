@@ -5,6 +5,7 @@
 #include "c-lib.h"
 #include "shell.h"
 #include "command-lib.h"
+#include "phylo.h"
 
 #define EOF '\0'
 
@@ -291,4 +292,13 @@ int newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
     char * aux[] = {};
     char * number[4];
     return usr_create_process((void*)shell,1,aux,"shell_son", PRIORITY_NORMAL,1);
+}
+
+
+void phylosophers(uint64_t argc, char *argv[], char *command, int is_foregorund) {
+    if (argc > 0) {
+        argsError(argc, argv);
+        return;
+    }
+    usr_create_process((void*)phylo_main, argc, argv, "phylosophers", PRIORITY_LOW, is_foregorund);
 }
