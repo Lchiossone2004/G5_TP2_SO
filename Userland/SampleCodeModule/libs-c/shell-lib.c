@@ -101,9 +101,6 @@ int invalidOperation(uint64_t argc, char *argv[], char* command, int is_foregoru
 
 int test(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc == 1){
-        argsError(argc,argv);
-        return -1;
-    }
     if(strCompare(argv[0],"MM")){
 
         return usr_create_process((void*)test_mm, argc-1,argv+1, "memory test", PRIORITY_LOW, is_foregorund);
@@ -116,12 +113,14 @@ int test(uint64_t argc, char *argv[], char* command, int is_foregorund){
         return usr_create_process((void*)test_processes,argc -1,argv+1, "processes test", PRIORITY_LOW, is_foregorund);
 
     }
-    else if(strCompare(argv[0],"Sync")){
+} 
+    else if(strCompare(argv[0],"Sync") && argc == 3){
         argc = 2;
         argv[0] = argv[1]; 
         argv[1] = argv[2];
         return usr_create_process((void*)test_sync,argc,argv, "sync test", PRIORITY_LOW, is_foregorund);
     }
+    argsError(argc,argv);
     return -1;
 }
 
