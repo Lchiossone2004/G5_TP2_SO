@@ -8,13 +8,13 @@ static int index = 0;
 int getKey(){
     return syscall(3, STDIN, letra, 1);
 }
+
 void shell(){
     print(NEW_LINE);
-    Command aux;
     int readed = -1;
     while (1){
         if (index == WORD_BUFFER_SIZE - 1){
-            chekCommand(aux);
+            chekCommand();
             print(NEW_LINE);
             index = 0;
             ultimaLetra = 0;
@@ -22,15 +22,13 @@ void shell(){
         while (readed == -1){
             readed = getKey();
         }
+        readed = -1;
         if(index == 0 && *letra == '\n'){
             print(letra);
             print(NEW_LINE);
             index = 0;
-            readed = -1;
-            continue;
         }
-        readed = -1;
-        if (*letra == '\1' && index > 0){
+        else if (*letra == '\1' && index > 0){
             print("\1");
             index -= 1;
             readed = -1;
@@ -39,7 +37,7 @@ void shell(){
         else if (*letra == '\n' && index > 0){
             print("\n");
             buffer[index++] = '\0';
-            chekCommand(aux);
+            chekCommand();
             print(NEW_LINE);
             index = 0;
             readed = -1;
@@ -60,42 +58,50 @@ void shell(){
 
 int newComand(uint64_t argc,char *argv[]){
     char * command;
-    int auxArgc = argc-1;
+    int auxArgc = 1;
     command = argv[0];
     int is_foreground = 1;
-    if(strCompare(argv[0],"&")){
+    if(argc > 1 && strCompare(argv[1],"&")){
         is_foreground = 0;
-        auxArgc--;
+        auxArgc++;
     }
-    char * argv1[auxArgc];
-    for(int i = auxArgc; i < argc; i++){
-        argv1[i] = argv[i];
+    char * argv1[argc - auxArgc];
+    int index= 0;
+    for(int i = auxArgc; i <=argc; i++){
+        argv1[index++] = argv[i];
     }
+    index--;
     int commandNum = processCommand(command);
-    return shell_table[commandNum](auxArgc,argv1, commandNum,is_foreground);
+    return shell_table[commandNum](index,argv1, command,is_foreground);
 }
 
-void chekCommand(Command aux){
-    aux = parseCommand(buffer);
+void chekCommand(){
+    Command aux = parseCommand(buffer);
     int pipe_pos = 0;
-    for(int i = 0; i<aux.arg_count; i++){
-        if(strCompare(aux.args[i],"|")){
-            pipe_pos = i;
-        }
-    }
-    if(pipe_pos == 0){
-        newComand(aux.arg_count,aux.args);
+    int commandNum = processCommand(aux.args[0]);
+    if(commandNum > 0 && strCompare(aux.args[1],"-info")){
+        commandInfo(commandNum);
     }
     else{
-        int new_pipe[2];
-        usr_open_pipe(&new_pipe[0], &new_pipe[1]);
-        int pid1 = newComand(pipe_pos,aux.args);
-        pipe_pos++;
-        int pid2 = newComand(aux.arg_count - pipe_pos,aux.args + pipe_pos);
-        usr_change_std(pid1,STDOUT, new_pipe[1]);
-        usr_change_std(pid2,STDIN, new_pipe[0]);
-        usr_close_pipe(new_pipe[0]);
-        usr_close_pipe(new_pipe[1]);
+        for(int i = 0; i<aux.arg_count; i++){
+            if(strCompare(aux.args[i],"|")){
+                pipe_pos = i;
+            }
+        }
+        if(pipe_pos == 0){
+            newComand(aux.arg_count,aux.args);
+        }
+        else{
+            int new_pipe[2];
+            usr_open_pipe(&new_pipe[0], &new_pipe[1]);
+            int pid1 = newComand(pipe_pos,aux.args);
+            pipe_pos++;
+            int pid2 = newComand(aux.arg_count - pipe_pos,aux.args + pipe_pos);
+            usr_change_std(pid1,STDOUT, new_pipe[1]);
+            usr_change_std(pid2,STDIN, new_pipe[0]);
+            usr_close_pipe(new_pipe[0]);
+            usr_close_pipe(new_pipe[1]);
+        }
     }
 
     clearBuffer();
@@ -146,7 +152,6 @@ Command parseCommand(char *input) {
     toRet.args = (char **)usr_malloc(sizeof(char *) * MAX_ARGS);
     toRet.arg_count = 0;
 
-
     while (index < len && input[index] == ' ') index++;
 
     while (index < len && toRet.arg_count < MAX_ARGS) {
@@ -167,7 +172,6 @@ Command parseCommand(char *input) {
 
     return toRet;
 }
-
 
 void freeCommand(Command *cmd) {
     for (int i = 0; i < cmd->arg_count; i++) {

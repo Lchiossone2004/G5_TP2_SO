@@ -72,8 +72,11 @@ void filter_command() {
         char temp[2] = {c, '\0'}; 
         print(temp);
         buffer[pos++] = c;
-        if (c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF) 
-        break;
+        if (c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF)  {
+            print("\n");
+            break;
+        }
+      
     }
     buffer[pos] = '\0';
     int newLen = removeRepeated(buffer);
@@ -102,6 +105,7 @@ void loop_command() {
 }
 void mem_command() {
     print_usr_mem_info();
+    printShell();
     return;
 }
 void printShell(){

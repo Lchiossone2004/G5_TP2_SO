@@ -67,6 +67,7 @@ static syscall_fn syscall_table[] = {
     [29] = sys_create_pipe,
     [30] = sys_pipe_close,
     [31] = sys_dup,
+    [32] = sys_memset,
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_fn))
@@ -322,4 +323,7 @@ uint64_t sys_dup(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t
     else{
         return -1;
     }
+}
+uint64_t sys_memset(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
+    return memset((void *) rsi, (int32_t) rdx,rcx);
 }

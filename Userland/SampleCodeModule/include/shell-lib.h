@@ -53,7 +53,7 @@ static char *commandDescrition[] = {
 };
 
 
-static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none", "none", "none","none", "none"};
+static char *commandArgs[] = {"none", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none", "none", "none","none", "none"};
 
 
 
@@ -79,7 +79,7 @@ int loop(uint64_t argc, char *argv[], char* command, int is_foregorund);
 int mem(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void argsError(uint64_t argc, char *argv[]);
-void commandInfo(int i, int j);
+void commandInfo(int i);
 int cat(uint64_t argc, char *argv[], char* command, int is_foreground);
 int wc(uint64_t argc, char *argv[], char* command, int is_foreground);
 int filter(uint64_t argc, char *argv[], char* command, int is_foreground);

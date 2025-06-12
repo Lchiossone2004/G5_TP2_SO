@@ -19,5 +19,6 @@ typedef struct {
 void* usr_malloc(int size);
 void usr_free(void* ptr);
 void print_usr_mem_info();
+void usr_memset(void * destination, int32_t c, uint64_t length);
 
 #endif

@@ -23,18 +23,6 @@ void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
         print("To know more about any command type [command] -info");
         print("\n");
     }
-    else if(argc == 1 && strCompare(argv[0], "all")){
-        for(int i = 0; i < NUMBER_OF_COMMANDS; i++){
-            if(i<NUMBER_OF_COMMANDS-1){
-                commandInfo(i,i+1);
-                i++;
-            }
-            else{
-                commandInfo(i,-1);
-            }
-            print("\n");
-        }
-    }
     else{
         argsError(argc,argv);
     }
@@ -99,7 +87,7 @@ void invalidOperation(uint64_t argc, char *argv[], char* command, int is_foregor
 }
 
 int test(uint64_t argc, char *argv[], char* command, int is_foregorund){
-    if(argc == 0){
+    if(argc == 1){
         argsError(argc,argv);
     }
     if(strCompare(argv[0],"MM")){
@@ -253,45 +241,30 @@ void argsError(uint64_t argc, char *argv[]){
     print("\n");
 }
 
-void commandInfo(int i,int j){
+void commandInfo(int i){
     (void) commandDescrition;
     (void) commandArgs;
-
+            i--;
             print(TAB);
             print("- This is the [");
             print(commands[i]);
             print("] command.");
-            if(j != -1){
-                syscall(39);
-                print("- This is the [");
-                print(commands[j]);
-                print("] command.");
-            }
             print("\n");
             print(TAB);
             print("- ");
             print(commandDescrition[i]);
-            if(j!= -1){
-                syscall(39);
-                print("- ");
-                print(commandDescrition[j]);
-            }
             print("\n");
             print(TAB);
             print("- Possible arguments: ");
             print(commandArgs[i]);
-            if(j!= -1){
-                 syscall(39);
-                print("- Possible arguments: ");
-                print(commandArgs[j]);
-            }
             print("\n");
 }  
 
 int newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
     char * aux[] = {};
     char * number[4];
-    return usr_create_process((void*)shell,1,aux,"shell_son", PRIORITY_NORMAL,1);
+    usr_create_process((void*)shell,1,aux,"shell_son", PRIORITY_NORMAL,1);
+    return -1;
 }
 
 

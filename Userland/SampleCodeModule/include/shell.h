@@ -48,7 +48,7 @@ typedef struct {
 #define SHELL_TABLE_SIZE (sizeof(shell_table) / sizeof(shell_fn))
 
 void shell();
-void chekCommand(Command aux);
+void chekCommand();
 int processCommand(char *input);
 void clearBuffer();
 Command parseCommand(char * input);
