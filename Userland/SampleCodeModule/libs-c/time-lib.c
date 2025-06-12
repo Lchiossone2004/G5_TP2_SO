@@ -9,24 +9,20 @@
 void syscall(uint64_t rsi, ...);
 
 static char Timepo[3];
-void printTime(int area)
-{
+void printTime(int area) {
 	print("		");
 	getTime();
 	char toPrint[9] = "hh:mm:ss";
 	char aux = Timepo[0] >> 4;
 	char aux2 = (Timepo[0] & 0xF);
-	if (aux2 >= 0x03 && area)
-	{
+	if (aux2 >= 0x03 && area)	{
 		aux2 = aux2 - 0x3;
 	}
-	else if (aux >= 0x01 && area)
-	{
+	else if (aux >= 0x01 && area){
 		aux = aux - 0x01;
 		aux2 = aux2 + 0x07;
 	}
-	else if (aux == 0 && area)
-	{
+	else if (aux == 0 && area){
 		aux = aux + 0x02;
 		aux2 = aux2 + 0x01;
 	}
@@ -39,19 +35,16 @@ void printTime(int area)
 	aux = Timepo[2] >> 4;
 	toPrint[6] = aux + '0';
 	toPrint[7] = (Timepo[2] & 0xF) + '0';
-	if (area == 0)
-	{
+	if (area == 0){
 		print("(UTC): ");
 	}
-	else
-	{
+	else{
 		print("(ARG): ");
 	}
 	print(toPrint);
 	print("\n");
 }
 
-void getTime()
-{
+void getTime(){
 	syscall(8, STDIN, Timepo);
 }

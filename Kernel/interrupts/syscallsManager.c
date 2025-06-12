@@ -44,7 +44,7 @@ static syscall_fn syscall_table[] = {
     [2] = sys_getChar,
     [3] = sys_read,
     [4] = sys_write,
-    [5] = sys_zoom, //implementar
+    [5] = sys_zoom,
     [6] = sys_clear,
     [7] = sys_sleep,
     [8] = sys_getTime,
@@ -173,7 +173,7 @@ uint64_t sys_sleep(uint64_t rsi,uint64_t rdx, uint64_t rcx,uint64_t r8,uint64_t 
     sleep_queue_add(proc, deadline);
     block_process(proc->pid);
     callScheduler();
-    return;
+    return 0;
 }
 
 uint64_t sys_getTime(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
@@ -281,7 +281,7 @@ uint64_t sys_wait(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     return wait();
 }
 
-uint64_t sys_get_foreground(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
+uint64_t sys_get_foreground(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
     p_info* toRet = get_foreground_process();
     return  toRet->pid;
 }

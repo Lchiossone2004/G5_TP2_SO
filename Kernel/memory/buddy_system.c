@@ -1,12 +1,11 @@
 #include "buddy_system.h"
-
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
 
 typedef struct block_header {
-    size_t size;             // Tamaño total del bloque (payload, sin header)
-    size_t user_size;        // Tamaño solicitado por el usuario
+    size_t size;
+    size_t user_size;
     bool is_free;
     struct block_header* next;
 } block_header_t;
@@ -51,47 +50,31 @@ static void* buddy_malloc(size_t size) {
 
     size_t requested = size;
     size_t req_with_hdr = size + sizeof(block_header_t);
-
-    // Encontrar la orden mínima que pueda alojar el tamaño solicitado + header.
     size_t order = get_order(req_with_hdr);
-
-    // Buscar el bloque disponible de orden >= order.
     size_t cur_order = order;
     while (cur_order <= MAX_ORDER && free_blocks[cur_order] == NULL) {
         cur_order++;
     }
     if (cur_order > MAX_ORDER) return NULL;
-
-    // Tomar el bloque más grande disponible.
     block_header_t* block = free_blocks[cur_order];
     free_blocks[cur_order] = block->next;
-
-    // Dividir bloques hasta alcanzar el orden deseado.
     while (cur_order > order) {
         cur_order--;
-
         size_t split_block_size = (1u << cur_order) * MIN_BLOCK_SIZE;
         block_header_t* buddy = (block_header_t*)((char*)block + split_block_size);
-
-        // Configurar el buddy.
         buddy->size = split_block_size - sizeof(block_header_t);
         buddy->user_size = 0;
         buddy->is_free = true;
         buddy->next = free_blocks[cur_order];
         free_blocks[cur_order] = buddy;
-
-        // Ajustar el bloque actual.
         block->size = split_block_size - sizeof(block_header_t);
     }
 
-    // Asignar el bloque al usuario.
     block->is_free = false;
     block->user_size = requested;
     block->next = NULL;
-
     current_blocks++;
     total_allocated += requested;
-
     return (void*)((char*)block + sizeof(block_header_t));
 }
 

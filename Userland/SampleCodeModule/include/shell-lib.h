@@ -74,7 +74,7 @@ void nice(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void yeild(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void kill(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void ps(uint64_t argc, char *argv[], char* command, int is_foregorund);
-int loop(uint64_t argc, char *argv[], char* command, int is_foregorund); //Falta hacer
+int loop(uint64_t argc, char *argv[], char* command, int is_foregorund);
 int mem(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund);
 void argsError(uint64_t argc, char *argv[]);

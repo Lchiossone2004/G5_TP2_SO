@@ -1,4 +1,4 @@
-#include <stdint.h>  // Bueno hay que arreglar el shift nomas y el ctrl(tema release)
+#include <stdint.h>
 #include <string.h>
 #include <naiveConsole.h>
 #include <keyboard.h>
@@ -41,9 +41,6 @@ int specialKey(uint8_t key) {
 }
 void loadBuffer(uint8_t key){
 
-    // if(curr == 12) {
-    //     curr = 0;
-    // }
 
     if(ctrl_pressed && key == 0x2E){
         p_info * foreground_proc = get_foreground_process();

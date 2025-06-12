@@ -253,7 +253,7 @@ void argsError(uint64_t argc, char *argv[]){
 }
 
 void commandInfo(int i,int j){
-    (void) commandDescrition;   //Bilardeada para sacar el warning
+    (void) commandDescrition;
     (void) commandArgs;
 
             print(TAB);

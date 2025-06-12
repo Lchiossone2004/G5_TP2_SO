@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stddef.h>
 
-// Estructura para información de memoria
 typedef struct {
     size_t total_memory;
     size_t used_memory;
@@ -35,4 +34,4 @@ void mm_get_info(memory_info_t* info);
     #define MEMORY_MANAGER_TYPE "Group Memory Manager"
 #endif
 
-#endif // _MEMORY_MANAGER_H 
+#endif

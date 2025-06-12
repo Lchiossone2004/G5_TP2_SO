@@ -23,7 +23,6 @@ void irqDispatcher(uint64_t irq) {
 
 void int_20() { //interrupcion del timer, cada tick llama a imprimir la hora, minutos y segundos 
 	timer_handler();
-	//timePrint(getHours(), getMins(), getSec());
 }
 
 void int_21(){ //interrupcion del teclado, constantemente se fija si se presiono una tecla o no

@@ -132,8 +132,9 @@ void add_to_process_list(p_info* process) {
 
 p_info* find_process_by_stack(void* sp) {
     for (int i = 0; i < MAX_PROCESSES; i++) {
-        if (processes_list[i] && processes_list[i]->stack_pointer == sp)
-            return processes_list[i];
+        if (processes_list[i] && processes_list[i]->stack_pointer == sp){
+            return processes_list[i];        
+        }
     }
     return NULL;
 }
@@ -166,18 +167,18 @@ int kill_process(int pid) {
 
 int modify_priority(int pid, int newPriority) {
     int idx = foundprocess(pid);
-    if (idx == -1)
+    if (idx == -1) {
         return 0;
-
+    }
     p_info* process = processes_list[idx];
     process->priority = newPriority;
-    int index = find_index(pirority, 4, newPriority);
+    int index = find_index(priority, 4, newPriority);
     if (index == -1) {
         return 0; 
     }
-    size_t prioNameLen = strSize(pirorityName[index]) + 1;
+    size_t prioNameLen = strSize(priorityName[index]) + 1;
     process->priorityName = mm_malloc(prioNameLen);
-    memcpy(process->priorityName, pirorityName[index], prioNameLen);
+    memcpy(process->priorityName, priorityName[index], prioNameLen);
 
     ReadyNode* node = ready_list;
     if (node) {
@@ -195,8 +196,9 @@ int modify_priority(int pid, int newPriority) {
 
 int foundprocess(int pid) {
     for (int i = 0; i < MAX_PROCESSES; i++) {
-        if (processes_list[i] && processes_list[i]->pid == pid)
+        if (processes_list[i] && processes_list[i]->pid == pid) {
             return i;
+        }
     }
     return -1;
 }
@@ -204,7 +206,6 @@ int foundprocess(int pid) {
 void printFixed(const char* str) {
     int len = strSize((char*)str);
     imprimirVideo((char*)str, len, BLANCO);
-
     for (int i = len; i < COL_WIDTH; i++) {
         imprimirVideo(" ", 1, BLANCO);
     }

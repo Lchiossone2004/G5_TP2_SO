@@ -5,19 +5,15 @@ static char letra[1] = {0};
 static int ultimaLetra;
 static int index = 0;
 
-int getKey()
-{
+int getKey(){
     return syscall(3, STDIN, letra, 1);
 }
-void shell()
-{
+void shell(){
     print(NEW_LINE);
     Command aux;
     int readed = -1;
-    while (1)
-    {
-        if (index == WORD_BUFFER_SIZE - 1)
-        {
+    while (1){
+        if (index == WORD_BUFFER_SIZE - 1){
             chekCommand(aux);
             print(NEW_LINE);
             index = 0;
@@ -34,16 +30,13 @@ void shell()
             continue;
         }
         readed = -1;
-        if (*letra == '\1' && index > 0)
-
-        {
+        if (*letra == '\1' && index > 0){
             print("\1");
             index -= 1;
             readed = -1;
             buffer[index] = 0;
         }
-        else if (*letra == '\n' && index > 0)
-        {
+        else if (*letra == '\n' && index > 0){
             print("\n");
             buffer[index++] = '\0';
             chekCommand(aux);
@@ -53,12 +46,10 @@ void shell()
         }
         else {
             print(letra);
-            if (*letra == ' ')
-            {
+            if (*letra == ' '){
                 buffer[index++] = ' ';
             }
-            else
-            {
+            else {
                 buffer[index++] = *letra;
                 ultimaLetra = index;
             }
@@ -84,8 +75,7 @@ int newComand(uint64_t argc,char *argv[]){
     return shell_table[commandNum](auxArgc,argv1, commandNum,is_foreground);
 }
 
-void chekCommand(Command aux)
-{
+void chekCommand(Command aux){
     aux = parseCommand(buffer);
     int pipe_pos = 0;
     for(int i = 0; i<aux.arg_count; i++){

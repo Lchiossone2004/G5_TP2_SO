@@ -104,7 +104,5 @@ int main()
 	createProcess((void*)sampleCodeModuleAddress,0,argv,"first_process",3,0);
 	_sti();
 	while(1);
-	//((EntryPoint)sampleCodeModuleAddress)();		// Llamo al userland
-
 	return 0;
 }

@@ -95,10 +95,10 @@ void copy_context(p_info* new_process, char *name, void *stack_base, void *stack
     new_process->stack_top = stack_top;
 
     new_process->state    = READY;
-    new_process->priority = pirority[prio];
-    size_t prioNameLen = strSize(pirorityName[prio]) + 1;
+    new_process->priority = priority[prio];
+    size_t prioNameLen = strSize(priorityName[prio]) + 1;
     new_process->priorityName = mm_malloc(prioNameLen);
-    memcpy(new_process->priorityName, pirorityName[prio], prioNameLen);
+    memcpy(new_process->priorityName, priorityName[prio], prioNameLen);
     initialize_zero(new_process->children, MAX_CHILDREN);
     new_process->children_length = 0;
     assignForeground(new_process, is_foreground);

@@ -12,8 +12,6 @@ FDEntry fd_table[MAX_FDS] = { NULL};
 
 int create_pipe(int* fd_read, int* fd_write) {
     int pipe_index = -1;
-
-    // Buscar un slot de pipe libre
     for (int i = 2; i < MAX_PIPES; i++) {
         if (pipes[i] == NULL) {
             pipes[i] = mm_malloc(sizeof(Pipe));

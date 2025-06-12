@@ -10,7 +10,7 @@
 typedef enum STATUS {RUNNING,READY, BLOCKED, TERMINATED} STATUS;
 #define MAX_BUFF 10
 
-typedef struct{
+typedef struct {
     int pid;
     char* name;
     void* stack_top;

@@ -7,7 +7,7 @@
 #define MAX_PIPES 10
 #define PIPE_EMPTY -1
 #define PIPE_FULL -2
-#define BUFFER_SIZE 2048    //Tal vez medio grande
+#define BUFFER_SIZE 2048
 #define MAX_FDS 2 * MAX_PIPES
 
 typedef enum { FD_UNUSED, FD_READ, FD_WRITE } FDType;
@@ -40,4 +40,4 @@ int pipe_close(int fd);
 void pipe_destroy(int fd);
 int can_accsess(int fd);
 
-#endif  // PIPE_H
+#endif 

@@ -10,7 +10,6 @@ void imprimirPrograma(char *palabra, int size);
 void charVideo(char num,char isEndLine, uint32_t color);
 void nlVideo();
 void deleteVideo();
-void movVideo(int direc);
 void printHexaVideo(uint64_t value);
 void zoomIN();
 void zoomOUT();

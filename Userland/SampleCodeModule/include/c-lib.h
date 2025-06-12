@@ -10,7 +10,6 @@ void print(char *buffer);
 int read( int fd,char *buffer, int size);
 void write(char *word, int fd,int size);
 void printRegisters();
-void nlPrint();
 void printErr(char *buffer);
 void sleep(int ticks);
 char get_char();

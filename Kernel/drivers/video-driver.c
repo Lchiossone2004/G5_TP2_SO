@@ -23,8 +23,7 @@
 #define COLOR_2 0x009de0f5
 
 
-struct vbe_mode_info_structure
-{
+struct vbe_mode_info_structure {
 	uint16_t attributes;  // deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;	  // deprecated
 	uint8_t window_b;	  // deprecated
@@ -73,8 +72,7 @@ static int y = MOV_Y;
 static int aux = MOV_Y;
 static word matrix[BORDER_Y / MOV_Y][BORDER_X / MOV_X] = {0};
 
-void putPixel(uint32_t hexColor, uint64_t x, uint64_t y)
-{
+void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
 	uintptr_t framebuffer_addr = (uintptr_t)VBE_mode_info->framebuffer;  
 	uint8_t *framebuffer = (uint8_t *)framebuffer_addr;
 	uint64_t offset = (x * ((VBE_mode_info->bpp) / 8)) + (y * VBE_mode_info->pitch);
@@ -105,7 +103,7 @@ void imprimirVideo(char *palabra, int size, uint32_t color) {
 	}
 }
 
-void imprimirPrograma(char *palabra, int size){
+void imprimirPrograma(char *palabra, int size) {
 	int auxX = x;
 	int auxY = y;
 	int auxA = aux;
@@ -162,8 +160,7 @@ void charVideo(char num, char isEndLine, uint32_t color)
 			y += zoom;
 		}
 		x += MOV_X * zoom;
-		if (x >= BORDER_X && isEndLine)
-		{ // Estaria bueno sacar este flag, que es para que borre correctamente
+		if (x >= BORDER_X && isEndLine) {
 			aux += MOV_Y * zoom;
 			x = 0;
 		}
@@ -175,8 +172,7 @@ void charVideo(char num, char isEndLine, uint32_t color)
 	}
 }
 
-void nlVideo()
-{ // Hace un salto de linea
+void nlVideo() { // Hace un salto de linea
 	if (y < BORDER_Y - (16 * zoom))
 	{
 		aux += MOV_Y * zoom;
@@ -189,8 +185,7 @@ void nlVideo()
 	}
 }
 
-void deleteVideo()
-{ // Borra caracteres
+void deleteVideo() { // Borra caracteres
 	word vol;
 	vol.num = 0;
 	vol.color = BLANCO;
@@ -215,14 +210,12 @@ void deleteVideo()
 	}
 }
 
-void printHexaVideo(uint64_t value)
-{
+void printHexaVideo(uint64_t value) {
 	char buffer[16] = {0};
 	uintToBase(value, buffer, 16);
 	imprimirVideo(buffer, 16, BLANCO);
 }
-void clearScreen()
-{
+void clearScreen() {
 	for (int i = MOV_Y; i < BORDER_Y; i++)
 	{
 		for (int j = 0; j < BORDER_X; j++)
@@ -234,8 +227,7 @@ void clearScreen()
 	y = MOV_Y;
 	aux = MOV_Y;
 }
-void rePrint()
-{ // 1 zoomIN, 0 zoomOUT
+void rePrint() { // 1 zoomIN, 0 zoomOUT
 	clearScreen();
 	for (int i = 0; i < (BORDER_Y / MOV_Y) / zoom; i++)
 	{
@@ -251,8 +243,7 @@ void rePrint()
 	return;
 }
 
-void videoClear()
-{ // funcion que devuelve la pantalla a su estado "incial"
+void videoClear() {
 	clearScreen();
 	for (int i = 0; i < (BORDER_Y / MOV_Y); i++)
 	{
@@ -266,8 +257,7 @@ void videoClear()
 	aux = MOV_Y;
 }
 
-void zoomIN()
-{
+void zoomIN() {
 	if (zoom < 2)
 	{
 		zoom++;
@@ -277,8 +267,7 @@ void zoomIN()
 		return;
 	}
 }
-void zoomOUT()
-{
+void zoomOUT() {
 	if (zoom > 1)
 	{
 		zoom--;
@@ -289,7 +278,7 @@ void zoomOUT()
 	}
 }
 
-uint64_t goMiddle(){
+uint64_t goMiddle() {
 	x = BORDER_X/2;
 	return x;
 }
