@@ -68,21 +68,21 @@ void loadBuffer(uint8_t key){
 
     }
     else if(key == 14){   
-        char *aux = {'\1', '\0'};
-        buffer[write] = aux;
+        char *aux = "\1";
+        buffer[write] = (uint16_t)aux[0];
         write = (write + 1) % BUFFER_SIZE; 
         sem_post(is_key);
     }
     else if(key == 28){      
-        char * aux = {'\n', '\0'};
-        buffer[write] = aux; 
+        char * aux = "\n";
+        buffer[write] = (uint16_t)aux[0]; 
         write = (write + 1) % BUFFER_SIZE; 
         sem_post(is_key);  
     }
     else if(key == 0x0F){  
         char  *aux = (char *) ' ';
         for(int i = 0; i < 5; i++){
-            buffer[write] = aux; 
+            buffer[write] = (uint16_t)aux[0]; 
             write = (write + 1) % BUFFER_SIZE; 
             sem_post(is_key);
         }

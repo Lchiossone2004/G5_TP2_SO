@@ -202,7 +202,7 @@ uint64_t sys_ranN(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
 
 uint64_t sys_malloc(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     size_t size = (size_t) rsi;
-    if (size == 0) return NULL;
+    if (size == 0) return -1;
     void* ptr = mm_malloc(size);
     return (uint64_t) ptr;
 }
@@ -325,5 +325,6 @@ uint64_t sys_dup(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t
     }
 }
 uint64_t sys_memset(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10) {
-    return memset((void *) rsi, (int32_t) rdx,rcx);
+    memset((void *) rsi, (int32_t) rdx,rcx);
+    return 0;
 }
