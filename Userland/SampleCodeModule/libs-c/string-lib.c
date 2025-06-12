@@ -53,39 +53,6 @@ int strToInt(const char *str) {
     return res;
 }
 
-void strCpy(char* dest, const char* src) {
-    char* ptr = dest;
-    while (*src != '\0') {
-        *ptr++ = *src++;
-    }
-    *ptr = '\0';  
-}
-
-void deleteSpaces(char * input){
-    int i = 0, j = 0;
-    int space_flag = 0;
-
-    while (input[i] == ' '){ 
-        i++;
-    }
-    while (input[i] != '\0') {
-        if (input[i] != ' ') {
-            input[j++] = input[i++];
-            space_flag = 0;
-        } else {
-            if (!space_flag) {
-                input[j++] = ' ';
-                space_flag = 1;
-            }
-            i++;
-        }
-    }
-
-    if (j > 0 && input[j - 1] == ' ') {
-        j--;
-    }
-    input[j] = '\0'; 
-}
 
 void intToString(int value, char *buffer, size_t bufferSize){
     if (bufferSize < 2) {
@@ -127,61 +94,9 @@ void intToString(int value, char *buffer, size_t bufferSize){
 
     buffer[j < bufferSize - 1 ? j : bufferSize - 1] = '\0';
 }
-char *strpbrk(const char *str1, const char *str2) {
-    while (*str1) {
-        const char *s2 = str2;
-        while (*s2) {
-            if (*str1 == *s2) {
-                return (char *)str1;
-            }
-            s2++;
-        }
-        str1++;
-    }
-    return NULL; 
-}
-char *strchr(const char *str, int c) {
-    while (*str != '\0') {
-        if (*str == (char)c) {
-            return (char *)str; 
-        }
-        str++;
-    }
-    return NULL;  
-}
-char* strtok(char* str, const char* delimiters) {
-    static char* static_str = NULL; 
-    char* token;
-    
-    if (str) {
-        static_str = str;
-    }
-
-    if (!static_str) {
-        return NULL;  
-    }
-    while (*static_str && strchr(delimiters, *static_str)) {
-        static_str++;
-    }
-
-    if (!*static_str) {
-        return NULL;  
-    }
-
-    token = static_str;
 
 
-    while (*static_str && !strchr(delimiters, *static_str)) {
-        static_str++;
-    }
 
-    if (*static_str) {
-        *static_str = '\0';  
-        static_str++;  
-    }
-
-    return token;
-}
 size_t strlen(const char *s) {
     size_t len = 0;
     while (s[len] != '\0') {
@@ -189,15 +104,6 @@ size_t strlen(const char *s) {
     }
     return len;
 }
-int isBlank(char c) {
-    return (c == ' '  ||
-            c == '\t' ||
-            c == '\n' ||
-            c == '\v' ||
-            c == '\f' ||
-            c == '\r');
-}
-
 int isVowel(char c) {
     return (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' ||
             c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U');

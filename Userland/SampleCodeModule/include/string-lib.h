@@ -8,14 +8,8 @@ int strSize(char *word);
 int strCompare(char *s1, char *s2);
 void size_t_to_str(size_t value, char* buffer);
 int strToInt(const char *str);
-void strCpy(char* dest, const char* src);
-void deleteSpaces(char * str);
 void intToString(int value, char *buffer, size_t bufferSize);
-char *strpbrk(const char *str1, const char *str2);
-char *strchr(const char *str, int c);
-char* strdup(const char* str);
 size_t strlen(const char *s); 
-int isBlank(char c); 
 int isVowel(char c);
 int removeRepeated(char *str);
 #endif
