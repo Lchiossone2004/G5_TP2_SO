@@ -61,8 +61,6 @@ void phylo_process(int argc, char *argv[]) {
     int idx = argv[0][0] - '0';
     usr_free(argv[0]);
     usr_free(argv);
-    print(phylo_names[idx]);
-    write(" joined the table.\n", STDOUT, 19);
     phylo_states[idx] = THINKING;
     while (1) {
         sleep(20);
@@ -95,6 +93,8 @@ int new_phylo(int idx) {
         usr_sem_post(SEM_GLOBAL);
         return -1;
     }
+    print(phylo_names[idx]);
+    write(" joined the table.\n", STDOUT, 19);
     phylo_count++;
     print_status();
     usr_sem_post(SEM_GLOBAL);
