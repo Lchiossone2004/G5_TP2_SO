@@ -9,7 +9,7 @@
 #define pid_t int16_t
 typedef struct semaphore {
     int16_t value;
-    int8_t lock;
+    uint8_t lock;
     pid_t waiting[MAX_PROCESSES];
     int head, tail, count;
 } semaphore;

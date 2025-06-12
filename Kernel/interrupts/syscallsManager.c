@@ -210,7 +210,7 @@ uint64_t sys_malloc(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint6
 uint64_t sys_free(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     void *ptr = (void *) rsi;
     if (ptr == NULL) return 0;
-    size_t freed_size = mm_free(ptr);
+    mm_free(ptr);
     return 0;
 }
 
