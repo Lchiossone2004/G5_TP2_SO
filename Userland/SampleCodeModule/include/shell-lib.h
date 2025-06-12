@@ -9,7 +9,7 @@
 #include <c-lib.h>
 
 #define WORD_BUFFER_SIZE 1024
-#define NUMBER_OF_COMMANDS 20
+#define NUMBER_OF_COMMANDS 21
 #define TAB "     "
 #define NEW_LINE "shell: >"
 #define STDIN 0
@@ -25,7 +25,7 @@ typedef enum {
 
 static char *commands[] = {
     "help", "time", "zoom", "clear", "regs", "div cero", "invalid op", "test", "block", 
-    "unblock", "nice", "yeild", "kill", "ps", "loop", "mem", "cat", "wc", "filter","shell"
+    "unblock", "nice", "yeild", "kill", "ps", "loop", "mem", "cat", "wc", "filter","shell", "phylo"
 };
 
 static char *commandDescrition[] = {
@@ -48,11 +48,12 @@ static char *commandDescrition[] = {
     "Reads from STDIN and writes to STDOUT.",
     "Counts the number of lines in the input.",
     "Filters the vowels in the input.",
-    "Opens a new shell."
+    "Opens a new shell.",
+    "Dining philosophers problem."
 };
 
 
-static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none", "none", "none","none"};
+static char *commandArgs[] = {"all", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none", "none", "none","none", "none"};
 
 
 
