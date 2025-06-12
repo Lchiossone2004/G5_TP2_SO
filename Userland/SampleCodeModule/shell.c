@@ -8,6 +8,7 @@ static int index = 0;
 int getKey(){
     return syscall(3, STDIN, letra, 1);
 }
+
 void shell(){
     print(NEW_LINE);
     Command aux;
@@ -60,19 +61,21 @@ void shell(){
 
 int newComand(uint64_t argc,char *argv[]){
     char * command;
-    int auxArgc = argc-1;
+    int auxArgc = 1;
     command = argv[0];
     int is_foreground = 1;
-    if(strCompare(argv[0],"&")){
+    if(argc > 1 && strCompare(argv[1],"&")){
         is_foreground = 0;
-        auxArgc--;
+        auxArgc++;
     }
-    char * argv1[auxArgc];
-    for(int i = auxArgc; i < argc; i++){
-        argv1[i] = argv[i];
+    char * argv1[argc - auxArgc];
+    int index= 0;
+    for(int i = auxArgc; i <=argc; i++){
+        argv1[index++] = argv[i];
     }
+    index--;
     int commandNum = processCommand(command);
-    return shell_table[commandNum](auxArgc,argv1, commandNum,is_foreground);
+    return shell_table[commandNum](index,argv1, commandNum,is_foreground);
 }
 
 void chekCommand(Command aux){
@@ -146,7 +149,6 @@ Command parseCommand(char *input) {
     toRet.args = (char **)usr_malloc(sizeof(char *) * MAX_ARGS);
     toRet.arg_count = 0;
 
-
     while (index < len && input[index] == ' ') index++;
 
     while (index < len && toRet.arg_count < MAX_ARGS) {
@@ -167,7 +169,6 @@ Command parseCommand(char *input) {
 
     return toRet;
 }
-
 
 void freeCommand(Command *cmd) {
     for (int i = 0; i < cmd->arg_count; i++) {

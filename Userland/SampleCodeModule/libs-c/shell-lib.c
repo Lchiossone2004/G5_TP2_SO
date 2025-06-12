@@ -99,7 +99,7 @@ void invalidOperation(uint64_t argc, char *argv[], char* command, int is_foregor
 }
 
 int test(uint64_t argc, char *argv[], char* command, int is_foregorund){
-    if(argc == 0){
+    if(argc == 1){
         argsError(argc,argv);
     }
     if(strCompare(argv[0],"MM")){
