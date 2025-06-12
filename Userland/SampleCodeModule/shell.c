@@ -23,15 +23,13 @@ void shell(){
         while (readed == -1){
             readed = getKey();
         }
+        readed = -1;
         if(index == 0 && *letra == '\n'){
             print(letra);
             print(NEW_LINE);
             index = 0;
-            readed = -1;
-            continue;
         }
-        readed = -1;
-        if (*letra == '\1' && index > 0){
+        else if (*letra == '\1' && index > 0){
             print("\1");
             index -= 1;
             readed = -1;
@@ -75,7 +73,7 @@ int newComand(uint64_t argc,char *argv[]){
     }
     index--;
     int commandNum = processCommand(command);
-    return shell_table[commandNum](index,argv1, commandNum,is_foreground);
+    return shell_table[commandNum](index,argv1, command,is_foreground);
 }
 
 void chekCommand(Command aux){
