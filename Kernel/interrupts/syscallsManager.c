@@ -28,10 +28,6 @@
 #define PARA_ALEATORIOS_2 1013904223   
 #define EOF '\0'
 
-static size_t total_allocated = 0;
-static size_t total_freed = 0;
-static size_t current_blocks = 0;
-
 typedef uint64_t (*syscall_fn)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
 
 extern void _sti();
@@ -205,25 +201,15 @@ uint64_t sys_ranN(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
 
 uint64_t sys_malloc(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     size_t size = (size_t) rsi;
-
-    if (size == 0) return 0;
-
+    if (size == 0) return NULL;
     void* ptr = mm_malloc(size);
-    if (ptr != NULL) {
-        total_allocated += size;
-        current_blocks++;
-    }
     return (uint64_t) ptr;
 }
 
 uint64_t sys_free(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     void *ptr = (void *) rsi;
     if (ptr == NULL) return 0;
-
     size_t freed_size = mm_free(ptr);
-    total_allocated -= freed_size;
-    total_freed += freed_size;
-    current_blocks--;
     return 0;
 }
 
@@ -232,10 +218,11 @@ uint64_t sys_get_memory_info(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t 
     if (info == NULL) return 0;
 
     mm_get_info(info);
-    info->total_allocated = total_allocated;
-    info->total_freed = total_freed;
-    info->current_blocks = current_blocks;
-    info->memory_leak = (total_allocated > total_freed);
+    info->total_memory = info->total_memory;
+    info->free_memory = info->free_memory;
+    info->used_memory = info->used_memory;
+    info->current_blocks=info->current_blocks;
+    info->free_block_count= info->free_block_count;
     return 0;
 }
 

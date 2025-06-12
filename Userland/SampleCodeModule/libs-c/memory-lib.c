@@ -21,33 +21,33 @@ void print_usr_mem_info(){
     syscall(12,&info);
     char buffer[100];
 
-    size_t_to_str(info.current_blocks, buffer);
+    size_t_to_str(info.total_memory, buffer);
     print(TAB);
-    print("Current Blocks: ");
+    print("Total memory: ");
     print(buffer);
     print("\n");
 
-    size_t_to_str(info.block_count, buffer);
+    size_t_to_str(info.free_memory, buffer);
      print(TAB);
-    print("Block Count: ");
+    print("Free memory: ");
+    print(buffer);
+    print("\n");
+
+    size_t_to_str(info.used_memory, buffer);
+    print(TAB);
+    print("Used memory: ");
+    print(buffer);
+    print("\n");
+
+    size_t_to_str(info.current_blocks, buffer);
+    print(TAB);
+    print("Current blocks: ");
     print(buffer);
     print("\n");
 
     size_t_to_str(info.free_block_count, buffer);
     print(TAB);
-    print("Free Block Count: ");
-    print(buffer);
-    print("\n");
-
-    size_t_to_str(info.free_memory, buffer);
-    print(TAB);
-    print("Free Memory: ");
-    print(buffer);
-    print("\n");
-
-    size_t_to_str(info.total_allocated, buffer);
-    print(TAB);
-    print("Total Allocated: ");
+    print("Free blocks: ");
     print(buffer);
     print("\n");
 }

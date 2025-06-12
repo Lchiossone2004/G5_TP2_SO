@@ -144,7 +144,7 @@ static void group_get_info(memory_info_t *info) {
     info->total_allocated = total_allocated;
     info->total_freed     = total_freed;
     info->memory_leak     = (total_allocated != total_freed);
-
+    info->current_blocks = current_blocks;
     size_t free_mem = 0;
     size_t free_blocks = 0;
     if (free_list) {
