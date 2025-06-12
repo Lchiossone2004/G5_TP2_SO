@@ -12,9 +12,7 @@ typedef struct P_rq {
   enum State state;
 } p_rq;
 
-void wakeUpLolo(){
-    print_usr_mem_info();
-}
+
 int64_t test_processes(uint64_t argc, char *argv[]) {
   uint8_t rq;
   uint8_t alive = 0;
@@ -35,9 +33,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
         // Create max_processes processes
         for (rq = 0; rq < max_processes; rq++) {
         int32_t pid = usr_create_process(endless_loop,0,argvAux,"endless_loop",3,0);
-                    if(pid == -1 || pid > 20){
-                wakeUpLolo();
-            }
+           
         p_rqs[rq].pid = pid;
         //p_rqs[rq].pid = usr_create_process(endless_loop,0,argvAux,"endless_loop",3,0);
         if (p_rqs[rq].pid == -1) {
@@ -70,7 +66,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
                 case 1:
                     if (p_rqs[rq].state == RUNNING) {
                     if (usr_block_process(p_rqs[rq].pid) == -1) {
-                        wakeUpLolo();
+                
                         print("test_processes: ERROR blocking process\n");
                         return -1;
                     }
