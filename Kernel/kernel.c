@@ -37,8 +37,8 @@ void * getStackBase()
 {
 	return (void*)(
 		(uint64_t)&endOfKernel
-		+ PageSize * 8				//The size of the stack itself, 32KiB
-		- sizeof(uint64_t)			//Begin at the top of the stack
+		+ PageSize * 8			
+		- sizeof(uint64_t)		
 	);
 }
 
@@ -91,13 +91,12 @@ void * initializeKernelBinary()
 
 int main()
 {	
-	load_idt(); 									//Cargo las interrupciones
+	load_idt(); 								
 	
-	// Inicializar el administrador de memoria
-	void* memory_start = (void*)0x600000;  // Dirección de inicio de la memoria disponible
+	void* memory_start = (void*)0x600000; 
 	init_semaphores();
 	init_keyboard();
-	size_t memory_size = 0x200000;         // 2MB de memoria disponible
+	size_t memory_size = 0x200000;   
 	init_memory_manager(memory_start, memory_size);
 	sleep_queue_init();
 	char *argv[] = {0};

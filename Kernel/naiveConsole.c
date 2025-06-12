@@ -4,8 +4,8 @@
 static char buffer[64] = { '0' };
 static uint8_t * const video = (uint8_t*)0xB8000;
 static uint8_t * currentVideo = (uint8_t*)0xB8000;
-static uint8_t * maxVideo  = (uint8_t*)0xB8000; //puntero a la maxima posicion del puntero de texto (osea al ultimo caracter)
-static uint8_t * timeVideo; //puntero que apunta a la direccion donde se va a imprimir constantemente el reloj 
+static uint8_t * maxVideo  = (uint8_t*)0xB8000; 
+static uint8_t * timeVideo;
 static const uint32_t width = 80;
 static const uint32_t height = 25 ;
 
@@ -64,7 +64,7 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base){
 	char *p1, *p2;
 	uint32_t digits = 0;
 
-	//Calculate characters for each digit
+	
 	do
 	{
 		uint32_t remainder = value % base;
@@ -73,10 +73,10 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base){
 	}
 	while (value /= base);
 
-	// Terminate string in buffer.
+	
 	*p = 0;
 
-	//Reverse string in buffer.
+
 	p1 = buffer;
 	p2 = p - 1;
 	while (p1 < p2)
@@ -91,7 +91,7 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base){
 	return digits;
 }
 
-// Funcion que imprime el tiempo 
+
 
 void timePrint(int hours, int minutes, int seconds){
 	timeVideo = (uint8_t*)0xB8088;
@@ -117,7 +117,7 @@ void timePrint(int hours, int minutes, int seconds){
 
 }
 
-void ncDelete(){ //borra caracteres y mueve toda la cadena uno hacia la izquierda por si borramos algo de la mitad del texto 
+void ncDelete(){  
 	cambioCursor();
 	currentVideo -=2;
 	*currentVideo = ' ';
@@ -130,21 +130,21 @@ void ncDelete(){ //borra caracteres y mueve toda la cadena uno hacia la izquierd
 	maxVideo -=2;
 	cursor();
 }
-void ncMovDir(){ //mueve el puntero de texto hacia la derecha 
+void ncMovDir(){ 
 	cambioCursor();
 	currentVideo += 2;
 	cursor();
 }
 
-void ncMovIzq(){ //mueve el puntero de texto hacia la izquierda
+void ncMovIzq(){ 
 	cambioCursor();
 	currentVideo -= 2;
 	cursor();
 }
 
-void cursor(){			//Pone el cursor  
+void cursor(){			 
 	*(currentVideo + 1)= 0x2f;
 }
-void cambioCursor(){    //Saca el cursor
+void cambioCursor(){    
 	*(currentVideo + 1) = 7; 
 }

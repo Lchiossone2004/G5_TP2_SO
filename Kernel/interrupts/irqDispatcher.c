@@ -21,16 +21,16 @@ void irqDispatcher(uint64_t irq) {
 	return;
 }
 
-void int_20() { //interrupcion del timer, cada tick llama a imprimir la hora, minutos y segundos 
+void int_20() { 
 	timer_handler();
 }
 
-void int_21(){ //interrupcion del teclado, constantemente se fija si se presiono una tecla o no
+void int_21(){ 
 	uint16_t key = getKey();
 	if(key == 0x01){
 		saveCPURegisters();
 	}
-    uint8_t scancode = key & 0xFF; // los primeros 8 bits son el scancode
+    uint8_t scancode = key & 0xFF;
     uint8_t isPressed = (key >> 8) & 0x01; 
 	updateKeyboardStatus(scancode, isPressed);
 	if(isPressed) {

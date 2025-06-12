@@ -34,7 +34,7 @@ extern void _sti();
 
 static int seed = 0;
 
-// Array de punteros a funciones, indexado por syscall ID
+
 static syscall_fn syscall_table[] = {
     [1] = sys_registers_print,
     [2] = sys_getChar,

@@ -27,7 +27,7 @@ void printTime(int area) {
 		aux2 = aux2 + 0x01;
 	}
 	toPrint[0] = aux + '0';
-	toPrint[1] = aux2 + '0'; // guardo los 4 bits menos significativos y el resto lo pongo en 0
+	toPrint[1] = aux2 + '0'; 
 
 	aux = Timepo[1] >> 4;
 	toPrint[3] = aux + '0';

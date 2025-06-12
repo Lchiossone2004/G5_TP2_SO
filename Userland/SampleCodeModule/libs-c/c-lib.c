@@ -7,7 +7,6 @@
 
 extern uint64_t syscall(uint64_t rdi, ...);
 static bool is_semaphore[SEM_MAX] = { false };
-//Other
 
 void printRegisters(){
     syscall(1, STDOUT);
@@ -42,7 +41,7 @@ int readLine(char *buffer, size_t size){
     return syscall(42, STDIN, buffer, size, 0, 0, 0);
 }
 
-//Proc
+
 
 int32_t usr_create_process(void* fn, uint64_t argc, char *argv[], char * name, int prio, int is_foreground){
     int32_t pid = (int32_t)syscall(13,fn,argc,argv, name, prio, is_foreground);
@@ -72,7 +71,7 @@ void usr_yield(){
 
 void usr_nice(int pid, int newPrio){
     if(pid > 0 && newPrio > 0){
-        syscall(17,pid,newPrio); //FALTA
+        syscall(17,pid,newPrio); 
     }
 }
 
@@ -83,7 +82,7 @@ int usr_change_std(int pid, int std, int newFd){
 void usr_wait_children(){
      syscall(22);
 }
-//Sems
+
 
 int usr_sem_open(int id, int initial_value) {
     int ret = syscall(24, id, initial_value);
@@ -118,7 +117,7 @@ int usr_sem_getvalue(int id){
     return syscall(28, id);
 }
 
-//Pipes
+
 
 int usr_open_pipe(int *fd_read, int* fd_write){
     return syscall(29,fd_read, fd_write); 

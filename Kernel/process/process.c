@@ -121,23 +121,6 @@ void copy_context(p_info* new_process, char *name, void *stack_base, void *stack
 
 
 
-int wait_pid(int pid) {         //SOBRA
-    p_info *current = get_current_process();
-
-
-    if (foundprocess(pid) != -1 && current->waiting_on_child > 0) {
-        block_process(current->pid);
-        quitCPU();               
-    }
-    for (int i = 0; i < current->children_length; i++) {
-        if (current->children[i] == pid) {
-            current->children[i] = 0;
-            break;
-        }
-   }
-   return pid;
-}
-
 int wait() {
     p_info *current = get_current_process();
     int ret = -1;

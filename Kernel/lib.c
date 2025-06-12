@@ -121,7 +121,7 @@ size_t strcpy_from_index(char *dest, const char *src, size_t start_index, size_t
         i++;
     }
     dest[i] = '\0';
-    return i; // cantidad de caracteres copiados
+    return i; 
 }
 int find_index(int arr[], int size, int value) {
     for (int i = 0; i < size; i++) {

@@ -5,10 +5,10 @@
 #include <lib.h>
 #include "scheduler.h"
 
-#define MOV_X 8		  // Lo que ocupa en x de un char
-#define MOV_Y 16	  // Lo que ocupa en y de un char
-#define BORDER_X 1024 // maximo ancho (en pixeles) de la pantalla
-#define BORDER_Y 768  // maximo largo (en pixeles) de la pantalla
+#define MOV_X 8		
+#define MOV_Y 16	
+#define BORDER_X 1024 
+#define BORDER_Y 768  
 #define HEIGHT 8
 #define WIDTH 128
 #define MAX_ZOOM 10
@@ -55,9 +55,9 @@ struct vbe_mode_info_structure {
 	uint8_t reserved_position;
 	uint8_t direct_color_attributes;
 
-	uint32_t framebuffer; // physical address of the linear frame buffer; write here to draw to the screen
+	uint32_t framebuffer; 
 	uint32_t off_screen_mem_off;
-	uint16_t off_screen_mem_size; // size of memory in the framebuffer but not being displayed on the screen
+	uint16_t off_screen_mem_size; 
 	uint8_t reserved1[206];
 } __attribute__((packed));
 
@@ -66,7 +66,7 @@ typedef struct vbe_mode_info_structure *VBEInfoPtr;
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr)0x0000000000005C00;
 
 uint8_t new_font[MAX_ZOOM + 1][WIDTH * (MAX_ZOOM + 2)][HEIGHT * (MAX_ZOOM + 2)];
-static int zoom = 1; // zoom inicial
+static int zoom = 1; 
 static int x = 0;
 static int y = MOV_Y;
 static int aux = MOV_Y;
@@ -172,7 +172,7 @@ void charVideo(char num, char isEndLine, uint32_t color)
 	}
 }
 
-void nlVideo() { // Hace un salto de linea
+void nlVideo() {
 	if (y < BORDER_Y - (16 * zoom))
 	{
 		aux += MOV_Y * zoom;
@@ -185,7 +185,7 @@ void nlVideo() { // Hace un salto de linea
 	}
 }
 
-void deleteVideo() { // Borra caracteres
+void deleteVideo() { 
 	word vol;
 	vol.num = 0;
 	vol.color = BLANCO;
@@ -227,7 +227,7 @@ void clearScreen() {
 	y = MOV_Y;
 	aux = MOV_Y;
 }
-void rePrint() { // 1 zoomIN, 0 zoomOUT
+void rePrint() { 
 	clearScreen();
 	for (int i = 0; i < (BORDER_Y / MOV_Y) / zoom; i++)
 	{

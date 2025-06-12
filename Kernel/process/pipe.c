@@ -147,10 +147,10 @@ int pipe_accses(int pid, int fd){
     for(int i = 0; i < MAX_BUFF*2; i++){
         if(proc->fd_table[i] == -1){
             proc->fd_table[i] = fd;
-            if(fd_table[fd].type ==  FD_READ){   //READ
+            if(fd_table[fd].type ==  FD_READ){   
                 pipe->read_open++;
             }
-            if(fd_table[fd].type == FD_WRITE ){   //Write
+            if(fd_table[fd].type == FD_WRITE ){   
                 pipe->write_open++;
             }
     return 0;
@@ -169,10 +169,10 @@ int pipe_close(int fd){
     for(int i = 0; i < MAX_BUFF*2; i++){
         if(curr_proc->fd_table[i] == fd){
             curr_proc->fd_table[i] = -1;
-            if(fd_table[fd].type ==  FD_READ){   //READ
+            if(fd_table[fd].type ==  FD_READ){   
                 pipe->read_open--;
             }
-            if(fd_table[fd].type == FD_WRITE ){   //Write
+            if(fd_table[fd].type == FD_WRITE ){   
                 pipe->write_open--;
             }
             if(pipe->read_open == 0 && pipe->write_open == 0){

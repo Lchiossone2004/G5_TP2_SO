@@ -7,7 +7,7 @@
 #include "command-lib.h"
 #include "phylo.h"
 
-// #define EOF '\0'
+
 
 
 int help(uint64_t argc, char *argv[], char* command, int is_foregorund){
@@ -118,7 +118,7 @@ int test(uint64_t argc, char *argv[], char* command, int is_foregorund){
     }
     else if(strCompare(argv[0],"Sync")){
         argc = 2;
-        argv[0] = argv[1];  //QUE ES ESTO?
+        argv[0] = argv[1]; 
         argv[1] = argv[2];
         return usr_create_process((void*)test_sync,argc,argv, "sync test", PRIORITY_LOW, is_foregorund);
     }
