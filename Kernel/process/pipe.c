@@ -184,11 +184,14 @@ int pipe_close(int fd){
     return -1;
 }
 
-void pipe_destroy(int fd){          //LIBERAR LOS PROCESOS LOCKEADOS    [FALTA]
+void pipe_destroy(int fd){          //LIBERAR LOS PROCESOS LOCKEADOS    [FALTA] 
     Pipe *pipe = fd_table[fd].pipe;
     fd_table[fd].in_use = 0;
     fd_table[fd].pipe = NULL;
-    fd_table[fd].type = FD_UNUSED;
+    fd_table[fd].type = FD_UNUSED; //Asigna de a pares asi que podemos hacer esto
+    fd_table[fd-1].in_use = 0;
+    fd_table[fd-1].pipe = NULL;
+    fd_table[fd-1].type = FD_UNUSED;
     mm_free(pipes[pipe->id]);
 }
 

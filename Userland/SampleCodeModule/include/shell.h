@@ -9,7 +9,7 @@
 
 #define NEW_LINE "shell: >"
 #define MAX_ARG_LEN 64
-#define MAX_ARGS 5
+#define MAX_ARGS 20
 
 typedef int (*shell_fn)(uint64_t, char*[], char*,int);
 
@@ -35,7 +35,8 @@ static shell_fn shell_table[] = {
     [18] = wc,
     [19] = filter,
     [20] = newShell,
-    [21] = phylosophers
+    [21] = phylosophers,
+    [22] = echo
 };
 
 typedef struct {

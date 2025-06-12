@@ -253,6 +253,10 @@ int filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
     return usr_create_process((void*)filter_command, argc, argv, "filter", PRIORITY_LOW, is_foreground);
 }
 
+int echo(uint64_t argc, char *argv[], char* command, int is_foreground){
+    return usr_create_process((void*)echo_command, argc, argv, "echo", PRIORITY_LOW, is_foreground);
+}
+
 int invalid(uint64_t argc, char *argv[], char* command, int is_foregorund){
     print(TAB);
     printErr("command: [");

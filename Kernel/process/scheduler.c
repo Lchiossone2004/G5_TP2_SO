@@ -147,6 +147,9 @@ p_info* get_current_process() {
 }
 
 int kill_process(int pid) {
+    if(pid < 1){
+        return 0;
+    }
     int idx = foundprocess(pid);
     if (idx == -1)
         return -1;

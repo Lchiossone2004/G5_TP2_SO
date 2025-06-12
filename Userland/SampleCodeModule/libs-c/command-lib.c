@@ -49,10 +49,10 @@ void cat_command() {
         buffer[pos++] = c;
 
         if (c == '\n' || pos >= (int)sizeof(buffer) - 1 || c == EOF) {
-            print("\n");
-            buffer[pos] = '\0';  
-            print(buffer);
-            print("\n");
+            //print("\n");
+            //buffer[pos] = '\0';  
+            //print(buffer);
+            //print("\n");
             printShell();
             return;
         }
@@ -109,6 +109,14 @@ void mem_command() {
     print_usr_mem_info();
     printShell();
     return;
+}
+
+void echo_command(int argc,char* argv[]){
+    for(int i = 0; i<argc; i++){
+        print(argv[i]);
+        print(" ");
+    }
+    print("\n");
 }
 void printShell(){
     print("\n");

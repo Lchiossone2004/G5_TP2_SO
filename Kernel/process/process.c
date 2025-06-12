@@ -122,10 +122,9 @@ void copy_context(p_info* new_process, char *name, void *stack_base, void *stack
 int wait_pid(int pid) {        
     p_info *current = get_current_process();
 
-
+    int toRet = 0;
     if (foundprocess(pid) != -1 && current->waiting_on_child > 0) {
-        block_process(current->pid);
-        quitCPU();               
+        toRet ++;              
     }
     for (int i = 0; i < current->children_length; i++) {
         if (current->children[i] == pid) {
@@ -133,7 +132,7 @@ int wait_pid(int pid) {
             break;
         }
    }
-   return pid;
+   return toRet;
 }
 
 
@@ -148,8 +147,11 @@ int wait() {
             ret = wait_pid(child);
         }
     }
-    return ret;
+    current->waiting_on_child = ret;
+    block_process(current->pid);
+    callScheduler();
 }
+
 void initialize_zero(uint16_t array[], int size) {
     for (int i = 0; i < size; i++) {
         array[i] = 0;

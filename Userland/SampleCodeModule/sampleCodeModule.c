@@ -14,8 +14,8 @@ void idle(){
 int main() {
 	char *argv[] = {0};
 	usr_create_process((void*)idle,0,argv, "idle", PRIORITY_LOW,1);
-	usr_create_process((void*)shell,0,argv, "shell", PRIORITY_NORMAL,1);
-	while (1) {}
+	usr_create_process((void*)shell,0,argv, "shell", PRIORITY_NORMAL,1);	
+	usr_wait_children();
 
 	return 0xDEADBEEF;
 }

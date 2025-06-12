@@ -63,28 +63,27 @@ int16_t sem_close(int16_t id) {
 int16_t sem_post(int16_t id) {
     if (id < 0 || id >= SEM_MAX) return -1;
     semaphore *s = &semaphores[id];
-    pid_t pid;
-
+    
     lock_acquire(&s->lock);
+
     if (s->value == -1) {
         lock_release(&s->lock);
         return -1;
     }
-    if (s->count > 0) {
 
-        for(int i = 0; i<s->count; i++){
-            pid = s->waiting[s->head - i];
-            if(get_process_by_pid(pid) != NULL){
-                s->head = (s->head + 1) % MAX_PROCESSES;
-                s->count--;
-                lock_release(&s->lock);
-                unblock_process(pid);
-            }
-        }        
-    } else {
-        s->value++;
-        lock_release(&s->lock);
+    while (s->count > 0) {
+        pid_t pid = s->waiting[s->head];
+        s->head = (s->head + 1) % MAX_PROCESSES;
+        s->count--;
+
+        if (get_process_by_pid(pid) != NULL) {
+            lock_release(&s->lock);
+            unblock_process(pid);
+            return 0;
+        }
     }
+    s->value++;
+    lock_release(&s->lock);
     return 0;
 }
 

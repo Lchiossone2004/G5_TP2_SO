@@ -42,7 +42,7 @@ void shell(){
             index = 0;
             readed = -1;
         }
-        else {
+        else if (*letra != '\1' ) {
             print(letra);
             if (*letra == ' '){
                 buffer[index++] = ' ';
