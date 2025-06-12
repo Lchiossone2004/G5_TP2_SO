@@ -87,7 +87,7 @@ int new_phylo(int idx) {
     argv[0][0] = '0' + idx;
     argv[0][1] = '\0';
     argv[1] = NULL;
-    phylo_pids[idx] = usr_create_process((void*)phylo_process, 1, argv, phylo_names[idx], 0, 1);
+    phylo_pids[idx] = usr_create_process((void*)phylo_process, 1, argv, phylo_names[idx], 0, 0);
     if (phylo_pids[idx] < 0) {
         usr_sem_close(SEM_FORK(idx));
         usr_free(argv[0]);
