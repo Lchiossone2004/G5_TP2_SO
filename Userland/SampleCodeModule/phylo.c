@@ -123,7 +123,7 @@ void remove_phylo(int idx) {
     usr_sem_post(SEM_GLOBAL);
 }
 
-static void remove_all(int max) {
+ void remove_all(int max) {
     for (int i = max - 1; i >= 0; i--) {
         if (phylo_states[i] != NONE) remove_phylo(i);
     }
@@ -138,7 +138,6 @@ int phylo_main() {
         return -1;
     }
     usr_sem_open(SEM_GLOBAL, 0);
-    void *aux = usr_malloc(2);
     for (int i = 0; i < MAX_DINER; i++) {
         phylo_states[i] = NONE;
         phylo_pids[i] = NO_PID;

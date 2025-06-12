@@ -6,5 +6,5 @@ void cat_command();
 void filter_command();
 void loop_command();
 void mem_command();
-
+void printShell();
 #endif

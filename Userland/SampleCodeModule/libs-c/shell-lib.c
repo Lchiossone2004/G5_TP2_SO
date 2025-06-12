@@ -7,10 +7,10 @@
 #include "command-lib.h"
 #include "phylo.h"
 
-#define EOF '\0'
+// #define EOF '\0'
 
-static int shellCounter = 0;
-void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
+
+int help(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc == 0){
         print("     Here is a list of the commands:");
         for (int i = 0; i < NUMBER_OF_COMMANDS; i++)
@@ -22,16 +22,18 @@ void help(uint64_t argc, char *argv[], char* command, int is_foregorund){
         print("\n");
         print("To know more about any command type [command] -info");
         print("\n");
+        return 0;
     }
     else{
         argsError(argc,argv);
+        return -1;
     }
 }
 
-void whatTime(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int whatTime(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc != 1){
         argsError(argc,argv);
-        return;
+        return -1;
     }
     if(strCompare(argv[0], "ARG")){
         printTime(1);
@@ -41,14 +43,16 @@ void whatTime(uint64_t argc, char *argv[], char* command, int is_foregorund){
     }
     else{
         argsError(argc,argv);
-        return;
+        return -1;
     }
     print(TAB);
+    return 0;
 }
 
-void zoom(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int zoom(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc != 1){
         argsError(argc,argv);
+        return -1;
     }
     if(strCompare(argv[0],"IN")){
         syscall(5, STDOUT);
@@ -57,38 +61,48 @@ void zoom(uint64_t argc, char *argv[], char* command, int is_foregorund){
         syscall(5, STDOUT);
     }
     print("\n");
+    return 0;
 }
 
-void clear(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int clear(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc > 0){
         argsError(argc,argv);
+        return -1;
     }
     syscall(6, STDOUT);
+    return 0;
 }
 
-void printReg(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int printReg(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc > 0){
         argsError(argc,argv);
+        return -1;
     }
     syscall(1, STDOUT);
+    return 0;
 }
 
-void divCero(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int divCero(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc > 0){
         argsError(argc,argv);
+        return -1;
     }
     int aux = 0/0;
+    return 0;
 }
-void invalidOperation(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int invalidOperation(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc > 0){
         argsError(argc,argv);
+        return -1;
     }
     invalidOp();
+    return 0;
 }
 
 int test(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc == 1){
         argsError(argc,argv);
+        return -1;
     }
     if(strCompare(argv[0],"MM")){
 
@@ -108,52 +122,62 @@ int test(uint64_t argc, char *argv[], char* command, int is_foregorund){
         argv[1] = argv[2];
         return usr_create_process((void*)test_sync,argc,argv, "sync test", PRIORITY_LOW, is_foregorund);
     }
+    return -1;
 }
 
-void block(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int block(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc != 1){
         argsError(argc,argv);
+        return -1;
     }
     else{
         int pid = strToInt(argv[0]);
         usr_block_process(pid);
+        return 0;
     }
 }
 
-void unblock(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int unblock(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc != 1){
         argsError(argc,argv);
+        return -1;
     }
     else{
         int pid = strToInt(argv[0]);
         usr_unblock_process(pid);
+        return 0;
     }
 }
 
-void nice(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int nice(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc != 2){
         argsError(argc,argv);
+        return -1;
     }
     else{
         int pid = strToInt(argv[0]);
         int newPrio = strToInt(argv[1]);
         usr_nice(pid, newPrio);
+        return 0;
     }
 
 }
 
-void yeild(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int yeild(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc > 0){
         argsError(argc,argv);
+        return -1;
     }
     else{
         usr_yield();
+        return 0;
     }
 }
 
-void kill(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int kill(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc != 1){
         argsError(argc,argv);
+        return -1;
     }
     else{
         print(argv[0]);
@@ -163,27 +187,34 @@ void kill(uint64_t argc, char *argv[], char* command, int is_foregorund){
             print(TAB);
         if(notFoundProcess) {
             printErr("kill: process not found");
+            return -1;
         }
         }
         else{
             printErr("Invalid PID");
+            return -1;
         }
         print("\n");
+        return 0;
     }
 }
 
-void ps(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int ps(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc > 0){
         argsError(argc,argv);
+        return -1;
     }
     else{
         syscall(20);
+        return 0;
     }
+
 }
 
 int mem(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc > 0){
         argsError(argc,argv);
+        return -1;
     }
     else{
         return usr_create_process((void*)mem_command, argc, argv, "mem", PRIORITY_LOW, is_foregorund);
@@ -193,6 +224,7 @@ int mem(uint64_t argc, char *argv[], char* command, int is_foregorund){
 int loop(uint64_t argc, char *argv[], char* command, int is_foregorund){
    if(argc > 0) {
         argsError(argc,argv);
+        return -1;
     } else {
         return usr_create_process((void*)loop_command, argc, argv, "loop", PRIORITY_LOW, is_foregorund);
     }
@@ -201,6 +233,7 @@ int loop(uint64_t argc, char *argv[], char* command, int is_foregorund){
 int cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
     if(argc > 0){
         argsError(argc,argv);
+        return -1;
     } else 
     return usr_create_process((void*)cat_command, argc, argv, "cat", PRIORITY_LOW, is_foreground);
 }
@@ -208,6 +241,7 @@ int cat(uint64_t argc, char *argv[], char* command, int is_foreground) {
 int wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
      if(argc > 0){
         argsError(argc,argv);
+        return -1;
     } else 
     return usr_create_process((void*)wc_command, argc, argv, "wc", PRIORITY_LOW, is_foreground);
 }
@@ -215,18 +249,20 @@ int wc(uint64_t argc, char *argv[], char* command, int is_foreground) {
 int filter(uint64_t argc, char *argv[], char* command, int is_foreground) {
      if(argc > 0){
         argsError(argc,argv);
+        return -1;
     } else 
     return usr_create_process((void*)filter_command, argc, argv, "filter", PRIORITY_LOW, is_foreground);
 }
 
-void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund){
+int invalid(uint64_t argc, char *argv[], char* command, int is_foregorund){
     print(TAB);
     printErr("command: [");
     printErr(command);
     printErr("] not found.\n");
+    return 0;
 }
 
-void argsError(uint64_t argc, char *argv[]){
+int argsError(uint64_t argc, char *argv[]){
     print(TAB);
     if(argc == 0){
         printErr("Missing Arguments.");
@@ -239,9 +275,10 @@ void argsError(uint64_t argc, char *argv[]){
         }
     }
     print("\n");
+    return 0;
 }
 
-void commandInfo(int i){
+int commandInfo(int i){
     (void) commandDescrition;
     (void) commandArgs;
             i--;
@@ -258,20 +295,20 @@ void commandInfo(int i){
             print("- Possible arguments: ");
             print(commandArgs[i]);
             print("\n");
+            return 0;
 }  
 
 int newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
-    char * aux[] = {};
-    char * number[4];
+    char * aux[] = {NULL};
     usr_create_process((void*)shell,1,aux,"shell_son", PRIORITY_NORMAL,1);
     return -1;
 }
 
 
-void phylosophers(uint64_t argc, char *argv[], char *command, int is_foregorund) {
+int phylosophers(uint64_t argc, char *argv[], char *command, int is_foregorund) {
     if (argc > 0) {
         argsError(argc, argv);
-        return;
+        return -1;
     }
-    usr_create_process((void*)phylo_main, argc, argv, "phylosophers", PRIORITY_LOW, is_foregorund);
+    return usr_create_process((void*)phylo_main, argc, argv, "phylosophers", PRIORITY_LOW, is_foregorund);
 }

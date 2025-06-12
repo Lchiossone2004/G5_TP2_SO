@@ -67,19 +67,19 @@ void loadBuffer(uint8_t key){
         sem_post(is_key); 
 
     }
-    else if(key == 14){      //Borrado  
-        char *aux = '\1';
+    else if(key == 14){   
+        char *aux = {'\1', '\0'};
         buffer[write] = aux;
         write = (write + 1) % BUFFER_SIZE; 
         sem_post(is_key);
     }
-    else if(key == 28){      //Enter
-        char * aux = '\n';
+    else if(key == 28){      
+        char * aux = {'\n', '\0'};
         buffer[write] = aux; 
         write = (write + 1) % BUFFER_SIZE; 
         sem_post(is_key);  
     }
-    else if(key == 0x0F){   //TAB
+    else if(key == 0x0F){  
         char  *aux = (char *) ' ';
         for(int i = 0; i < 5; i++){
             buffer[write] = aux; 
@@ -90,12 +90,12 @@ void loadBuffer(uint8_t key){
 }
 
 void updateKeyboardStatus(uint8_t scancode, uint8_t isPressed) {
-    if (scancode == 0x2A || scancode == 0x36) {  // Shift izquierdo o derecho
-        shift_pressed = isPressed;  // Cambia según esté presionado o no
+    if (scancode == 0x2A || scancode == 0x36) {  
+        shift_pressed = isPressed;  
     }else if(scancode == 0x1D || scancode == 0xE01D){
         ctrl_pressed = isPressed;
     } 
-    else if (scancode == 0x3A && isPressed) {  // Caps Lock presionado (toggle)
+    else if (scancode == 0x3A && isPressed) { 
         caps_pressed = !caps_pressed;
     }
 }
@@ -113,12 +113,11 @@ char shiftNum(char num) {
             case '9': return '(';
             case '0': return ')';
         }
-        return '0'; //nunca va  a llegar acá
+        return '0'; 
 }
 char toLetter(uint8_t i){
     char aux;
     switch (i) {
-        // Números y símbolos
         case 0x02: aux =  '1'; break;
         case 0x03: aux =  '2'; break;
         case 0x04: aux =  '3'; break;
@@ -132,7 +131,7 @@ char toLetter(uint8_t i){
         case 0x0C: aux =  '-'; break;
         case 0x0D: aux =  '='; break;
         
-        // Letras (minúsculas)
+
         case 0x1E: aux =  'a'; break;
         case 0x30: aux =  'b'; break;
         case 0x2E: aux =  'c'; break;
@@ -161,19 +160,19 @@ char toLetter(uint8_t i){
         case 0x2C: aux =  'z'; break;
         
         case 0x39: aux =  ' '; break;
-        case 0x2A:  break; //shift izquierdo
-        case 0x36:  break; //shift derecho
-        case 0x1D:  break; //ctrl
-        case 0x3A:  break; //capslock
+        case 0x2A:  break; 
+        case 0x36:  break; 
+        case 0x1D:  break; 
+        case 0x3A:  break; 
         case 0x2B: aux =  '|'; break; 
         
-        default: return '?';       // Tecla no reconocida
+        default: return '?';    
     }
-    if (aux >= 'a' && aux <= 'z' && (caps_pressed || shift_pressed )) {  //si es una letra y esta apretado shift o prendido el capslock
-        aux  -= 32;  //la paso a mayúscula
+    if (aux >= 'a' && aux <= 'z' && (caps_pressed || shift_pressed )) {  
+        aux  -= 32; 
     } else 
-    if(aux >= '0' && aux <= '9' && shift_pressed) { //si es un número y esta el shift apretado
-        aux = shiftNum(aux); //actua segun el numero que corresponda
+    if(aux >= '0' && aux <= '9' && shift_pressed) {
+        aux = shiftNum(aux); 
     }
 
     return aux; 

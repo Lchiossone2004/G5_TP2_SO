@@ -81,7 +81,7 @@ int usr_change_std(int pid, int std, int newFd){
 }
 
 void usr_wait_children(){
-    return syscall(22);
+     syscall(22);
 }
 //Sems
 

@@ -2,10 +2,12 @@
 #include "c-lib.h"
 #include "test_util.h"
 #include "command-lib.h"
+#include "memory-lib.h"
 
 #define STDOUT 1
 #define STDIN 0
 #define EOF '\0'
+extern uint64_t syscall(uint64_t rdi, ...);
 
 void wc_command() {
     char buffer[128];

@@ -61,30 +61,30 @@ extern uint64_t syscall(__uint64_t rdi, ...);
 extern void invalidOp();
 
 
-void help(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void whatTime(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void zoom(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void clear(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void printReg(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void divCero(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void invalidOperation(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int help(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int whatTime(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int zoom(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int clear(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int printReg(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int divCero(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int invalidOperation(uint64_t argc, char *argv[], char* command, int is_foregorund);
 int test(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void block(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void unblock(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void nice(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void yeild(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void kill(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void ps(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int block(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int unblock(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int nice(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int yeild(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int kill(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int ps(uint64_t argc, char *argv[], char* command, int is_foregorund);
 int loop(uint64_t argc, char *argv[], char* command, int is_foregorund);
 int mem(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void invalid(uint64_t argc, char *argv[], char* command, int is_foregorund);
-void argsError(uint64_t argc, char *argv[]);
-void commandInfo(int i);
+int invalid(uint64_t argc, char *argv[], char* command, int is_foregorund);
+int argsError(uint64_t argc, char *argv[]);
+int commandInfo(int i);
 int cat(uint64_t argc, char *argv[], char* command, int is_foreground);
 int wc(uint64_t argc, char *argv[], char* command, int is_foreground);
 int filter(uint64_t argc, char *argv[], char* command, int is_foreground);
 int newShell(uint64_t argc, char *argv[], char *command, int is_foregorund);
-void phylosophers(uint64_t argc, char *argv[], char *command, int is_foregorund);
+int phylosophers(uint64_t argc, char *argv[], char *command, int is_foregorund);
 
 
 #endif

@@ -16,5 +16,5 @@ void take_forks(int idx);
 void phylo_process(int argc, char *argv[]);
 int new_phylo(int idx);
 void remove_phylo(int idx);
-static void remove_all(int max); 
+void remove_all(int max); 
 #endif 
