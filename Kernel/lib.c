@@ -19,16 +19,6 @@ void * memset(void * destination, int32_t c, uint64_t length) {
 	return destination;
 }
 
-int strcmp(const char* str1, const char* str2) {
-    int i = 0;
-    while (str1[i] != '\0' && str2[i] != '\0') {
-        if (str1[i] != str2[i]) {
-            return str1[i] - str2[i];
-        }
-        i++;
-    }
-    return str1[i] - str2[i];
-}
 
 void * memcpy(void * destination, const void * source, uint64_t length) {
 	/*
@@ -91,38 +81,6 @@ int strSize(char *word) {
     return toRet;
 }
 
-size_t strlen(const char *s) {
-    const char *p = s;
-    while (*p) {
-        p++;
-    }
-    return (size_t)(p - s);
-}
-char* strdup(const char* str) {
-    if (str == NULL) {
-        return NULL;
-    }
-
-    size_t len = strlen(str) + 1;
-
-    char* copy = (char*)mm_malloc(len);
-    if (!copy) {
-        return NULL;
-    }
-    memcpy(copy, str, len);
-
-    return copy;
-}
-
-size_t strcpy_from_index(char *dest, const char *src, size_t start_index, size_t max_len) {
-    size_t i = 0;
-    while (i < max_len && src[start_index + i] != '\0') {
-        dest[i] = src[start_index + i];
-        i++;
-    }
-    dest[i] = '\0';
-    return i; 
-}
 int find_index(int arr[], int size, int value) {
     for (int i = 0; i < size; i++) {
         if (arr[i] == value) {
