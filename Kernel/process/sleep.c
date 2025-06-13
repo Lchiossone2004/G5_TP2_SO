@@ -31,27 +31,15 @@ void sleep_queue_add(p_info *proc, uint64_t wake_tick) {
     e->next = *it;
     *it = e;
 }
+
 void sleep_queue_tick_handler(void) {
-    uint64_t now = ticks_elapsed();
-    sleep_entry *prev = NULL;
-    sleep_entry *cur  = sleep_list;
-    while (cur) {
-        sleep_entry *next = cur->next;
-        if (foundprocess(cur->proc->pid) == -1) {
-            if (prev) prev->next = next;
-            else      sleep_list    = next;
-            mm_free(cur);
-        }
-        else if (cur->wake_tick <= now) {
-            if (prev) prev->next = next;
-            else      sleep_list    = next;
-            unblock_process(cur->proc->pid);
-            add_to_ready_list(cur->proc);
-            mm_free(cur);
-        }
-        else {
-            prev = cur;
-        }
-        cur = next;
+    uint64_t now;
+    now = ticks_elapsed();
+    while (sleep_list && sleep_list->wake_tick <= now) {
+        sleep_entry *wake = sleep_list;
+        sleep_list = wake->next;
+        unblock_process(wake->proc->pid);
+        add_to_ready_list(wake->proc);
+        mm_free(wake);
     }
 }
