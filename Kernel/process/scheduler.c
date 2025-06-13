@@ -158,12 +158,16 @@ int kill_process(int pid) {
     if (idx == -1)
         return -1;
     freePid(pid);
-    p_info *p = processes_list[idx];
-    remove_from_processes_list(p);
-    if (p == current_process){
+    p_info* p = processes_list[idx];
+
+    if (p == current_process) {
+        p->state = TERMINATED;
         remove_from_ready_list(p);
-        callScheduler();
+        
+    } else {
+        remove_from_processes_list(p);
     }
+    callScheduler();
     return 0;
 }
 
@@ -179,7 +183,6 @@ int modify_priority(int pid, int newPriority) {
     if (index == -1) {
         return 0; 
     }
-    mm_free(process->priorityName);
     size_t prioNameLen = strSize(priorityName[index]) + 1;
     process->priorityName = mm_malloc(prioNameLen);
     memcpy(process->priorityName, priorityName[index], prioNameLen);
@@ -197,7 +200,6 @@ int modify_priority(int pid, int newPriority) {
 
     return 1;
 }
-
 
 int foundprocess(int pid) {
     for (int i = 0; i < MAX_PROCESSES; i++) {
