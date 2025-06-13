@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "../include/test_util.h"
 #include "../include/test.h"
+#include "command-lib.h"
 
 #define SEM_ID 1
 #define TOTAL_PAIR_PROCESSES 2
@@ -55,7 +56,7 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
 
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
-  if (argc != 2)
+  if (argc != 2) 
     return -1;
 
   char *argvDec[] = {argv[0], "-1", argv[1], NULL};
@@ -78,5 +79,6 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   char toPrint[4];
   intToString(global, toPrint, 4);
   print(toPrint);
+  printShell();
   return 0;
 }
