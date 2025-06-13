@@ -77,14 +77,14 @@ int new_phylo(int idx) {
         usr_sem_post(SEM_GLOBAL);
         return -1;
     }
-    char **argv = usr_malloc(sizeof(char*) * 2);
+    char **argv = usr_malloc(sizeof(char)* 2);
     if (argv == NULL) {
         usr_sem_post(SEM_GLOBAL);
         return -1;  
     }
     argv[0] = usr_malloc(2);
     argv[0][0] = '0' + idx;
-    argv[0][1] = '\0';
+    argv[0][0] = '\0';
     argv[1] = NULL;
     phylo_pids[idx] = usr_create_process((void*)phylo_process, 1, argv, phylo_names[idx], 0, 0);
     if (phylo_pids[idx] < 0) {
