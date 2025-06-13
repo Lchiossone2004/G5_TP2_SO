@@ -2,6 +2,7 @@
 #include "../include/memory-lib.h"
 #include "../include/phylo.h"
 #include "../include/shell-lib.h"
+#include "../include/command-lib.h"
 #define NO_PID -1
 
 typedef enum { NONE = 0, THINKING, WAITING, EATING } PHYLO_STATE;
@@ -76,7 +77,7 @@ int new_phylo(int idx) {
         usr_sem_post(SEM_GLOBAL);
         return -1;
     }
-    char **argv = usr_malloc(sizeof(char*) * 2);
+    char **argv = usr_malloc(sizeof(char*)* 2);
     if (argv == NULL) {
         usr_sem_post(SEM_GLOBAL);
         return -1;  
@@ -102,6 +103,8 @@ int new_phylo(int idx) {
 }
 
 void remove_phylo(int idx) {
+    int left = (idx + phylo_count - 1) % phylo_count;
+    int right = (idx + 1) % phylo_count;
     usr_sem_wait(SEM_GLOBAL);
     print(phylo_names[idx]);
     write(" leaves the table.\n", STDOUT, 19);
@@ -109,7 +112,7 @@ void remove_phylo(int idx) {
         usr_sem_post(SEM_GLOBAL);
         sleep(1);
         usr_sem_wait(SEM_GLOBAL);
-    } while (phylo_states[idx] == EATING);
+    } while (phylo_states[left] == EATING && phylo_states[right] == EATING);
     usr_kill(phylo_pids[idx]);
     usr_sem_close(SEM_FORK(idx));
     for (int i = idx; i < phylo_count - 1; i++) {
@@ -137,7 +140,6 @@ int phylo_main() {
         printErr("Could not start global semaphore.\n");
         return -1;
     }
-    usr_sem_open(SEM_GLOBAL, 0);
     for (int i = 0; i < MAX_DINER; i++) {
         phylo_states[i] = NONE;
         phylo_pids[i] = NO_PID;
@@ -174,5 +176,6 @@ int phylo_main() {
     remove_all(phylo_count);
     usr_sem_close(SEM_GLOBAL);
     write("\n", STDOUT, 1);
+    printShell();
     return 0;
 }

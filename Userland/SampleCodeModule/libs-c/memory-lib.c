@@ -52,5 +52,5 @@ void print_usr_mem_info(){
     print("\n");
 }
 void usr_memset(void * destination, int32_t c, uint64_t length) {
-
+    syscall(32,destination, c, length );
 }
