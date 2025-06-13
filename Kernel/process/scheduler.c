@@ -151,22 +151,19 @@ p_info* get_current_process() {
 }
 
 int kill_process(int pid) {
-    // if(pid < 3){
-    //     return 0;
-    // }
+    if(pid < 3){
+        return 0;
+    }
     int idx = foundprocess(pid);
     if (idx == -1)
         return -1;
     freePid(pid);
     p_info* p = processes_list[idx];
-
-    if (p == current_process) {
-        p->state = TERMINATED;
-        remove_from_ready_list(p);
-        
-    } else {
-        remove_from_processes_list(p);
+    if(p->state != BLOCKED){
+    remove_from_ready_list(p);
     }
+    p->state = TERMINATED;
+    remove_from_processes_list(p);
     callScheduler();
     return 0;
 }

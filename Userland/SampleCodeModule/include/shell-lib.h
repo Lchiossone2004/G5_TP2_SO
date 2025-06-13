@@ -54,7 +54,7 @@ static char *commandDescrition[] = {
 };
 
 
-static char *commandArgs[] = {"none", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none", "none", "none","none", "none", "what to print"};
+static char *commandArgs[] = {"none", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none", "none", "none","none", "none", "none", "what to print"};
 
 
 
