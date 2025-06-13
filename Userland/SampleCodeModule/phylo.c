@@ -140,7 +140,6 @@ int phylo_main() {
         printErr("Could not start global semaphore.\n");
         return -1;
     }
-    usr_sem_open(SEM_GLOBAL, 0);
     for (int i = 0; i < MAX_DINER; i++) {
         phylo_states[i] = NONE;
         phylo_pids[i] = NO_PID;
