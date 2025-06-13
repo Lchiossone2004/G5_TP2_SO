@@ -1,5 +1,6 @@
 #include "memory-lib.h"
 #include "test_util.h"
+#include "command-lib.h"
 #include "test.h"
 #include "c-lib.h"
 #include <stdlib.h>
@@ -24,11 +25,15 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
   uint32_t total;
   uint64_t max_memory;
 
-  if (argc != 1)
+  if (argc != 1) {
+    print("test_mm: ERROR: Invalid number of arguments\n");
     return -1;
+  }
 
-  if ((max_memory = satoi(argv[0])) <= 0)
+  if ((max_memory = satoi(argv[0])) <= 0) {
+    print("test_mm: ERROR: Invalid memory size\n");
     return -1;
+  }
 
   while (1) {
     rq = 0;
@@ -36,6 +41,7 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
 
     // Request as many blocks as we can
     while (rq < MAX_BLOCKS && total < max_memory) {
+
       mm_rqs[rq].size = GetUniform(max_memory - total - 1) + 1;
       void * aux = usr_malloc(mm_rqs[rq].size);
       mm_rqs[rq].address = aux;
@@ -65,5 +71,10 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
         usr_free(mm_rqs[i].address);
+
+    print("OK");
   }
+
+  printShell();
+  return 0;
 }
