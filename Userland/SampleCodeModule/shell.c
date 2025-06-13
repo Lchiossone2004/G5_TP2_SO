@@ -5,11 +5,6 @@ static char letra[1] = {0};
 static int ultimaLetra;
 static int index = 0;
 
-void  wakeUpLolo(){}
-int getKey(){
-    return syscall(3, STDIN, letra, 1);
-}
-
 void shell(){
     clearBuffer();
     print(NEW_LINE);
@@ -24,7 +19,6 @@ void shell(){
         while (readed == 0){
             readed = getKey();
         }
-        wakeUpLolo();
         readed = 0;
         if(index == 0 && *letra == '\n'){
             print(letra);
@@ -57,6 +51,10 @@ void shell(){
             buffer[index] = 0;
         }
     }
+}
+
+int getKey(){
+    return syscall(3, STDIN, letra, 1);
 }
 
 int newComand(uint64_t argc,char *argv[]){
