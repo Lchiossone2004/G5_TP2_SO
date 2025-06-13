@@ -45,7 +45,6 @@ int whatTime(uint64_t argc, char *argv[], char* command, int is_foregorund){
         argsError(argc,argv);
         return -1;
     }
-    print(TAB);
     return 0;
 }
 
