@@ -152,7 +152,7 @@ int phylo_main() {
     char letter = '0';
   
     while (letter != QUIT_VALUE ) {
-        read(STDIN, &letter, 1);
+        if(read(STDIN, &letter, 1)!= 0){
         if (letter == ADD_VALUE) {
             if (phylo_count < MAX_DINER){
                 new_phylo(phylo_count);
@@ -163,6 +163,11 @@ int phylo_main() {
                 remove_phylo(phylo_count - 1);
             } 
             else printErr("Min philosophers reached.\n");
+        }
+        }
+        else{
+            print_status();
+            sleep(10);
         }
     }
     print("Exiting Dining Philosophers Problem.\n");
