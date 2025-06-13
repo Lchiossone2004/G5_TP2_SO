@@ -45,6 +45,18 @@ int createProcess(void (*fn)(uint8_t, char **), uint8_t argc, char* argv[], char
     load_args(new_stack, new_process, argc, argv);
     add_to_process_list(new_process);
     add_to_ready_list(new_process);
+
+    for (int i = 0; i < MAX_BUFF*2; i++) {
+            new_process->fd_table[i] = -1;
+        }
+    if (parent) {
+        for (int i = 0; i < MAX_BUFF*2; i++) {
+            pipe_accses(new_process->pid,parent->fd_table[i]);
+        }
+        parent->waiting_on_child++;
+    }
+    new_process->stdin = STDIN;
+    new_process->stdout = STDOUT;
     return new_process->pid;
 }
 
@@ -102,21 +114,6 @@ void copy_context(p_info* new_process, char *name, void *stack_base, void *stack
     initialize_zero(new_process->children, MAX_CHILDREN);
     new_process->children_length = 0;
     assignForeground(new_process, is_foreground);
-
-    p_info *parent = get_current_process();
-  
-    if (parent) {
-        for (int i = 0; i < MAX_BUFF*2; i++) {
-            new_process->fd_table[i] = parent->fd_table[i];
-        }
-        parent->waiting_on_child++;
-    } else {
-        for (int i = 0; i < MAX_BUFF*2; i++) {
-            new_process->fd_table[i] = -1;
-        }
-    }
-    new_process->stdin = STDIN;
-    new_process->stdout = STDOUT;
 }
 
 int wait_pid(int pid) {        

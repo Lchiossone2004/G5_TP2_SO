@@ -66,7 +66,7 @@ static syscall_fn syscall_table[] = {
     [28] = sys_sem_get_value,
     [29] = sys_create_pipe,
     [30] = sys_pipe_close,
-    [31] = sys_dup,
+    [31] = sys_change_std,
     [32] = sys_memset,
 };
 
@@ -307,18 +307,18 @@ uint64_t sys_pipe_close(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, u
     return pipe_close(fd);
 }
 
-uint64_t sys_dup(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
+uint64_t sys_change_std(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){
     int pid = (int) rsi;
     int std = (int) rdx;
     int newFd = (int) rcx;
     p_info * proc = get_process_by_pid(pid);
     if(std == STDIN){
         proc->stdin = newFd;
-        return pipe_accses(pid,newFd);
+        return 0;
     }
     else if(std == STDOUT){
         proc->stdout = newFd;
-        return pipe_accses(pid,newFd);
+        return 0;
     }
     else{
         return -1;
