@@ -163,7 +163,7 @@ int kill_process(int pid) {
     } else {
         remove_from_processes_list(p);
     }
-
+    callScheduler();
     return 0;
 }
 

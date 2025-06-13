@@ -24,6 +24,7 @@ void init_keyboard(){
 }
 
 int read_keyboard(char* letter, int count) {
+    p_info * get_curr = get_current_process();
     int bytes_read = 0;  
     for (int i = 0; i < count && read != write; i++) {
         letter[i] = buffer[read]; 

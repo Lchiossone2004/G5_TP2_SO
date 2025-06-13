@@ -7,9 +7,6 @@
 #include "command-lib.h"
 #include "phylo.h"
 
-
-
-
 int help(uint64_t argc, char *argv[], char* command, int is_foregorund){
     if(argc == 0){
         print("     Here is a list of the commands:");

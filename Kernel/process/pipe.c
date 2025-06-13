@@ -119,11 +119,11 @@ int pipe_write(int fd, const char *buffer, int count) {
 
 int pipe_read(int fd, char *buffer, int count) {
     if (fd < 0 || fd >= MAX_FDS || !fd_table[fd].in_use || fd_table[fd].type != FD_READ) {
-        return -1;
+        return 0;
     }
     Pipe *pipe = fd_table[fd].pipe;
     if (pipe->read_open == 0 && can_accsess(fd) != 0) {
-        return -1;
+        return 0;
     }
 
     int read = 0;
