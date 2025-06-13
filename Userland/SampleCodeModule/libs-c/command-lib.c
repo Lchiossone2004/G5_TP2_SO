@@ -59,7 +59,7 @@ void cat_command() {
 }
 
 void filter_command() {
-    char buffer[11];
+    char buffer[10];
     char c;
     int n;
     int pos = 0;
@@ -70,6 +70,9 @@ void filter_command() {
         }
         char temp[2] = {c, '\0'}; 
         print(temp);
+        if (c >= 'A' && c <= 'Z') {
+        c += 32; 
+        }
         if(isVowel(c)) {
         buffer[pos++] = c;
         removeRepeated(buffer);
