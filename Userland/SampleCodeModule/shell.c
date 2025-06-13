@@ -82,7 +82,7 @@ void chekCommand(){
     int commandNum = processCommand(aux.args[0]);
     if(commandNum > 0 && strCompare(aux.args[1],"-info")){
         commandInfo(commandNum);
-        aux.args[1][0] = "\0";
+        aux.args[1][0] = '\0';
     }
     else{
         for(int i = 0; i<aux.arg_count; i++){

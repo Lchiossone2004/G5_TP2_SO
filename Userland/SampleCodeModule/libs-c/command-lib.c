@@ -13,7 +13,6 @@ void wc_command() {
     int line_count = 0;
     char c = '0';
     int n;
-    int pos = 0;
     char num[10];
     while ((n = read(STDIN, &c, 1)) >= 0 && c != EOF) {
          if(n == 0){
@@ -39,7 +38,6 @@ void wc_command() {
 }
 
 void cat_command() {
-    int pos = 0;
     char c;
     int n;
 

@@ -2,7 +2,7 @@ include Makefile.inc
 
 KERNEL_BIN=kernel.bin
 KERNEL_ELF=kernel.elf
-SOURCES_C = $(wildcard *.c interrupts/*.c drivers/*.c memory/*.c process/*.c syncro/*.c)
+SOURCES_C = $(wildcard *.c interrupts/*.c drivers/*.c memory/*.c process/*.c syncro/*.c pipe/*.c)
 SOURCES_ASM = $(wildcard asm/*.asm)
 OBJECTS_C = $(SOURCES_C:.c=.o)
 OBJECTS_ASM = $(SOURCES_ASM:.asm=.o)
