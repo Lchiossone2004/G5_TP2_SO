@@ -25,11 +25,9 @@ void init_keyboard(){
 
 int read_keyboard(char* letter, int count) {
     int bytes_read = 0;  
-    for (int i = 0; i < count; i++) {
-        sem_wait(is_key);  
+    for (int i = 0; i < count && read != write; i++) {
         letter[i] = buffer[read]; 
         read = (read + 1) % BUFFER_SIZE; 
-
         bytes_read++;
     }
 
@@ -53,7 +51,6 @@ void loadBuffer(uint8_t key){
         if(foreground_proc->stdin==STDIN){
             buffer[write] = EOF; 
             write = (write + 1) % BUFFER_SIZE; 
-            sem_post(is_key); 
         }
         else{
             pipe_write(foreground_proc->stdin, &eof, 1);
@@ -64,27 +61,22 @@ void loadBuffer(uint8_t key){
         char letter = toLetter(key); 
         buffer[write] = letter; 
         write = (write + 1) % BUFFER_SIZE; 
-        sem_post(is_key); 
-
     }
     else if(key == 14){   
         char *aux = "\1";
         buffer[write] = (uint16_t)aux[0];
         write = (write + 1) % BUFFER_SIZE; 
-        sem_post(is_key);
     }
     else if(key == 28){      
         char * aux = "\n";
         buffer[write] = (uint16_t)aux[0]; 
         write = (write + 1) % BUFFER_SIZE; 
-        sem_post(is_key);  
     }
     else if(key == 0x0F){  
         char  *aux = (char *) ' ';
         for(int i = 0; i < 5; i++){
             buffer[write] = (uint16_t)aux[0]; 
             write = (write + 1) % BUFFER_SIZE; 
-            sem_post(is_key);
         }
     }
 }

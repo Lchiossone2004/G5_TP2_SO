@@ -5,13 +5,15 @@ static char letra[1] = {0};
 static int ultimaLetra;
 static int index = 0;
 
+void  wakeUpLolo(){}
 int getKey(){
     return syscall(3, STDIN, letra, 1);
 }
 
 void shell(){
+    clearBuffer();
     print(NEW_LINE);
-    int readed = -1;
+    int readed = 0;
     while (1){
         if (index == WORD_BUFFER_SIZE - 1){
             chekCommand();
@@ -19,10 +21,11 @@ void shell(){
             index = 0;
             ultimaLetra = 0;
         }
-        while (readed == -1){
+        while (readed == 0){
             readed = getKey();
         }
-        readed = -1;
+        wakeUpLolo();
+        readed = 0;
         if(index == 0 && *letra == '\n'){
             print(letra);
             print(NEW_LINE);
@@ -31,7 +34,7 @@ void shell(){
         else if (*letra == '\1' && index > 0){
             print("\1");
             index -= 1;
-            readed = -1;
+            readed = 0;
             buffer[index] = 0;
         }
         else if (*letra == '\n' && index > 0){
@@ -40,7 +43,7 @@ void shell(){
             chekCommand();
             print(NEW_LINE);
             index = 0;
-            readed = -1;
+            readed = 0;
         }
         else if (*letra != '\1' ) {
             print(letra);

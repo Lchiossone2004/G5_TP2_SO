@@ -302,7 +302,8 @@ int commandInfo(int i){
 
 int newShell(uint64_t argc, char *argv[], char *command, int is_foregorund){
     char * aux[] = {NULL};
-    usr_create_process((void*)shell,1,aux,"shell_son", PRIORITY_NORMAL,1);
+    usr_create_process((void*)shell,0,aux,"shell_son", PRIORITY_NORMAL,1);
+    usr_wait_children();
     return -1;
 }
 
