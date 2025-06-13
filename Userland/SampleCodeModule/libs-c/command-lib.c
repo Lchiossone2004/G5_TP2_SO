@@ -52,10 +52,6 @@ void cat_command() {
         buffer[pos++] = c;
 
         if (c == '\n' || pos >= (int)sizeof(buffer) - 1 || c == EOF) {
-            //print("\n");
-            //buffer[pos] = '\0';  
-            //print(buffer);
-            //print("\n");
             printShell();
             return;
         }
@@ -105,8 +101,7 @@ void loop_command() {
         print("\n");
         print("These Aren't the Droids You're Looking For");
         print("\n");
-        //sleep(10);
-        for(int i = 0;i<100000000; i++);
+        sleep(10);
     }
 }
 void mem_command() {

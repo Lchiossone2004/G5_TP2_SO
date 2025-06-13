@@ -13,6 +13,8 @@ static int phylo_pids[MAX_DINER];
 static PHYLO_STATE phylo_states[MAX_DINER];
 static int phylo_count = 0;
 
+static char **phylo_argv[MAX_DINER];
+
 void print_status() {
     int any = 0;
     for (int i = 0; i < phylo_count; i++) {
@@ -60,8 +62,6 @@ void take_forks(int idx) {
 
 void phylo_process(int argc, char *argv[]) {
     int idx = argv[0][0] - '0';
-    usr_free(argv[0]);
-    usr_free(argv);
     phylo_states[idx] = THINKING;
     while (1) {
         sleep(20);
@@ -71,29 +71,53 @@ void phylo_process(int argc, char *argv[]) {
     }
 }
 
+void free_phylo_memory(int idx) {
+    if (phylo_argv[idx] != NULL) {
+        if (phylo_argv[idx][0] != NULL) {
+            usr_free(phylo_argv[idx][0]);
+            phylo_argv[idx][0] = NULL;
+        }
+        usr_free(phylo_argv[idx]);
+        phylo_argv[idx] = NULL;
+    }
+}
+
 int new_phylo(int idx) {
     usr_sem_wait(SEM_GLOBAL);
     if (usr_sem_open(SEM_FORK(idx), 0) < 0) {
         usr_sem_post(SEM_GLOBAL);
         return -1;
     }
-    char **argv = usr_malloc(sizeof(char*)* 2);
+    
+    char **argv = usr_malloc(sizeof(char*) * 2);
     if (argv == NULL) {
+        usr_sem_close(SEM_FORK(idx));
         usr_sem_post(SEM_GLOBAL);
         return -1;  
     }
+    
     argv[0] = usr_malloc(2);
-    argv[0][0] = '0' + idx;
-    argv[0][1] = '\0';
-    argv[1] = NULL;
-    phylo_pids[idx] = usr_create_process((void*)phylo_process, 1, argv, phylo_names[idx], 0, 0);
-    if (phylo_pids[idx] < 0) {
-        usr_sem_close(SEM_FORK(idx));
-        usr_free(argv[0]);
+    if (argv[0] == NULL) {
         usr_free(argv);
+        usr_sem_close(SEM_FORK(idx));
         usr_sem_post(SEM_GLOBAL);
         return -1;
     }
+    
+    argv[0][0] = '0' + idx;
+    argv[0][1] = '\0';
+    argv[1] = NULL;
+    
+    phylo_argv[idx] = argv;
+    
+    phylo_pids[idx] = usr_create_process((void*)phylo_process, 1, argv, phylo_names[idx], 0, 0);
+    if (phylo_pids[idx] < 0) {
+        usr_sem_close(SEM_FORK(idx));
+        free_phylo_memory(idx); 
+        usr_sem_post(SEM_GLOBAL);
+        return -1;
+    }
+    
     print(phylo_names[idx]);
     write(" joined the table.\n", STDOUT, 19);
     phylo_count++;
@@ -113,22 +137,28 @@ void remove_phylo(int idx) {
         sleep(1);
         usr_sem_wait(SEM_GLOBAL);
     } while (phylo_states[left] == EATING && phylo_states[right] == EATING);
+    
     usr_kill(phylo_pids[idx]);
     usr_sem_close(SEM_FORK(idx));
+    
+    free_phylo_memory(idx);
+    
     for (int i = idx; i < phylo_count - 1; i++) {
         phylo_pids[i]   = phylo_pids[i + 1];
         phylo_states[i] = phylo_states[i + 1];
+        phylo_argv[i]   = phylo_argv[i + 1]; 
     }
     phylo_pids[phylo_count - 1]   = NO_PID;
     phylo_states[phylo_count - 1] = NONE;
+    phylo_argv[phylo_count - 1]   = NULL;
     phylo_count--;
     print_status();
     usr_sem_post(SEM_GLOBAL);
 }
 
- void remove_all(int max) {
-    for (int i = max - 1; i >= 0; i--) {
-        if (phylo_states[i] != NONE) remove_phylo(i);
+void remove_all(int max) {
+    while (phylo_count > 0) {
+        remove_phylo(phylo_count - 1);
     }
 }
 
@@ -140,10 +170,13 @@ int phylo_main() {
         printErr("Could not start global semaphore.\n");
         return -1;
     }
+    
     for (int i = 0; i < MAX_DINER; i++) {
         phylo_states[i] = NONE;
         phylo_pids[i] = NO_PID;
+        phylo_argv[i] = NULL;
     }
+    
     for (int i = 0; i < MIN_DINER; i++) {
         if (new_phylo(i) < 0) {
             remove_all(i);
