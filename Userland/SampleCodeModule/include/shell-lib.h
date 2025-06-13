@@ -43,7 +43,7 @@ static char *commandDescrition[] = {
     "Gives up the Cpu",
     "Kills the selected process.",
     "Shows a list of the existing processes.",
-    "Loops and shows it PID and a special message",
+    "Prints its PID and a greeting for the professor.",
     "Shows the current state of allocated memory.", 
     "Reads from STDIN and writes to STDOUT.",
     "Counts the number of lines in the input.",

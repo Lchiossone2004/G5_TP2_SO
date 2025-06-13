@@ -97,7 +97,7 @@ void loop_command() {
     while(1){
         print(buffer);
         print("\n");
-        print("These Aren't the Droids You're Looking For");
+        print("Hello there.");
         print("\n");
         sleep(10);
     }
