@@ -43,6 +43,8 @@ void loadBuffer(uint8_t key){
     if(ctrl_pressed && key == 0x2E){
         p_info * foreground_proc = get_foreground_process();
         kill_process(foreground_proc->pid);
+        imprimirVideo("\n", 1, BLANCO);
+        imprimirVideo("shell: >", 10, BLANCO);
         return;
     }
     if(ctrl_pressed && key == 0x20){ 
