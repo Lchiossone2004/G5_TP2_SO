@@ -21,7 +21,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
   uint64_t max_processes;
   char *argvAux[] = {0};
 
-  if (argc != 1)
+  if (argc != 1) 
     return -1;
 
   if ((max_processes = satoi(argv[0])) <= 0)
@@ -88,6 +88,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
                 }
             }
         }
+   
     }
 printShell();
 return 0;
