@@ -16,7 +16,10 @@ void wc_command() {
     int n;
     int pos = 0;
     char num[10];
-    while ((n = read(STDIN, &c, 1)) > 0) {
+    while ((n = read(STDIN, &c, 1)) >= 0) {
+         if(n == 0){
+            continue;
+        }
         char temp[2] = {c, '\0'}; 
         print(temp);
         buffer[pos++] = c;
@@ -43,7 +46,7 @@ void cat_command() {
     char c;
     int n;
 
-    while ((n = read(STDIN, &c, 1)) > -1) {
+    while ((n = read(STDIN, &c, 1)) >= 0) {
         if(n == 0){
             continue;
         }
@@ -69,7 +72,10 @@ void filter_command() {
     int n;
     int pos = 0;
     
-    while ((n = read(STDIN, &c, 1)) > 0) {
+    while ((n = read(STDIN, &c, 1)) >= 0) {
+         if(n == 0){
+            continue;
+        }
         char temp[2] = {c, '\0'}; 
         print(temp);
         buffer[pos++] = c;
