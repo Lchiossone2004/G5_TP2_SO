@@ -10,38 +10,35 @@
 extern uint64_t syscall(uint64_t rdi, ...);
 
 void wc_command() {
-    char buffer[128];
     int line_count = 0;
-    char c;
+    char c = '0';
     int n;
     int pos = 0;
     char num[10];
-    while ((n = read(STDIN, &c, 1)) >= 0) {
+    while ((n = read(STDIN, &c, 1)) >= 0 && c != EOF) {
          if(n == 0){
             continue;
         }
         char temp[2] = {c, '\0'}; 
         print(temp);
-        buffer[pos++] = c;
         if (c == '\n') {
             line_count++;
         }
-        if(c == EOF || pos >= sizeof(buffer) - 1) {
-            line_count++;
-            print("\n");
-            break;
-        }
+       
+        
     }
+    line_count++;
+    print("\n");
     intToString(line_count, num, sizeof(num));
     print(num);
     print(" lines");
     print("\n");
     printShell();
     return;
+    
 }
 
 void cat_command() {
-    char buffer[128];
     int pos = 0;
     char c;
     int n;
@@ -52,22 +49,17 @@ void cat_command() {
         }
         char temp[2] = {c, '\0'}; 
         print(temp);
-        buffer[pos++] = c;
-
-        if (c == '\n' || pos >= (int)sizeof(buffer) - 1 || c == EOF) {
+        if (c == '\n' || c == EOF) {
             printShell();
             return;
         }
     } 
-    if (pos > 0) {
-        print(buffer);
-    }
     printShell();
     return;
 }
 
 void filter_command() {
-    char buffer[128];
+    char buffer[11];
     char c;
     int n;
     int pos = 0;
@@ -78,24 +70,21 @@ void filter_command() {
         }
         char temp[2] = {c, '\0'}; 
         print(temp);
+        if(isVowel(c)) {
         buffer[pos++] = c;
-        if (c == '\n' || pos >= sizeof(buffer) - 1 || c == EOF)  {
+        removeRepeated(buffer);
+        }
+        if (c == '\n' || c == EOF)  {
             print("\n");
             break;
         }
       
     }
     buffer[pos] = '\0';
-    int newLen = removeRepeated(buffer);
-    for(int i = 0; i < newLen; i++) {
-        if (isVowel(buffer[i])) {
-            char temp[2] = {buffer[i], '\0'}; 
-            print(temp);
-        }
-    }
+    print(buffer);
     printShell();
     return;
-}
+    }
 
 void loop_command() {
     int pid = syscall(15);
