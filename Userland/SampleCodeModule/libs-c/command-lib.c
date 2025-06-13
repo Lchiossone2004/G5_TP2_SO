@@ -117,6 +117,8 @@ void echo_command(int argc,char* argv[]){
         print(" ");
     }
     print("\n");
+    printShell();
+    return;
 }
 void printShell(){
     print("\n");
