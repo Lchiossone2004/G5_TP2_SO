@@ -24,7 +24,7 @@ typedef enum {
 } PriorityLevel;
 
 static char *commands[] = {
-    "help", "time", "zoom", "clear", "regs", "div cero", "invalid op", "test", "block", 
+    "help", "time", "zoom", "clear", "regs", "divCero", "invalidOp", "test", "block", 
     "unblock", "nice", "yeild", "kill", "ps", "loop", "mem", "cat", "wc", "filter","shell", "phylo","echo"
 };
 
