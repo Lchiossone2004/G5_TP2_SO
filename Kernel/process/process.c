@@ -116,26 +116,10 @@ void copy_context(p_info* new_process, char *name, void *stack_base, void *stack
     assignForeground(new_process, is_foreground);
 }
 
-// int wait_pid(int pid) {        
-//     p_info *current = get_current_process();
-
-//     int toRet = 0;
-//     if (foundprocess(pid) != -1 && current->waiting_on_child > 0) {
-//         toRet ++;              
-//     }
-//     for (int i = 0; i < current->children_length; i++) {
-//         if (current->children[i] == pid) {
-//             current->children[i] = 0;
-//             break;
-//         }
-//    }
-//    return toRet;
-// }
-
-
 int wait() {
     p_info *current = get_current_process();
-   if(current->waiting_on_child > 0){
+   if(current->children_length > 0){
+    current->waiting_on_child = 1;
     block_process(current->pid);
     callScheduler();
     return 0;

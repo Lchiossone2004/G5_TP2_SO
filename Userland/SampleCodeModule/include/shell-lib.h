@@ -33,7 +33,7 @@ static char *commandDescrition[] = {
     "It prints the actual time.",
     "Zooms in or out dependng on the argument.",
     "Clears the screen.",
-    "Prints the saved cpu registers/",
+    "Prints the saved cpu registers",
     "Causes a division by cero to show the error handeling.",
     "Causes a invalid operation to show the error handeling.",
     "Allows to run tests on diferent functionalities.",
@@ -54,7 +54,8 @@ static char *commandDescrition[] = {
 };
 
 
-static char *commandArgs[] = {"none", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", "pid & new priority",  "none","pid", "none", "none", "none", "none", "none","none", "none", "none", "what to print"};
+static char *commandArgs[] = {"none", "UTC - ARG", "IN - OUT", "none", "none", "none", "none", "MM & max_mem - Prio - Proc - Sync", "pid", "pid", 
+                            "pid & new priority",  "none","pid", "none", "none", "none", "none", "none","none", "none", "none", "what to print"};
 
 
 

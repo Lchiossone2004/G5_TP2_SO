@@ -289,8 +289,7 @@ int remove_from_processes_list(p_info* process) {
                         break;
                     }
                 }
-            parent->waiting_on_child--;
-            if(parent->waiting_on_child == 0){
+            if(parent->waiting_on_child == 1 && parent->children_length == 0){
                 unblock_process(parent->pid);
             }
             if(process->is_foreground){
