@@ -6,6 +6,7 @@
 #include "../include/process.h"
 
 p_info* processes_list[MAX_PROCESSES];
+extern void callScheduler();
 int n_processes = 0;
 int shellCorriendo = 0;
 
