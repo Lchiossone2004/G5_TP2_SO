@@ -43,7 +43,10 @@ void cat_command() {
     char c;
     int n;
 
-    while ((n = read(STDIN, &c, 1)) > 0) {
+    while ((n = read(STDIN, &c, 1)) > -1) {
+        if(n == 0){
+            continue;
+        }
         char temp[2] = {c, '\0'}; 
         print(temp);
         buffer[pos++] = c;
