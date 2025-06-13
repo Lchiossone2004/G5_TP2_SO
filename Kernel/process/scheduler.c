@@ -111,6 +111,9 @@ int block_process(int pid) {
 }
 
 int unblock_process(int pid) {
+    if(pid == 1){
+        return -1;
+    }
     int idx = foundprocess(pid);
     if (idx != -1 && processes_list[idx]->state == BLOCKED) {
         processes_list[idx]->state = READY;
@@ -147,7 +150,7 @@ p_info* get_current_process() {
 }
 
 int kill_process(int pid) {
-    if(pid < 1){
+    if(pid < 3){
         return 0;
     }
     int idx = foundprocess(pid);
