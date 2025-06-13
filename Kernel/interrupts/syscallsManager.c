@@ -145,12 +145,18 @@ uint64_t sys_write(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64
 }
 
 uint64_t sys_zoom(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){ 
-    unsigned int fd = (unsigned int) rsi;
-    if(fd == STDOUT) {
+    unsigned int zoom = (unsigned int) rsi;
+    if(zoom == 1) {
         zoomIN();
         rePrint();
+        return 0;
     }
-    return 0;
+    if(zoom == 0) {
+        zoomOUT();
+        rePrint();
+        return 0;
+    }
+    return -1;
 }
 
 uint64_t sys_clear(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10){

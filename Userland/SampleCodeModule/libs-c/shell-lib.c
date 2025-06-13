@@ -51,10 +51,10 @@ int zoom(uint64_t argc, char *argv[], char* command, int is_foregorund){
         return -1;
     }
     if(strCompare(argv[0],"IN")){
-        syscall(5, STDOUT);
+        syscall(5, 1);
     }
     if(strCompare(argv[0],"OUT")){
-        syscall(5, STDOUT);
+        syscall(5, 0);
     }
     print("\n");
     return 0;

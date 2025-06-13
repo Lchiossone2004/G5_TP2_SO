@@ -189,20 +189,22 @@ void deleteVideo() {
 	word vol;
 	vol.num = 0;
 	vol.color = BLANCO;
-	if (!(y == 0 && x <= 0))
-	{
-		if (x >= MOV_X * zoom)
-		{
+	if (!(y <= MOV_Y && x <= 0)) {
+		if (x >= MOV_X * zoom) {
 			x -= MOV_X * zoom;
 			matrix[(y / zoom) / MOV_Y][(x / zoom) / MOV_X] = vol;
 			charVideo(0, 1, BLANCO);
 			x -= MOV_X * zoom;
-		}
-		else
-		{
+		} else {
 			x = VBE_mode_info->width - MOV_X * zoom;
 			y -= MOV_Y * zoom;
 			aux -= MOV_Y * zoom;
+			if (y < MOV_Y) {
+				y = MOV_Y;
+				aux = MOV_Y;
+				x = 0;
+				return;
+			}
 			matrix[(y / zoom) / MOV_Y][(x / zoom) / MOV_X] = vol;
 			charVideo(0, 0, BLANCO);
 			x -= MOV_X * zoom;
@@ -215,11 +217,10 @@ void printHexaVideo(uint64_t value) {
 	uintToBase(value, buffer, 16);
 	imprimirVideo(buffer, 16, BLANCO);
 }
+
 void clearScreen() {
-	for (int i = MOV_Y; i < BORDER_Y; i++)
-	{
-		for (int j = 0; j < BORDER_X; j++)
-		{
+	for (int i = MOV_Y; i < BORDER_Y; i++) {
+		for (int j = 0; j < BORDER_X; j++) {
 			putPixel(0x0, j, i);
 		}
 	}
@@ -227,28 +228,23 @@ void clearScreen() {
 	y = MOV_Y;
 	aux = MOV_Y;
 }
-void rePrint() { 
+
+void rePrint() {
 	clearScreen();
-	for (int i = 0; i < (BORDER_Y / MOV_Y) / zoom; i++)
-	{
-		for (int j = 0; j < (BORDER_X / MOV_X) / zoom; j++)
-		{
+	for (int i = 1; i < (BORDER_Y / MOV_Y) / zoom; i++) {
+		for (int j = 0; j < (BORDER_X / MOV_X) / zoom; j++) {
 			charVideo(matrix[i][j].num, 1, matrix[i][j].color);
 		}
-		if (matrix[i + 1][0].num == 0)
-		{
+		if (matrix[i + 1][0].num == 0) {
 			break;
 		}
 	}
-	return;
 }
 
 void videoClear() {
 	clearScreen();
-	for (int i = 0; i < (BORDER_Y / MOV_Y); i++)
-	{
-		for (int j = 0; j < (BORDER_X / MOV_X); j++)
-		{
+	for (int i = 1; i < (BORDER_Y / MOV_Y); i++) { // Empieza en 1
+		for (int j = 0; j < (BORDER_X / MOV_X); j++) {
 			matrix[i][j].num = 0;
 		}
 	}
