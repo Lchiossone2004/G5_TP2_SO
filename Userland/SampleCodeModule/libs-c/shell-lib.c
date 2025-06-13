@@ -115,7 +115,7 @@ int test(uint64_t argc, char *argv[], char* command, int is_foregorund){
         argc = 2;
         argv[0] = argv[1]; 
         argv[1] = argv[2];
-        int pid = usr_create_process((void*)test_sync,argc,argv, "sync test", PRIORITY_LOW, is_foregorund);
+        return usr_create_process((void*)test_sync,argc,argv, "sync test", PRIORITY_LOW, is_foregorund);
     }
     argsError(argc,argv);
     return -1;
