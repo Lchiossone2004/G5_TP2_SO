@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include "../include/test_util.h"
+#include "command-lib.h"
 #include"test.h"
 #include "memory.h"
 enum State { RUNNING,
@@ -88,5 +89,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
             }
         }
     }
+printShell();
+return 0;
 
 }

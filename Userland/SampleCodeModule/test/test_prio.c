@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "../include/test_util.h"
+#include "command-lib.h"
 #include "test.h"
 
 
@@ -54,5 +55,8 @@ void test_prio() {
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
     usr_kill(pids[i]);
+
+  printShell();
+  return;
 
 }
