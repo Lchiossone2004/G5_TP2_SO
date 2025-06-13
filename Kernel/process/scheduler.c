@@ -48,11 +48,11 @@ void* scheduler(void* current_sp) {
 
 
 void add_to_ready_list(p_info* process) {
+    if (is_in_ready_list(process)) return; 
+
     ReadyNode* node = mm_malloc(sizeof(ReadyNode));
     node->process_info = process;
     node->counter = process->priority;
-
-
     if (!ready_list) {
         ready_list = node;
         node->next = node;
@@ -84,7 +84,7 @@ void remove_from_ready_list(p_info* process) {
                 ready_list = curr->next;
             }
             if (prev) {
-                prev->next = curr->next;
+            prev->next = curr->next;
             } else {
                 ReadyNode *last = ready_list;
                 while (last->next != curr) {
@@ -92,36 +92,62 @@ void remove_from_ready_list(p_info* process) {
                 }
                 last->next = curr->next;
             }
+
+            if (curr == ready_list) {
+                ready_list = curr->next;
+            }
+            if (curr == current_node) {
+                current_node = curr->next;
+            }
             mm_free(curr);
             return;
         }
-
         prev = curr;
         curr = curr->next;
     } while (curr != ready_list);
 }
 
+int is_in_ready_list(p_info* process){
+    if (!ready_list) return 0;
+
+    ReadyNode* curr = ready_list;
+    do {
+        if (curr->process_info == process)
+            return 1;
+        curr = curr->next;
+    } while (curr != ready_list);
+
+    return 0;
+}
+
 int block_process(int pid) {
     int idx = foundprocess(pid);
-    if (idx != -1 && (processes_list[idx]->state == RUNNING || processes_list[idx]->state == READY)) {
-        processes_list[idx]->state = BLOCKED;
-        remove_from_ready_list(processes_list[idx]);
-        return 1;
+    if (idx == -1) return -1;
+
+    p_info* proc = processes_list[idx];
+    if (proc->state != RUNNING && proc->state != READY) {
+        return -1;
     }
-    return -1;
+    proc->state = BLOCKED;
+    remove_from_ready_list(proc);
+    return 1;
 }
 
 int unblock_process(int pid) {
-    if(pid == 1){
-        return -1;
-    }
+    if(pid == 1) return -1;
+
     int idx = foundprocess(pid);
-    if (idx != -1 && processes_list[idx]->state == BLOCKED) {
-        processes_list[idx]->state = READY;
-        add_to_ready_list(processes_list[idx]);
-        return 1;
-    }
-    return -1;
+    if (idx == -1) return -1;
+
+    p_info* proc = processes_list[idx];
+    if (proc->state != BLOCKED) return -1;
+
+    proc->state = READY;
+
+    if (!is_in_ready_list(proc))
+        add_to_ready_list(proc);
+
+    return 1;
 }
 
 void add_to_process_list(p_info* process) {
@@ -159,9 +185,7 @@ int kill_process(int pid) {
         return -1;
     freePid(pid);
     p_info* p = processes_list[idx];
-    if(p->state != BLOCKED){
     remove_from_ready_list(p);
-    }
     p->state = TERMINATED;
     remove_from_processes_list(p);
     callScheduler();
@@ -260,14 +284,13 @@ void get_processes() {
 }
 
 uint16_t quitCPU() {
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-        if (processes_list[i] && processes_list[i]->state == RUNNING) {
-            processes_list[i]->state = READY;
-            add_to_ready_list(processes_list[i]);
-            scheduler(processes_list[i]->stack_pointer);
-            return processes_list[i]->pid;
+    p_info * current_proc = get_current_process();
+        if (current_proc->state == RUNNING) {
+            current_proc->state = READY;
+            add_to_ready_list(current_proc);
+            scheduler(current_proc->stack_pointer);
+            return current_proc->pid;
         }
-    }
     return (uint16_t)-1;
 }
 

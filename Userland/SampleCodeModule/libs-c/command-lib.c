@@ -105,7 +105,8 @@ void loop_command() {
         print("\n");
         print("These Aren't the Droids You're Looking For");
         print("\n");
-        sleep(10);
+        //sleep(10);
+        for(int i = 0;i<100000000; i++);
     }
 }
 void mem_command() {
