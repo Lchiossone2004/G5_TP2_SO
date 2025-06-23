@@ -92,6 +92,7 @@ void chekCommand(){
         }
         if(pipe_pos == 0){
             newComand(aux.arg_count,aux.args);
+            usr_wait_children();
         }
         else{
             int new_pipe[2];
@@ -103,6 +104,7 @@ void chekCommand(){
             usr_change_std(pid2,STDIN, new_pipe[0]);
             usr_close_pipe(new_pipe[0]);
             usr_close_pipe(new_pipe[1]);
+            usr_wait_children();
         }
     }
 

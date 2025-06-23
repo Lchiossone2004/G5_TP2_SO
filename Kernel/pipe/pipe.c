@@ -125,7 +125,6 @@ int pipe_read(int fd, char *buffer, int count) {
     if (pipe->read_open == 0 && can_accsess(fd) != 0) {
         return 0;
     }
-
     int read = 0;
     for (int i = 0; i < count; i++) {
         sem_wait(pipe->sem_data_available);
@@ -193,6 +192,8 @@ void pipe_destroy(int fd){          //LIBERAR LOS PROCESOS LOCKEADOS    [FALTA]
     fd_table[fd-1].pipe = NULL;
     fd_table[fd-1].type = FD_UNUSED;
     mm_free(pipes[pipe->id]);
+    pipes[pipe->id] = NULL;  
+
 }
 
 

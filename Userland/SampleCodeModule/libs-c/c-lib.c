@@ -17,7 +17,7 @@ void print(char *word){
 }
 
 void write(char *word, int fd, int size){
-    syscall(4, fd, word, size);
+    syscall(4, fd, word, 1);
 }
 
 int read(int fd, char *buffer, int size){

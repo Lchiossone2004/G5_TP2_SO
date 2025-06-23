@@ -137,11 +137,9 @@ void initialize_zero(uint16_t array[], int size) {
 
 void assignForeground(p_info* new_p, int is_fg) {
     new_p->is_foreground = is_fg;
-    if (is_fg) {
-        p_info *current_fg = get_foreground_process();
-        current_fg->is_foreground = 0;
-        imprimirPrograma(new_p->name,strSize(new_p->name));
-    }
+    p_info *current_fg = get_foreground_process();
+    current_fg->is_foreground = 0;
+    imprimirPrograma(new_p->name,strSize(new_p->name));
 }
 
 

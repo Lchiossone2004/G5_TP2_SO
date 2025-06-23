@@ -12,12 +12,9 @@ extern uint64_t syscall(uint64_t rdi, ...);
 void wc_command() {
     int line_count = 0;
     char c = '0';
-    int n;
+    int n = 1;
     char num[10];
-    while ((n = read(STDIN, &c, 1)) >= 0 && c != EOF) {
-         if(n == 0){
-            continue;
-        }
+    while ((n = read(STDIN, &c, 1)) > 0 && c != EOF) {
         char temp[2] = {c, '\0'}; 
         print(temp);
         if (c == '\n') {
@@ -32,27 +29,23 @@ void wc_command() {
     print(num);
     print(" lines");
     print("\n");
-    printShell();
     return;
     
 }
 
 void cat_command() {
-    char c;
-    int n;
+    char c = '\0';
+    int n = 1;
 
-    while ((n = read(STDIN, &c, 1)) >= 0) {
-        if(n == 0){
-            continue;
-        }
+    while ((n = read(STDIN, &c, 1)) > 0) {
         char temp[2] = {c, '\0'}; 
         print(temp);
         if (c == '\n' || c == EOF) {
-            printShell();
+            char temp[2] = {'\0', '\0'}; 
+            write(temp,STDOUT,1);
             return;
         }
     } 
-    printShell();
     return;
 }
 

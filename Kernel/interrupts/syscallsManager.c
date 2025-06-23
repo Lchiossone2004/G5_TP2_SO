@@ -101,7 +101,7 @@ uint64_t sys_read(uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_
     size_t count = (size_t) rcx;
     if(fd == STDIN){
         p_info * proc = get_current_process();
-        if(proc->stdin == STDIN && proc->is_foreground){
+        if(proc->stdin == STDIN){
             return read_keyboard(buffer,count);
         }
         else{
