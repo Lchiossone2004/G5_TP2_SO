@@ -66,17 +66,17 @@ void filter_command() {
         }
         if(isVowel(c)) {
         buffer[pos++] = c;
-        removeRepeated(buffer);
         }
-        if (c == '\n' || c == EOF)  {
-            print("\n");
-            break;
-        }
+        if(c == EOF)
+        break;
       
     }
     buffer[pos] = '\0';
     print(buffer);
-    printShell();
+
+    if(c == EOF){
+        write(&c, STDOUT, 1);
+    }
     return;
     }
 
